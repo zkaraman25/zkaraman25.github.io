@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2e8b5a">
+<title>Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Launcher: header, grid of app tiles, inline editor. Same green system as Kućni budžet. */
+:root{
+  --bg:#f3f7f4; --card:#ffffff; --fg:#111a15; --muted:#687569; --line:#e2eae5; --hover:#eef5f0;
+  --a:#2e8b5a; --a-strong:#23714a; --a-soft:#dff0e6; --a-pale:#c3e3d1; --a-faint:#edf6f0; --on-a:#ffffff; --warn:#b4532a;
+  --c1:#2e8b5a; --c2:#3b7dd8; --c3:#d9862b; --c4:#8a6fd1; --c5:#d1486f; --c6:#1fa3a3; --c7:#b5a020; --c8:#6b7a8f;
+  --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0e1411; --card:#161e19; --fg:#e8efea; --muted:#95a39a; --line:#243029; --hover:#1c2620;
+  --a:#4cc287; --a-strong:#6fd39f; --a-soft:#1b3427; --a-pale:#285a40; --a-faint:#17261e; --on-a:#0b1a12; --warn:#ec9a6e;
+  --c1:#4cc287; --c2:#6ea4f0; --c3:#f0a44f; --c4:#aa96ee; --c5:#ec7596; --c6:#4fc7c7; --c7:#d6c23f; --c8:#93a3b8;
+  --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0e1411; --card:#161e19; --fg:#e8efea; --muted:#95a39a; --line:#243029; --hover:#1c2620;
+  --a:#4cc287; --a-strong:#6fd39f; --a-soft:#1b3427; --a-pale:#285a40; --a-faint:#17261e; --on-a:#0b1a12; --warn:#ec9a6e;
+  --c1:#4cc287; --c2:#6ea4f0; --c3:#f0a44f; --c4:#aa96ee; --c5:#ec7596; --c6:#4fc7c7; --c7:#d6c23f; --c8:#93a3b8;
+  --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 48px;transition:background .25s,color .25s}
+.wrap{max-width:1100px;margin:0 auto;display:grid;gap:22px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--a);color:var(--on-a);display:grid;place-items:center;flex:none}
+h1{font-size:22px;margin:0;font-weight:700;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:13px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 13px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:background .15s,border-color .15s,transform .1s}
+button:hover{border-color:var(--a-pale);background:var(--hover)}
+button:active{transform:translateY(1px)}
+button:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+button.primary{background:var(--a);color:var(--on-a);border-color:var(--a)}
+button.primary:hover{background:var(--a-strong);border-color:var(--a-strong)}
+button.icon{padding:8px 10px}
+button.x{border:none;background:none;color:var(--muted);padding:2px 7px;font-size:17px;line-height:1}
+button.x:hover{color:var(--warn);background:none}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--a)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.app{position:relative;display:grid;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--sh);text-decoration:none;color:inherit;transition:transform .18s,border-color .18s,box-shadow .18s;animation:cardin .45s ease both;min-width:0}
+.app:hover{transform:translateY(-3px);border-color:var(--a-pale);box-shadow:0 2px 4px rgba(0,0,0,.04),0 16px 32px -18px rgba(17,26,21,.35)}
+.app:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.app .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:#fff}
+.app .ic svg.i{width:22px;height:22px;stroke-width:2}
+.app .n{font-weight:700;font-size:16px;letter-spacing:-.01em}
+.app .d{color:var(--muted);font-size:13px;min-height:2.6em}
+.app .u{font-size:12px;color:var(--a-strong);display:flex;align-items:center;gap:5px;font-weight:600}
+.app .u svg.i{width:13px;height:13px}
+.app .tools{position:absolute;top:8px;right:8px;display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.app:hover .tools,.app:focus-within .tools{opacity:1}
+@media (hover:none){.app .tools{opacity:1}}
+.app.add{border-style:dashed;background:transparent;box-shadow:none;align-content:center;justify-items:center;text-align:center;color:var(--muted);cursor:pointer;min-height:170px}
+.app.add .ic{background:var(--a-soft);color:var(--a-strong)}
+.app.add:hover{color:var(--a-strong)}
+@keyframes cardin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* editor */
+.editor{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--sh);gap:14px}
+.editor.open{display:grid;animation:cardin .3s ease both}
+.editor h2{margin:0;font-size:16px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.f{grid-template-columns:1fr}}
+label{display:grid;gap:5px;font-size:13px;color:var(--muted);font-weight:600}
+label.full{grid-column:1/-1}
+input[type=text],input[type=url],textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;font-weight:400}
+input:focus,textarea:focus{outline:none;border-color:var(--a)}
+.picker{display:flex;gap:8px;flex-wrap:wrap}
+.picker button{padding:8px;border-radius:10px}
+.picker button.on{border-color:var(--a);background:var(--a-soft);color:var(--a-strong)}
+.colors{display:flex;gap:8px;flex-wrap:wrap}
+.colors button{width:30px;height:30px;padding:0;border-radius:50%;border:3px solid transparent}
+.colors button.on{border-color:var(--fg)}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.io{display:none;gap:8px}
+.io.open{display:grid}
+textarea.json{font:12px ui-monospace,Menlo,monospace;min-height:120px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(8px);background:var(--fg);color:var(--bg);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.foot{color:var(--muted);font-size:12px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* račun */
+.chip{cursor:pointer}
+.chip[data-state="local"] .dot{background:var(--muted)}
+.chip[data-state="busy"] .dot{background:var(--c3);animation:pulse 1s infinite}
+.chip[data-state="error"] .dot,.chip[data-state="offline"] .dot{background:var(--warn)}
+@keyframes pulse{50%{opacity:.3}}
+dialog.acct{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--fg);padding:22px;width:min(420px,calc(100vw - 32px));box-shadow:0 20px 60px -20px rgba(0,0,0,.4)}
+dialog.acct::backdrop{background:rgba(0,0,0,.35)}
+dialog.acct h2{margin:0 0 6px}
+dialog.acct label{display:grid;gap:5px;font-size:13px;color:var(--muted);font-weight:600;margin-top:12px}
+dialog.acct input{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 11px;width:100%}
+dialog.acct input:focus{outline:none;border-color:var(--a)}
+dialog.acct .err{color:var(--warn);font-size:13px;min-height:1.2em;margin-top:8px}
+dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <div><h1>Hub</h1><div class="sub">Sve aplikacije na jednom mjestu</div></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
+      <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
+      <button class="icon" id="btnIO" title="Sigurnosna kopija"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></button>
+      <button class="primary" id="btnAdd"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Dodaj aplikaciju</button>
+    </div>
+  </header>
+
+  <section class="editor" id="editor">
+    <h2 id="edTitle">Nova aplikacija</h2>
+    <div class="f">
+      <label>Naziv<input type="text" id="fName" placeholder="npr. Kućni budžet"></label>
+      <label>Link<input type="url" id="fUrl" placeholder="https://claude.ai/artifact/…"></label>
+      <label class="full">Opis<input type="text" id="fDesc" placeholder="Jedna rečenica što radi"></label>
+      <label class="full">Ikona<div class="picker" id="picker"></div></label>
+      <label class="full">Boja<div class="colors" id="colors"></div></label>
+    </div>
+    <div class="row"><button id="edCancel">Odustani</button><button class="primary" id="edSave">Spremi</button></div>
+  </section>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="editor io" id="io">
+    <div class="sub">Kopiraj ovaj tekst negdje na sigurno. Za vraćanje zalijepi ga ovdje i klikni Učitaj.</div>
+    <textarea class="json" id="ioText" spellcheck="false"></textarea>
+    <div class="row" style="justify-content:flex-start"><button id="ioCopy">Kopiraj</button><button id="ioLoad">Učitaj iz teksta</button></div>
+  </section>
+
+  <div class="foot">Prijavljen: popis se sinkronizira preko GitHuba. Neprijavljen: ostaje u ovom pregledniku.</div>
+</div>
+
+<dialog class="acct" id="acctDlg">
+  <h2 id="acctTitle">Prijava</h2>
+  <div id="loginView">
+    <div class="sub">Isti račun kao u Aparatima. Podaci se sinkroniziraju između uređaja.</div>
+    <label>Korisničko ime<input id="lUser" type="text" autocomplete="username" autocapitalize="none"></label>
+    <label>Lozinka<input id="lPass" type="password" autocomplete="current-password"></label>
+    <div class="err" id="lErr"></div>
+    <div class="row"><button id="acctClose" type="button">Zatvori</button><button class="primary" id="loginBtn" type="button">Prijavi se</button></div>
+  </div>
+  <div id="acctView" hidden>
+    <div class="sub" id="acctWho"></div>
+    <div class="sub" id="acctSync" style="margin-top:6px"></div>
+    <div class="err" id="acctErr"></div>
+    <div class="row"><button id="logoutBtn" type="button">Odjavi se</button><button class="primary" type="button" onclick="document.getElementById('acctDlg').close()">Zatvori</button></div>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const ICONS={
+  wallet:'<path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm0 0V5a2 2 0 0 1 2-2h11"/><circle cx="16" cy="14" r="1.2"/>',
+  washer:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4.5"/><circle cx="8" cy="6.5" r=".8"/><circle cx="11" cy="6.5" r=".8"/>',
+  home:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  chart:'<path d="M4 20V10m6 10V4m6 16v-7m4 7H2"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4"/>',
+  cart:'<path d="M3 4h2l2.5 11h11L21 7H6.5"/><circle cx="9" cy="19" r="1.3"/><circle cx="17" cy="19" r="1.3"/>',
+  key:'<circle cx="8" cy="14" r="4"/><path d="M11 11 20 2m-3 3 2 2m-5 1 2 2"/>',
+  car:'<path d="M5 13 7 7h10l2 6M3 13h18v5h-2m-14 0H3v-5"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/>',
+  heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+  tool:'<path d="M14.5 5.5a4 4 0 0 0 5 5L9 21l-2.5-2.5L17 8"/><path d="m3 7 4-4"/>',
+  star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  book:'<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>',
+  map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zm0 0v14m6-12v14"/>',
+  music:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'
+};
+const COLORS=["c1","c2","c3","c4","c5","c6","c7","c8"];
+const DEFAULT=[
+  {id:1,name:"Kućni budžet",desc:"Raspodjela plaće po kategorijama, slajderi, lista troškova",url:"/budzet/",icon:"wallet",color:"c1"},
+  {id:2,name:"Aparati za stan",desc:"Popis aparata i namještaja za stan, cijene, kupljeno, ušteda",url:"/aparati/",icon:"washer",color:"c2"},
+];
+const KEY="hub-apps-v1";
+let S=load(),editId=null,pickIcon="wallet",pickColor="c1";
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(Array.isArray(o))return o}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
+const HUB_META={updatedAt:0};let _last=null;
+function markSaved(){_last=JSON.stringify(S)}
+function save(){const snap=JSON.stringify(S);if(_last!==null&&snap!==_last){HUB_META.updatedAt=Date.now();if(typeof scheduleSync==="function")scheduleSync(1500)}_last=snap;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const syncGet=()=>({apps:S,updatedAt:HUB_META.updatedAt}), syncSet=o=>{S=Array.isArray(o.apps)?o.apps:S;HUB_META.updatedAt=o.updatedAt||0;markSaved();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return "bez linka"}}
+
+function isDark(){const t=document.documentElement.getAttribute("data-theme");return t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches)}
+function applyTheme(t){const r=document.documentElement;if(t)r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");
+  document.getElementById("iconTheme").innerHTML=isDark()?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>':'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'}
+let theme=null;try{theme=localStorage.getItem("kb-theme")||null}catch(e){}
+applyTheme(theme);
+document.getElementById("btnTheme").addEventListener("click",()=>{theme=isDark()?"light":"dark";try{localStorage.setItem("kb-theme",theme)}catch(e){}applyTheme(theme)});
+
+function render(){
+  const g=document.getElementById("grid");
+  g.innerHTML=S.map((a,k)=>`<a class="app" ${a.url?`href="${esc(a.url)}"${/^https?:/i.test(a.url)?' target="_blank" rel="noopener"':""}`:'href="#" data-noUrl="1"'} style="animation-delay:${k*50}ms" data-id="${a.id}">
+    <div class="tools"><button class="x" data-edit="${a.id}" title="Uredi"><svg class="i" style="width:15px;height:15px" viewBox="0 0 24 24"><path d="M4 20h4l10.5-10.5a2 2 0 0 0 0-2.8l-1.2-1.2a2 2 0 0 0-2.8 0L4 16v4z"/></svg></button><button class="x" data-del="${a.id}" title="Obriši">×</button></div>
+    <div class="ic" style="background:var(--${a.color||'c1'})"><svg class="i" viewBox="0 0 24 24">${ICONS[a.icon]||ICONS.grid}</svg></div>
+    <div><div class="n">${esc(a.name)}</div><div class="d">${esc(a.desc)}</div></div>
+    <div class="u"><svg class="i" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6L10 14M5 8v11h11"/></svg>${a.url?(/^https?:/i.test(a.url)?esc(host(a.url)):esc(a.url)):"dodaj link"}</div></a>`).join("")+
+    `<div class="app add" id="addTile" tabindex="0"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div><div class="n" style="font-size:14px">Dodaj aplikaciju</div></div>`;
+  save();
+}
+function openEditor(id){
+  editId=id;const a=id?S.find(x=>x.id===id):null;
+  document.getElementById("edTitle").textContent=a?"Uredi aplikaciju":"Nova aplikacija";
+  document.getElementById("fName").value=a?a.name:"";document.getElementById("fUrl").value=a?a.url:"";document.getElementById("fDesc").value=a?a.desc:"";
+  pickIcon=a?a.icon:"wallet";pickColor=a?a.color:COLORS[S.length%COLORS.length];
+  document.getElementById("picker").innerHTML=Object.keys(ICONS).map(k=>`<button type="button" data-ic="${k}" class="${k===pickIcon?'on':''}" title="${k}"><svg class="i" viewBox="0 0 24 24">${ICONS[k]}</svg></button>`).join("");
+  document.getElementById("colors").innerHTML=COLORS.map(c=>`<button type="button" data-c="${c}" class="${c===pickColor?'on':''}" style="background:var(--${c})" title="${c}"></button>`).join("");
+  const ed=document.getElementById("editor");ed.classList.add("open");ed.scrollIntoView({behavior:"smooth",block:"nearest"});document.getElementById("fName").focus();
+}
+function closeEditor(){document.getElementById("editor").classList.remove("open");editId=null}
+
+document.getElementById("grid").addEventListener("click",e=>{
+  const ed=e.target.closest("[data-edit]");if(ed){e.preventDefault();openEditor(+ed.dataset.edit);return}
+  const del=e.target.closest("[data-del]");if(del){e.preventDefault();const id=+del.dataset.del;if(del.dataset.arm){S=S.filter(a=>a.id!==id);render();toast("Obrisano")}else{del.dataset.arm="1";del.textContent="?";del.title="Klikni opet za brisanje";setTimeout(()=>{del.dataset.arm="";del.textContent="×"},2500)}return}
+  if(e.target.closest("#addTile")){openEditor(null);return}
+  const a=e.target.closest("a.app");if(a&&a.dataset.noUrl){e.preventDefault();openEditor(+a.dataset.id);toast("Dodaj link za ovu aplikaciju")}
+});
+document.getElementById("grid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="addTile")openEditor(null)});
+document.getElementById("btnAdd").addEventListener("click",()=>openEditor(null));
+document.getElementById("edCancel").addEventListener("click",closeEditor);
+document.getElementById("picker").addEventListener("click",e=>{const b=e.target.closest("[data-ic]");if(!b)return;pickIcon=b.dataset.ic;document.querySelectorAll("#picker button").forEach(x=>x.classList.toggle("on",x===b))});
+document.getElementById("colors").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;pickColor=b.dataset.c;document.querySelectorAll("#colors button").forEach(x=>x.classList.toggle("on",x===b))});
+document.getElementById("edSave").addEventListener("click",()=>{
+  const name=document.getElementById("fName").value.trim();let url=document.getElementById("fUrl").value.trim();const desc=document.getElementById("fDesc").value.trim();
+  if(!name){toast("Upiši naziv");document.getElementById("fName").focus();return}
+  if(url&&!/^https?:\/\//i.test(url))url="https://"+url;
+  if(editId){const a=S.find(x=>x.id===editId);Object.assign(a,{name,url,desc,icon:pickIcon,color:pickColor})}else S.push({id:Date.now(),name,url,desc,icon:pickIcon,color:pickColor});
+  closeEditor();render();toast(editId?"Spremljeno":"Aplikacija dodana")});
+document.getElementById("editor").addEventListener("keydown",e=>{if(e.key==="Escape")closeEditor();if(e.key==="Enter"&&e.target.tagName==="INPUT")document.getElementById("edSave").click()});
+
+document.getElementById("btnIO").addEventListener("click",()=>{const io=document.getElementById("io");io.classList.toggle("open");document.getElementById("ioText").value=JSON.stringify(S,null,1)});
+document.getElementById("ioCopy").addEventListener("click",()=>{const t=document.getElementById("ioText");t.value=JSON.stringify(S,null,1);navigator.clipboard?.writeText(t.value).then(()=>toast("Kopirano")).catch(()=>{t.select();toast("Označeno, kopiraj ručno")})});
+document.getElementById("ioLoad").addEventListener("click",()=>{try{const o=JSON.parse(document.getElementById("ioText").value);if(!Array.isArray(o))throw 0;S=o;render();toast("Učitano")}catch(e){toast("Neispravan tekst")}});
+
+render();
+/* ---------- Zajednički račun s Aparatima (GitHub sinkronizacija) ----------
+   Prijava i token žive u localStorage ključu "aparati.sync.v1", istom koji koristi app Aparati.
+   Sve aplikacije na zkaraman25.github.io dijele taj ključ, pa je prijava jedna za sve.
+   Podaci ove aplikacije idu u isti repozitorij, grana "data", datoteka hub.json. */
+const SYNC_FILE = 'hub.json';
+const SYNC_LABEL = 'Hub';
+const ACC_REPO_DEFAULT = 'zkaraman25/aparati';
+const LS_SYNC = 'aparati.sync.v1';
+const API = 'https://api.github.com';
+const ACC_PATH = 'racun.json';
+let sync = { repo: '', branch: 'data', path: 'data.json', token: '', user: '', ready: false, lastSync: 0 };
+try { Object.assign(sync, JSON.parse(localStorage.getItem(LS_SYNC) || '{}')); } catch (e) {}
+const saveSync = () => { try { localStorage.setItem(LS_SYNC, JSON.stringify(sync)); } catch (e) {} };
+const connected = () => Boolean(sync.token && sync.repo);
+class SyncError extends Error {}
+function gh(method, path, body) {
+  const headers = { Accept: 'application/vnd.github+json', Authorization: 'Bearer ' + sync.token };
+  if (body) headers['Content-Type'] = 'application/json';
+  return fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
+}
+function checkAuth(r) {
+  if (r.status === 401) throw new SyncError('Token nije ispravan ili je istekao. Prijavi se ponovno.');
+  if (r.status === 403) throw new SyncError('Token nema dozvolu za ovaj repozitorij.');
+}
+const b64encode = (text) => { let bin = ''; for (const b of new TextEncoder().encode(text)) bin += String.fromCharCode(b); return btoa(bin); };
+const b64decode = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, '')), (ch) => ch.charCodeAt(0)));
+const filePath = () => '/repos/' + sync.repo + '/contents/' + SYNC_FILE;
+let remoteSha = null, syncing = false, again = false, syncTimer = null;
+async function pull() {
+  const r = await gh('GET', filePath() + '?ref=' + encodeURIComponent(sync.branch));
+  if (r.status === 404) return { data: null, sha: null };
+  checkAuth(r);
+  if (!r.ok) throw new SyncError('Čitanje podataka nije uspjelo (greška ' + r.status + ').');
+  const j = await r.json();
+  try { return { data: JSON.parse(b64decode(j.content || '')), sha: j.sha }; }
+  catch (e) { throw new SyncError('Datoteka s podacima u repozitoriju nije čitljiva.'); }
+}
+async function push(sha) {
+  const body = { message: SYNC_LABEL + ': izmjena', content: b64encode(JSON.stringify(syncGet(), null, 1) + '\n'), branch: sync.branch };
+  if (sha) body.sha = sha;
+  const r = await gh('PUT', filePath(), body);
+  if (r.status === 409 || r.status === 422) return null;
+  checkAuth(r);
+  if (!r.ok) throw new SyncError('Spremanje nije uspjelo (greška ' + r.status + ').');
+  const j = await r.json(); return j.content && j.content.sha;
+}
+function scheduleSync(ms) { if (!connected()) return; clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, ms); }
+async function syncNow(initial) {
+  if (!connected()) return { ok: false, message: '' };
+  if (syncing) { again = true; return { ok: true }; }
+  syncing = true; setStatus('busy');
+  let result = { ok: true };
+  try {
+    let done = false;
+    for (let i = 0; i < 4 && !done; i++) {
+      const remote = await pull();
+      if (remote.data && (remote.data.updatedAt || 0) >= (syncGet().updatedAt || 0) && JSON.stringify(remote.data) !== JSON.stringify(syncGet())) { syncSet(remote.data); render(); }
+      if (remote.data && JSON.stringify(remote.data) === JSON.stringify(syncGet())) { remoteSha = remote.sha; done = true; break; }
+      const sha = await push(remote.sha);
+      if (sha) { remoteSha = sha; done = true; }
+    }
+    if (!done) throw new SyncError('Sinkronizacija nije uspjela, pokušaj ponovno.');
+    sync.lastSync = Date.now(); saveSync(); setStatus('ok');
+  } catch (e) {
+    const offline = !(e instanceof SyncError);
+    result = { ok: false, message: offline ? 'Nema veze s GitHubom.' : e.message };
+    setStatus(offline ? 'offline' : 'error', result.message);
+  } finally { syncing = false; if (again) { again = false; scheduleSync(300); } }
+  return result;
+}
+function setStatus(kind, message) {
+  const btn = document.getElementById('statusBtn'); if (!btn) return;
+  btn.dataset.state = kind;
+  const text = { local: 'Prijava', busy: 'Sinkroniziram…', ok: sync.user || 'Prijavljen', error: 'Greška', offline: 'Nema veze' }[kind];
+  document.getElementById('statusText').textContent = text;
+  btn.title = message || (kind === 'local' ? 'Prijavi se istim računom kao u Aparatima' : 'Račun i podaci');
+  const dlg = document.getElementById('acctDlg'); if (dlg && dlg.open) drawAccount(message);
+}
+addEventListener('online', () => scheduleSync(500));
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && connected() && Date.now() - sync.lastSync > 20000) scheduleSync(0); });
+
+/* prijava: isti račun kao Aparati (korisničko ime + lozinka otključaju token iz racun.json) */
+const toB64 = (buf) => { let bin = ''; for (const b of new Uint8Array(buf)) bin += String.fromCharCode(b); return btoa(bin); };
+const fromB64 = (str) => Uint8Array.from(atob(str), (ch) => ch.charCodeAt(0));
+async function passKey(password, salt, rounds) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: rounds, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function unlockToken(rec, password, user) {
+  const key = await passKey(password, fromB64(rec.salt), Number(rec.rounds) || 600000);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(rec.iv), additionalData: new TextEncoder().encode(user) }, key, fromB64(rec.ct));
+  return new TextDecoder().decode(plain);
+}
+async function readAccounts(repo, branch) {
+  const r = await fetch(API + '/repos/' + repo + '/contents/' + ACC_PATH + '?ref=' + encodeURIComponent(branch), { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' });
+  if (r.status === 404) return { users: {}, missing: true };
+  if (r.status === 403 || r.status === 429) throw new SyncError('GitHub trenutno ne dopušta čitanje (previše pokušaja). Pričekaj par minuta.');
+  if (!r.ok) throw new SyncError('Čitanje računa nije uspjelo (greška ' + r.status + ').');
+  const j = await r.json(); let users = {};
+  try { const d = JSON.parse(b64decode(j.content || '')); if (d && d.users) users = d.users; } catch (e) {}
+  return { users, missing: false };
+}
+function drawAccount(message) {
+  const on = connected();
+  document.getElementById('loginView').hidden = on;
+  document.getElementById('acctView').hidden = !on;
+  document.getElementById('acctTitle').textContent = on ? 'Račun' : 'Prijava';
+  if (on) {
+    document.getElementById('acctWho').textContent = 'Prijavljen si kao ' + (sync.user || '?') + '. Podaci su isti na svakom uređaju, zajedno s Aparatima.';
+    document.getElementById('acctSync').textContent = sync.lastSync ? 'Zadnja sinkronizacija u ' + new Date(sync.lastSync).toLocaleTimeString('hr-HR', { hour: '2-digit', minute: '2-digit' }) + '.' : '';
+    document.getElementById('acctErr').textContent = message || '';
+  }
+}
+function openAccount() { drawAccount(); document.getElementById('lErr').textContent = ''; document.getElementById('lUser').value = sync.user || ''; document.getElementById('lPass').value = ''; document.getElementById('acctDlg').showModal(); }
+async function login() {
+  const err = document.getElementById('lErr'); err.textContent = '';
+  const user = document.getElementById('lUser').value.trim().toLowerCase(), password = document.getElementById('lPass').value;
+  if (!user) { err.textContent = 'Upiši korisničko ime.'; return; }
+  if (!password) { err.textContent = 'Upiši lozinku.'; return; }
+  if (!(crypto && crypto.subtle)) { err.textContent = 'Prijava radi samo na https adresi.'; return; }
+  const repo = sync.repo || ACC_REPO_DEFAULT, branch = sync.branch || 'data';
+  const btn = document.getElementById('loginBtn'); btn.disabled = true; btn.textContent = 'Prijavljujem…';
+  try {
+    const acc = await readAccounts(repo, branch);
+    const rec = acc.users[user];
+    if (!rec) { err.textContent = acc.missing ? 'Još nema računa. Napravi ga u Aparatima.' : 'Račun „' + user + '” ne postoji.'; return; }
+    let token; try { token = await unlockToken(rec, password, user); } catch (e) { err.textContent = 'Kriva lozinka.'; return; }
+    Object.assign(sync, { repo, branch, path: sync.path || 'data.json', token, user, ready: false, lastSync: 0 }); saveSync();
+    const res = await syncNow(true);
+    if (!res.ok) { sync.token = ''; saveSync(); setStatus('local'); err.textContent = res.message; return; }
+    drawAccount(); toast('Prijavljen si kao ' + user);
+  } catch (e) { err.textContent = e instanceof SyncError ? e.message : 'Nema veze s GitHubom.'; }
+  finally { btn.disabled = false; btn.textContent = 'Prijavi se'; }
+}
+function logout() { sync.token = ''; sync.user = ''; sync.ready = false; saveSync(); setStatus('local'); drawAccount(); toast('Odjavljen. Podaci ostaju u ovom pregledniku.'); }
+document.getElementById('statusBtn').addEventListener('click', openAccount);
+document.getElementById('loginBtn').addEventListener('click', login);
+document.getElementById('logoutBtn').addEventListener('click', logout);
+document.getElementById('acctClose').addEventListener('click', () => document.getElementById('acctDlg').close());
+document.getElementById('acctDlg').addEventListener('click', (e) => { if (e.target.id === 'acctDlg') e.target.close(); });
+document.getElementById('lPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+setStatus(connected() ? 'ok' : 'local');
+if (connected()) syncNow(true);
+
+</script>
+
+</body>
+</html>
