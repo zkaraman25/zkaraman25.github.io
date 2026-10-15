@@ -117,8 +117,6 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
       <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
-      <button class="icon" id="btnIO" title="Sigurnosna kopija"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></button>
-      <button class="primary" id="btnAdd"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Dodaj aplikaciju</button>
     </div>
   </header>
 
@@ -233,7 +231,7 @@ document.getElementById("grid").addEventListener("click",e=>{
   const a=e.target.closest("a.app");if(a&&a.dataset.noUrl){e.preventDefault();openEditor(+a.dataset.id);toast("Dodaj link za ovu aplikaciju")}
 });
 document.getElementById("grid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="addTile")openEditor(null)});
-document.getElementById("btnAdd").addEventListener("click",()=>openEditor(null));
+
 document.getElementById("edCancel").addEventListener("click",closeEditor);
 document.getElementById("picker").addEventListener("click",e=>{const b=e.target.closest("[data-ic]");if(!b)return;pickIcon=b.dataset.ic;document.querySelectorAll("#picker button").forEach(x=>x.classList.toggle("on",x===b))});
 document.getElementById("colors").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;pickColor=b.dataset.c;document.querySelectorAll("#colors button").forEach(x=>x.classList.toggle("on",x===b))});
@@ -245,7 +243,7 @@ document.getElementById("edSave").addEventListener("click",()=>{
   closeEditor();render();toast(editId?"Spremljeno":"Aplikacija dodana")});
 document.getElementById("editor").addEventListener("keydown",e=>{if(e.key==="Escape")closeEditor();if(e.key==="Enter"&&e.target.tagName==="INPUT")document.getElementById("edSave").click()});
 
-document.getElementById("btnIO").addEventListener("click",()=>{const io=document.getElementById("io");io.classList.toggle("open");document.getElementById("ioText").value=JSON.stringify(S,null,1)});
+
 document.getElementById("ioCopy").addEventListener("click",()=>{const t=document.getElementById("ioText");t.value=JSON.stringify(S,null,1);navigator.clipboard?.writeText(t.value).then(()=>toast("Kopirano")).catch(()=>{t.select();toast("Označeno, kopiraj ručno")})});
 document.getElementById("ioLoad").addEventListener("click",()=>{try{const o=JSON.parse(document.getElementById("ioText").value);if(!Array.isArray(o))throw 0;S=o;render();toast("Učitano")}catch(e){toast("Neispravan tekst")}});
 
