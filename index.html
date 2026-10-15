@@ -238,7 +238,7 @@ document.getElementById("colors").addEventListener("click",e=>{const b=e.target.
 document.getElementById("edSave").addEventListener("click",()=>{
   const name=document.getElementById("fName").value.trim();let url=document.getElementById("fUrl").value.trim();const desc=document.getElementById("fDesc").value.trim();
   if(!name){toast("Upiši naziv");document.getElementById("fName").focus();return}
-  if(url&&!/^https?:\/\//i.test(url))url="https://"+url;
+  if(url&&!/^(https?:\/\/|\/|\.\/|#)/i.test(url))url="https://"+url;
   if(editId){const a=S.find(x=>x.id===editId);Object.assign(a,{name,url,desc,icon:pickIcon,color:pickColor})}else S.push({id:Date.now(),name,url,desc,icon:pickIcon,color:pickColor});
   closeEditor();render();toast(editId?"Spremljeno":"Aplikacija dodana")});
 document.getElementById("editor").addEventListener("keydown",e=>{if(e.key==="Escape")closeEditor();if(e.key==="Enter"&&e.target.tagName==="INPUT")document.getElementById("edSave").click()});
