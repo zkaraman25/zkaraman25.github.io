@@ -3,26 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#2e8b5a">
+<meta name="theme-color" content="#1f4e79">
 <title>Hub</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 /* Launcher: header, grid of app tiles, inline editor. Same green system as Kućni budžet. */
 :root{
-  --bg:#f3f7f4; --card:#ffffff; --fg:#111a15; --muted:#687569; --line:#e2eae5; --hover:#eef5f0;
-  --a:#2e8b5a; --a-strong:#23714a; --a-soft:#dff0e6; --a-pale:#c3e3d1; --a-faint:#edf6f0; --on-a:#ffffff; --warn:#b4532a;
+  --bg:#f3f5f8; --card:#ffffff; --fg:#111a24; --muted:#68717d; --line:#e2e7ee; --hover:#eef2f7;
+  --a:#1f4e79; --a-strong:#173c5e; --a-soft:#e1ebf4; --a-pale:#bfd3e6; --a-faint:#eef3f8; --on-a:#ffffff; --warn:#b4532a;
   --c1:#2e8b5a; --c2:#3b7dd8; --c3:#d9862b; --c4:#8a6fd1; --c5:#d1486f; --c6:#1fa3a3; --c7:#b5a020; --c8:#6b7a8f;
   --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
 }
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
-  --bg:#0e1411; --card:#161e19; --fg:#e8efea; --muted:#95a39a; --line:#243029; --hover:#1c2620;
-  --a:#4cc287; --a-strong:#6fd39f; --a-soft:#1b3427; --a-pale:#285a40; --a-faint:#17261e; --on-a:#0b1a12; --warn:#ec9a6e;
+  --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
+  --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
   --c1:#4cc287; --c2:#6ea4f0; --c3:#f0a44f; --c4:#aa96ee; --c5:#ec7596; --c6:#4fc7c7; --c7:#d6c23f; --c8:#93a3b8;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
 :root[data-theme="dark"]{
-  --bg:#0e1411; --card:#161e19; --fg:#e8efea; --muted:#95a39a; --line:#243029; --hover:#1c2620;
-  --a:#4cc287; --a-strong:#6fd39f; --a-soft:#1b3427; --a-pale:#285a40; --a-faint:#17261e; --on-a:#0b1a12; --warn:#ec9a6e;
+  --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
+  --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
   --c1:#4cc287; --c2:#6ea4f0; --c3:#f0a44f; --c4:#aa96ee; --c5:#ec7596; --c6:#4fc7c7; --c7:#d6c23f; --c8:#93a3b8;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
 *{box-sizing:border-box}
@@ -185,7 +185,7 @@ const ICONS={
 const COLORS=["c1","c2","c3","c4","c5","c6","c7","c8"];
 const DEFAULT=[
   {id:1,name:"Kućni budžet",desc:"Raspodjela plaće po kategorijama, slajderi, lista troškova",url:"/budzet/",icon:"wallet",color:"c1"},
-  {id:2,name:"Aparati za stan",desc:"Popis aparata i namještaja za stan, cijene, kupljeno, ušteda",url:"/aparati/",icon:"washer",color:"c2"},
+  {id:2,name:"Aparati za stan",desc:"Popis aparata i namještaja za stan, cijene, kupljeno, ušteda",url:"/aparati/",icon:"washer",color:"c5"},
 ];
 const KEY="hub-apps-v1";
 let S=load(),editId=null,pickIcon="wallet",pickColor="c1";
