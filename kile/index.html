@@ -180,6 +180,8 @@ body{margin:0;background:var(--card);color:var(--fg);font-family:var(--font);fon
 .field label{font-size:13px;color:var(--muted)}
 .field input{font:inherit;font-size:18px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--tile);color:var(--fg);width:100%}
 .field input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.field input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;min-height:48px;text-align:left;-webkit-text-align:left}
+.field input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
 .wbig{display:flex;align-items:baseline;gap:8px;justify-content:center;margin:6px 0 10px}
 .wbig input{font-size:56px;font-weight:400;width:200px;text-align:center;border:0;background:transparent;padding:0;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--fg)}
 .wbig input:focus{outline:0}
