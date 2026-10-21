@@ -377,6 +377,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <h3 id="sheetTitle">Upiši težinu</h3>
     <p id="sheetSub">Jutarnje vaganje</p>
     <div class="wbig"><input id="inW" type="number" step="0.1" inputmode="decimal" placeholder="0.0"><span>kg</span></div>
+    <label id="hapticLbl" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none"><input type="checkbox" switch id="hapticSw" tabindex="-1"></label>
     <div class="wheel" id="wheel" aria-label="Odaberi težinu">
       <div class="wheel-band"></div>
       <div class="wheel-col" id="wkg"></div>
@@ -618,7 +619,11 @@ const WH={min:30,max:250,row:40,lock:false,timer:null};
   });
 })();
 function colIdx(col){return Math.round(col.scrollTop/WH.row);}
-function markSel(col){const i=colIdx(col);const kids=col.children;for(let k=0;k<kids.length;k++)kids[k].classList.toggle('sel',k===i);}
+function haptic(){
+  try{if(navigator.vibrate)navigator.vibrate(4);}catch(e){}
+  try{$('hapticLbl').click();}catch(e){} /* iOS 18+ Safari: switch toggle daje haptički tick */
+}
+function markSel(col){const i=colIdx(col);if(col.dataset.i!==String(i)){if(col.dataset.i!==undefined&&!WH.lock)haptic();col.dataset.i=i;}const kids=col.children;for(let k=0;k<kids.length;k++)kids[k].classList.toggle('sel',k===i);}
 function wheelToInput(){
   const kg=WH.min+colIdx($('wkg')),dec=colIdx($('wdec'));
   $('inW').value=kg+'.'+dec;
@@ -634,7 +639,7 @@ function inputToWheel(smooth){
   clearTimeout(WH.timer);WH.timer=setTimeout(()=>{WH.lock=false;markSel($('wkg'));markSel($('wdec'));},smooth?450:60);
 }
 $('inW').addEventListener('input',()=>inputToWheel(false));
-document.querySelectorAll('.stepper button').forEach(b=>b.onclick=()=>{const v=parseFloat($('inW').value)||0;$('inW').value=f1(v+parseFloat(b.dataset.s));inputToWheel(true);});
+document.querySelectorAll('.stepper button').forEach(b=>b.onclick=()=>{const v=parseFloat($('inW').value)||0;$('inW').value=f1(v+parseFloat(b.dataset.s));haptic();inputToWheel(true);});
 $('save').onclick=()=>{
   const w=parseFloat(String($('inW').value).replace(',','.'));const d=$('inD').value;
   if(!d){$('err').textContent='Upiši datum.';return;}
