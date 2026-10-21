@@ -185,6 +185,13 @@ body{margin:0;background:var(--card);color:var(--fg);font-family:var(--font);fon
 .wbig input:focus{outline:0}
 .wbig input::-webkit-outer-spin-button,.wbig input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0} .wbig input{-moz-appearance:textfield;appearance:textfield}
 .wbig span{color:var(--muted);font-size:26px}
+.wheel{--row:40px;position:relative;display:flex;justify-content:center;align-items:stretch;height:calc(var(--row)*5);margin:0 auto 14px;width:220px;user-select:none;-webkit-mask-image:linear-gradient(transparent,#000 28%,#000 72%,transparent);mask-image:linear-gradient(transparent,#000 28%,#000 72%,transparent)}
+.wheel-band{position:absolute;left:0;right:0;top:calc(var(--row)*2);height:var(--row);background:var(--tile);border-radius:12px;pointer-events:none}
+.wheel-col{position:relative;height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:calc(var(--row)*2) 0;width:96px}
+.wheel-col::-webkit-scrollbar{display:none}
+.wheel-col div{height:var(--row);line-height:var(--row);text-align:center;scroll-snap-align:center;font-size:26px;font-variant-numeric:tabular-nums;color:var(--muted);transition:color .15s,transform .15s;cursor:pointer}
+.wheel-col div.sel{color:var(--fg);font-weight:500}
+.wheel-dot{align-self:center;font-size:26px;color:var(--fg);width:12px;text-align:center;position:relative;z-index:1}
 .stepper{display:flex;justify-content:center;gap:10px;margin-bottom:18px}
 .stepper button{width:46px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--tile);color:var(--fg);font:inherit;font-size:14px;cursor:pointer;transition:transform .15s}
 .stepper button:active{transform:scale(.9)}
@@ -370,7 +377,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <h3 id="sheetTitle">Upiši težinu</h3>
     <p id="sheetSub">Jutarnje vaganje</p>
     <div class="wbig"><input id="inW" type="number" step="0.1" inputmode="decimal" placeholder="0.0"><span>kg</span></div>
-    <div class="stepper"><button data-s="-1">−1</button><button data-s="-0.1">−0.1</button><button data-s="0.1">+0.1</button><button data-s="1">+1</button></div>
+    <div class="wheel" id="wheel" aria-label="Odaberi težinu">
+      <div class="wheel-band"></div>
+      <div class="wheel-col" id="wkg"></div>
+      <div class="wheel-dot">.</div>
+      <div class="wheel-col" id="wdec"></div>
+    </div>
+    <div class="stepper"><button data-s="-1">−1</button><button data-s="-0.5">−0.5</button><button data-s="0.5">+0.5</button><button data-s="1">+1</button></div>
     <div class="field"><label for="inD">Datum</label><input id="inD" type="date"></div>
     <div class="err" id="err"></div>
     <div class="actions"><button class="btn ghost" id="cancel">Odustani</button><button class="btn" id="save">Spremi</button></div>
@@ -565,7 +578,8 @@ function openSheet(date){
   $('inW').value=v!=null?f1(v):'';
   $('sheetTitle').textContent=date?'Uredi unos':'Upiši težinu';
   $('sheetSub').textContent=date?fmt(date):'Jutarnje vaganje · datum je danas, promijeni ako treba';
-  $('err').textContent='';$('sheet').hidden=false;setTimeout(()=>{$('inW').focus();$('inW').select();},80);
+  $('err').textContent='';$('sheet').hidden=false;
+  requestAnimationFrame(()=>inputToWheel(false));
 }
 function closeSheet(){$('sheet').hidden=true;}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);}
@@ -592,7 +606,35 @@ $('wdots').addEventListener('click',e=>{const b=e.target.closest('button');if(!b
   if(v==null)state.training[d]=1;else if(v===1)state.training[d]=0;else delete state.training[d];save();renderTrainHome();renderTrain();renderLog();});
 $('cancel').onclick=closeSheet;
 $('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))closeSheet();});
-document.querySelectorAll('.stepper button').forEach(b=>b.onclick=()=>{const v=parseFloat($('inW').value)||0;$('inW').value=f1(v+parseFloat(b.dataset.s));});
+/* kotačić (iOS-style picker) */
+const WH={min:30,max:250,row:40,lock:false,timer:null};
+(function buildWheel(){
+  const kg=$('wkg'),dec=$('wdec');let s='';
+  for(let i=WH.min;i<=WH.max;i++)s+=`<div data-v="${i}">${i}</div>`;kg.innerHTML=s;s='';
+  for(let i=0;i<10;i++)s+=`<div data-v="${i}">${i}</div>`;dec.innerHTML=s;
+  [kg,dec].forEach(col=>{
+    col.addEventListener('scroll',()=>{if(WH.lock)return;clearTimeout(WH.timer);markSel(col);WH.timer=setTimeout(wheelToInput,90);});
+    col.addEventListener('click',e=>{const d=e.target.closest('div[data-v]');if(d)col.scrollTo({top:d.offsetTop-WH.row*2,behavior:'smooth'});});
+  });
+})();
+function colIdx(col){return Math.round(col.scrollTop/WH.row);}
+function markSel(col){const i=colIdx(col);const kids=col.children;for(let k=0;k<kids.length;k++)kids[k].classList.toggle('sel',k===i);}
+function wheelToInput(){
+  const kg=WH.min+colIdx($('wkg')),dec=colIdx($('wdec'));
+  $('inW').value=kg+'.'+dec;
+}
+function inputToWheel(smooth){
+  let v=parseFloat(String($('inW').value).replace(',','.'));if(isNaN(v))v=80;
+  v=Math.min(WH.max+.9,Math.max(WH.min,v));
+  const kg=Math.floor(v),dec=Math.round((v-kg)*10)%10;
+  WH.lock=true;
+  $('wkg').scrollTo({top:(kg-WH.min)*WH.row,behavior:smooth?'smooth':'auto'});
+  $('wdec').scrollTo({top:dec*WH.row,behavior:smooth?'smooth':'auto'});
+  markSel($('wkg'));markSel($('wdec'));
+  clearTimeout(WH.timer);WH.timer=setTimeout(()=>{WH.lock=false;markSel($('wkg'));markSel($('wdec'));},smooth?450:60);
+}
+$('inW').addEventListener('input',()=>inputToWheel(false));
+document.querySelectorAll('.stepper button').forEach(b=>b.onclick=()=>{const v=parseFloat($('inW').value)||0;$('inW').value=f1(v+parseFloat(b.dataset.s));inputToWheel(true);});
 $('save').onclick=()=>{
   const w=parseFloat(String($('inW').value).replace(',','.'));const d=$('inD').value;
   if(!d){$('err').textContent='Upiši datum.';return;}
