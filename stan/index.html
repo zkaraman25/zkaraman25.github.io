@@ -63,7 +63,7 @@ svg.plan{width:100%;height:auto;display:block;max-width:100%}
 .fu rect,.fu polygon{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5} .fu.sofa rect{fill:var(--sofa);stroke:#7f8f80} .fu.dark rect{fill:#2a2c30;stroke:#2a2c30} .fu.tile rect{fill:#dbe9f1;stroke:#7fa5bd}
 .fu text{fill:var(--wood-d);font-family:var(--font);font-size:11px;font-weight:600;pointer-events:none}
 .fu.sofa text{fill:#4f6050}
-.dm{pointer-events:none} .dm line{stroke:var(--dim);stroke-width:1.6} .dm text{fill:var(--dim);font-family:var(--font);font-size:15px;font-weight:600}
+.dm{pointer-events:none} .dm line{stroke:var(--dim);stroke-width:1.4} .dm text{fill:var(--dim);font-family:var(--font);font-size:13px;font-weight:600}
 .door{stroke:var(--fg);fill:none;stroke-width:2} .doorarc{stroke:var(--muted);fill:none;stroke-width:1.5;stroke-dasharray:6 5}
 /* lights svg */
 .lt{cursor:pointer} .lt .core{transition:all .25s} .lt .glow{opacity:0;transition:opacity .35s} .lt.on .glow{opacity:1}
@@ -133,11 +133,11 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   <section id="tab-tlocrt" class="two">
     <div class="card">
       <div class="toggles">
-        <button data-layer="fu" aria-pressed="true">Namještaj</button>
+        <button data-layer="fu" aria-pressed="false">Namještaj</button>
         <button data-layer="dm" aria-pressed="true">Kote</button>
         <button data-layer="lt" aria-pressed="false">Svjetla</button>
       </div>
-      <svg class="plan" id="planSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Tlocrt stana"></svg>
+      <svg class="plan" id="planSvg" viewBox="-110 -85 1200 935" role="img" aria-label="Tlocrt stana"></svg>
       <div class="sub" style="margin-top:8px">Klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
     </div>
     <div class="card info" id="info"></div>
@@ -220,7 +220,45 @@ const OPEN=[[470,215,480,335],[510,466,610,496],[625,205,705,216],[722,205,802,2
 const GLASS=[[139,-12,305,-12],[-12,160,-12,456],[54,622,310,622],[498,-162,638,-162],[760,-162,900,-162]];
 const DOORS=[[510,466,100,'s'],[705,205,80,'sw'],[722,205,80,'se'],[820,225,80,'e'],[97,-25,85,'n']];
 const FURN = [{"r":"k","n":"1 Visoki ormar 40","x0":0,"y0":0,"x1":60,"y1":40,"t":"od poda do stropa"},{"r":"k","n":"2 Hladnjak","x0":0,"y0":40,"x1":60,"y1":100,"t":"niša 60, Bosch KIN96VFD0"},{"r":"k","n":"3 Pećnica + mikrovalna","x0":0,"y0":100,"x1":60,"y1":160,"t":"kolona 60"},{"r":"k","n":"4 Perilica suđa","x0":145,"y0":0,"x1":205,"y1":60,"t":"60"},{"r":"k","n":"5 Sudoper","x0":205,"y0":0,"x1":265,"y1":60,"t":"pod prozorom"},{"r":"k","n":"6 Kutni element","x0":265,"y0":0,"x1":310,"y1":60,"t":"vrata 45"},{"r":"k","n":"kut","x0":310,"y0":0,"x1":370,"y1":60,"t":""},{"r":"k","n":"7 Indukcija","x0":310,"y0":60,"x1":370,"y1":130,"t":"element 70, ploča 60 ili 80 (otvoreno)"},{"r":"k","n":"8 Viseći elementi","x0":335,"y0":0,"x1":370,"y1":215,"t":"65 + 60 napa + 45 + 45, do stropa"},{"r":"k","n":"9 Šank 225 × 85","x0":145,"y0":130,"x1":370,"y1":215,"t":"elementi 60 + prepust 25, 3 stolice"},{"r":"b","n":"A Garnitura 275 × 220","x0":367.5,"y0":335,"x1":467.5,"y1":610,"t":"duži krak"},{"r":"b","n":"A kraći krak","x0":247.5,"y0":510,"x1":367.5,"y1":610,"t":""},{"r":"b","n":"C Stolić 100 × 60","x0":267,"y0":370,"x1":327,"y1":470,"t":""},{"r":"b","n":"D TV komoda 260 × 45","x0":2.5,"y0":345,"x1":45,"y1":605,"t":"viseća, visina 30"},{"r":"b","n":"E TV 55\"","x0":0,"y0":478,"x1":6,"y1":601,"t":"na zidu"},{"r":"h","n":"F Ormarić 130 × 40","x0":610,"y0":336,"x1":650,"y1":466,"t":"u niši: vrata 50, police 25, sjedenje 55"},{"r":"h","n":"G Ploča s kukicama","x0":485,"y0":336,"x1":488,"y1":466,"t":"cijelom visinom"},{"r":"h","n":"I Ogledalo 100 × 224","x0":510,"y0":216,"x1":610,"y1":221,"t":"nasuprot vrata"},{"r":"w","n":"J Perilica + sušilica 64 × 72","x0":928,"y0":392,"x1":1000,"y1":456,"t":"stup, tri vrata"},{"r":"w","n":"K WC školjka","x0":928,"y0":331,"x1":1000,"y1":367,"t":"viseća, predzid 20"},{"r":"w","n":"L Komodica 90 × 50","x0":950,"y0":216,"x1":1000,"y1":306,"t":"ogledalo do stropa"},{"r":"w","n":"M Tuš 130 × 110","x0":660,"y0":346,"x1":790,"y1":456,"t":"otvoren prema kupaoni"},{"r":"s","n":"N Ormar 255 × 60","x0":380,"y0":-50,"x1":440,"y1":205,"t":"uz zid kuhinje"},{"r":"s","n":"N Ormar 185 × 60","x0":440,"y0":145,"x1":625,"y1":205,"t":"uz zid hodnika"},{"r":"s","n":"O Stol 100 × 60","x0":380,"y0":-150,"x1":440,"y1":-50,"t":"ploča 78"},{"r":"s","n":"Q Krevet 180 × 200","x0":500,"y0":-100,"x1":700,"y1":80,"t":"nizak, 10 od panela"},{"r":"s","n":"R Noćni ormarić 50 × 40","x0":667.5,"y0":-150,"x1":707.5,"y1":-100,"t":"vrh 45"},{"r":"s","n":"P Panel uzglavlja","x0":707.5,"y0":-150,"x1":710,"y1":205,"t":"iveral, 100 visok"},{"r":"d","n":"T Ormar 198 × 60","x0":802,"y0":145,"x1":1000,"y1":205,"t":"uz zid hodnika"},{"r":"d","n":"U Stol u L","x0":940,"y0":-150,"x1":1000,"y1":-50,"t":"krak 100"},{"r":"d","n":"U Stol u L","x0":815,"y0":-150,"x1":940,"y1":-90,"t":"krak 125, ploča 78"},{"r":"d","n":"W Krevet 90 × 200","x0":722.5,"y0":-150,"x1":812.5,"y1":50,"t":"uz zid prema spavaćoj"},{"r":"d","n":"V Panel uzglavlja","x0":720,"y0":-150,"x1":722.5,"y1":125,"t":""},{"r":"l","n":"S Ormar 145 × 45","x0":315,"y0":-165,"x1":360,"y1":-20,"t":"do stropa, dvoja vrata"}];
-const DIMS=[['h',0,470,635,'470'],['v',215,610,-50,'395'],['h',0,370,-48,'370'],['v',0,215,392,'215'],['h',485,610,480,'125'],['v',336,466,598,'130'],['h',480,805,232,'325'],['h',820,1000,470,'180'],['v',216,456,1012,'240'],['h',660,790,470,'130'],['h',380,710,-195,'330'],['v',-150,205,370,'355'],['h',720,1000,-195,'280'],['v',-150,205,1012,'355'],['h',0,360,-178,'360'],['v',-165,-25,-50,'140'],['h',-25,1030,-215,'1055'],['v',-175,640,-70,'815'],['h',55,140,16,'85'],['h',139,305,16,'165'],['h',54,310,595,'256'],['h',510,610,452,'100']];
+const DIMS=[
+ // vanjske
+ ['h',-25,1030,-215,'1055'],['v',-175,640,-70,'815'],['v',-175,496,1050,'671'],['h',-25,480,660,'505'],['h',480,1030,515,'550'],
+ // boravak i kuhinja
+ ['h',0,470,635,'470'],['v',215,610,-50,'395'],['h',0,370,-48,'370'],['v',0,215,392,'215'],['v',215,335,452,'120'],['v',335,610,452,'275'],['h',370,470,232,'100'],
+ ['h',0,54,595,'54'],['h',54,310,595,'256'],['h',310,470,595,'160'],['v',456,610,20,'154'],['v',160,456,20,'296'],['v',0,160,20,'160'],
+ ['h',0,55,16,'55'],['h',55,140,16,'85'],['h',139,305,16,'165'],['h',305,370,16,'65'],
+ // hodnik
+ ['h',485,610,480,'125'],['v',336,466,598,'130'],['h',480,805,232,'325'],['v',216,336,560,'120'],['h',510,610,452,'100'],['h',485,510,452,'25'],['v',346,466,640,'120'],['h',610,650,470,'40'],
+ ['h',480,625,205,'145'],['h',625,705,190,'80'],['h',705,722,205,'17'],['h',722,802,190,'80'],['h',802,805,205,'3'],
+ // kupaona
+ ['h',820,1000,470,'180'],['v',216,456,1012,'240'],['h',660,790,470,'130'],['v',346,456,775,'110'],['v',225,305,835,'80'],['h',790,820,335,'30'],
+ // sobe
+ ['h',380,710,-195,'330'],['v',-150,205,370,'355'],['h',720,1000,-195,'280'],['v',-150,205,1012,'355'],
+ ['h',380,498,-162,'118'],['h',498,638,-162,'140'],['h',638,710,-162,'72'],['h',720,760,-162,'40'],['h',760,900,-162,'140'],['h',900,1000,-162,'100'],
+ ['h',380,625,190,'245'],['v',-150,-50,395,'100'],['v',-50,145,395,'195'],['v',125,205,695,'80'],['v',125,205,735,'80'],['h',802,1000,190,'198'],
+ // lođa
+ ['h',0,360,-178,'360'],['v',-165,-25,-50,'140'],['v',-165,-25,345,'140'],
+];
+// što stane: usable wall lengths per room, from the plan, with what limits them
+const FITS={
+ b:[['Zid iza garniture (prema hodniku)','275','od prolaza u hodnik (y 335) do kuta uz vrt; cijeli duži krak garniture'],
+    ['Zid s kliznim vratima u vrt','470, od toga puni zid 160','staklo je x 54 do 310; kraći krak garniture od 160 ne zaklanja staklo, 220 zaklanja pola prvog krila'],
+    ['TV zid (puni dio)','154','od kraja prozora (y 456) do kuta; komoda 260 ide i ispod prozora, prozor ima parapet 90'],
+    ['Prolaz od TV komode do garniture','322','stolić 100 × 60 stane s 40 do garniture'],
+    ['Kuhinja, zid s indukcijom','215','od lođe do linije šanka; viseći 65 + 60 + 45 + 45'],
+    ['Kuhinja, zid uz prozore','160','visoki elementi 40 + 60 + 60 do ruba prozora'],
+    ['Kuhinja, zid prema lođi','370','vrata lođe 85 na x 55, prozor 165 s parapetom 100, puni zid 65 na kraju'],
+    ['Šank','225 × 85','od zida s indukcijom do linije vrata lođe; prolaz uz sudoper 70, ulaz 85']],
+ h:[['Niša za ormarić (zid prema kupaoni)','130 × 40','ormarić do dubine 40 bez ulaska u predsoblje; vrh otvorenih ulaznih vrata prolazi 0 do 3 od fronte'],
+    ['Zid s kukicama (prema boravku)','130','otvorena ulazna vrata stoje 25 ispred njega'],
+    ['Zid nasuprot ulaznih vrata','325, od toga 100 nasuprot vrata','ogledalo 100 točno nasuprot vrata (x 510 do 610); do dovratnika sobe 15'],
+    ['Širina hodnika','120','ormari dublji od 20 ovdje ne idu']],
+ w:[['Zid prema susjednom stanu','240','stup 64 + školjka 86 + komodica 90'],['Zid s tušem','130 × 110','kabina na mjestu starog WC-a, staklo 200 visoko'],['Zid uz hodnik, dubina','180','od vrata do stupa; perilica + sušilica 72 duboko']],
+ s:[['Zid uz kuhinju','355, od toga 255 za ormar','stol 100 uz prozor, ormar do kuta'],['Zid uz hodnik','245 do vrata, od toga 185 za ormar','60 zauzima zapadni ormar u kutu; vrata 80 na kraju'],
+    ['Zid uzglavlja (prema dječjoj)','355, od toga 275 za krevet i ormariće','putanja vrata 80 uz hodnik ostaje prazna; krevet 180 + noćni 50 + 45 slobodno'],['Širina sobe','330','ormar 60 + prolaz 60 + krevet 200 + 10 od panela'],['Prozor','140','parapet 90; stol ispod prozora do visine 78']],
+ d:[['Zid uz hodnik','198 za ormar','od putanje vrata (x 802) do kuta'],['Zid prema spavaćoj','355, od toga 275 za krevet','krevet 200 + 75 do putanje vrata'],['Zid prema susjednom stanu','355','stol u L uz prozor; iznad stola prazan zid'],['Širina sobe','280','krevet 90 + prolaz 185 ili stol 60'],['Prozor','140','parapet 90']],
+ l:[['Kut uz spavaću sobu, dubina','45','od zida kuhinje do ograde 145 (provjeriti popločani dio, oko 115)'],['Širina lođe','360','vrata lođe 85 i prozor kuhinje 165 na zidu prema kuhinji']],
+};
 const LIGHTS=[
   {id:'U1',room:'Dnevni boravak',type:'led',g:[0,456,0,610],n:'LED iznad TV-a'},{id:'U3',room:'Dnevni boravak',type:'led',g:[470,335,470,610],n:'LED iza garniture'},
   {id:'U4',room:'Hodnik',type:'led',g:[370,216,805,216],n:'LED uz ogledalo i obloge'},{id:'U5',room:'Hodnik',type:'led',g:[485,336,485,466],n:'LED uz ploču s kukicama'},
@@ -321,6 +359,8 @@ function selectRoom(k){
   const r=ROOMS.find(x=>x.k===k); const items=FURN.map((f,i)=>({f,i})).filter(o=>o.f.r===k);
   info.innerHTML=`<h3>${esc(r.name)}</h3><div class="sub">${esc(r.area)}</div><div class="kv"><b>Mjere</b><span>${esc(r.dims)}</span></div>
     <div class="list">${items.map(o=>`<div class="item" data-i="${o.i}"><span class="b">${esc(o.f.n.split(' ')[0])}</span><span>${esc(o.f.n.slice(o.f.n.indexOf(' ')+1))}<small>${o.f.x1-o.f.x0} × ${o.f.y1-o.f.y0} u tlocrtu${o.f.t?', '+esc(o.f.t):''}</small></span></div>`).join('')}</div>
+    <h3 style="margin-top:14px;font-size:14px">Što stane</h3>
+    <div class="list">${(FITS[k]||[]).map(([w,l,t])=>`<div class="item" style="cursor:default;grid-template-columns:1fr"><span>${esc(w)}: <b>${esc(l)}</b><small>${esc(t)}</small></span></div>`).join('')}</div>
     <div class="list" style="margin-top:12px">${r.notes.map(n=>`<div class="sub">• ${esc(n)}</div>`).join('')}</div>`;
   info.querySelectorAll('.item').forEach(it=>it.addEventListener('click',()=>selectFurn(+it.dataset.i)));
   try{localStorage.setItem('stan.room',k)}catch(e){}
