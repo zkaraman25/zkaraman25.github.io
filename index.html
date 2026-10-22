@@ -189,11 +189,12 @@ const DEFAULT=[
 ];
 const KEY="hub-apps-v1";
 let S=load(),editId=null,pickIcon="wallet",pickColor="c1";
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(Array.isArray(o))return o}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
+function mergeDefaults(a){const urls=new Set(a.map(x=>String(x.url||"").replace(/\/+$/,"")));let maxId=a.reduce((m,x)=>Math.max(m,Number(x.id)||0),0);for(const d of DEFAULT){if(!urls.has(d.url.replace(/\/+$/,""))){a.push(Object.assign({},d,{id:++maxId}))}}return a}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(Array.isArray(o))return mergeDefaults(o)}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
 const HUB_META={updatedAt:0};let _last=null;
 function markSaved(){_last=JSON.stringify(S)}
 function save(){const snap=JSON.stringify(S);if(_last!==null&&snap!==_last){HUB_META.updatedAt=Date.now();if(typeof scheduleSync==="function")scheduleSync(1500)}_last=snap;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-const syncGet=()=>({apps:S,updatedAt:HUB_META.updatedAt}), syncSet=o=>{S=Array.isArray(o.apps)?o.apps:S;HUB_META.updatedAt=o.updatedAt||0;markSaved();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const syncGet=()=>({apps:S,updatedAt:HUB_META.updatedAt}), syncSet=o=>{S=Array.isArray(o.apps)?mergeDefaults(o.apps):S;HUB_META.updatedAt=o.updatedAt||0;markSaved();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
 function host(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return "bez linka"}}
