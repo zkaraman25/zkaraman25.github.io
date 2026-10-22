@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f4e79">
+<title>Stan Škalinova</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Isti sustav boja kao Hub. Četiri kartice: tlocrt, svjetla, pogledi, dokumenti. */
+:root{
+  --bg:#f3f5f8; --card:#ffffff; --fg:#111a24; --muted:#68717d; --line:#e2e7ee; --hover:#eef2f7;
+  --a:#1f4e79; --a-strong:#173c5e; --a-soft:#e1ebf4; --a-pale:#bfd3e6; --a-faint:#eef3f8; --on-a:#ffffff; --warn:#b4532a;
+  --wall:#2c333d; --floor:#fbfaf6; --tile:#eef0f2; --wood:#d9c3a3; --wood-d:#9c7f58; --sofa:#cdd8cb; --glass:#8fbbdc; --dim:#c0392b;
+  --warm:#f0a51e; --track:#d6382f; --lamp:#f3b63f; --off:#c9cfd6;
+  --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
+  --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
+  --wall:#4a5363; --floor:#1b2129; --tile:#202834; --wood:#8a7050; --wood-d:#c4a67c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
+  --warm:#ffcf7a; --track:#ff6b6b; --lamp:#ffc457; --off:#3b4049;
+  --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
+  --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
+  --wall:#4a5363; --floor:#1b2129; --tile:#202834; --wood:#8a7050; --wood-d:#c4a67c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
+  --warm:#ffcf7a; --track:#ff6b6b; --lamp:#ffc457; --off:#3b4049;
+  --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 40px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--a);color:var(--on-a);display:grid;place-items:center;flex:none}
+h1{font-size:22px;margin:0;font-weight:700;letter-spacing:-.02em}
+h2{font-size:15px;margin:0 0 8px;font-weight:700}
+.sub{color:var(--muted);font-size:13px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 13px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+button:hover{border-color:var(--a-pale);background:var(--hover)} button:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+button.primary{background:var(--a);color:var(--on-a);border-color:var(--a)} button.primary:hover{background:var(--a-strong)}
+button.icon{padding:8px 10px} button.sm{padding:5px 9px;font-size:12px}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--a)}
+.chip[data-state="local"] .dot{background:var(--muted)} .chip[data-state="error"] .dot,.chip[data-state="offline"] .dot{background:var(--warn)}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px}
+nav.tabs button{border-radius:999px} nav.tabs button[aria-selected="true"]{background:var(--a-soft);border-color:var(--a-pale);color:var(--a-strong)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--sh);min-width:0}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+svg.plan{width:100%;height:auto;display:block;max-width:100%}
+.toggles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.toggles button[aria-pressed="true"]{background:var(--a-soft);border-color:var(--a-pale);color:var(--a-strong)}
+/* plan svg */
+.wl{fill:var(--wall)} .fl{fill:var(--floor)} .tl{fill:var(--tile)} .gl{stroke:var(--glass);stroke-width:5;fill:none}
+.lbl{fill:var(--muted);font-family:var(--font);font-size:22px;font-weight:600;pointer-events:none}
+.lbl.s{font-size:15px;font-weight:500}
+.rm{fill:transparent;cursor:pointer} .rm:hover{fill:var(--a-faint)} .rm.sel{fill:var(--a-soft);opacity:.7}
+.fu rect,.fu polygon{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5} .fu.sofa rect{fill:var(--sofa);stroke:#7f8f80} .fu.dark rect{fill:#2a2c30;stroke:#2a2c30} .fu.tile rect{fill:#dbe9f1;stroke:#7fa5bd}
+.fu text{fill:var(--wood-d);font-family:var(--font);font-size:11px;font-weight:600;pointer-events:none}
+.fu.sofa text{fill:#4f6050}
+.dm{pointer-events:none} .dm line{stroke:var(--dim);stroke-width:1.6} .dm text{fill:var(--dim);font-family:var(--font);font-size:15px;font-weight:600}
+.door{stroke:var(--fg);fill:none;stroke-width:2} .doorarc{stroke:var(--muted);fill:none;stroke-width:1.5;stroke-dasharray:6 5}
+/* lights svg */
+.lt{cursor:pointer} .lt .core{transition:all .25s} .lt .glow{opacity:0;transition:opacity .35s} .lt.on .glow{opacity:1}
+.lt.led .core{stroke:var(--off);stroke-width:7;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm)} .lt.led .glow{stroke:var(--warm);stroke-width:36;stroke-linecap:round;filter:url(#blur)}
+.lt.track .core{stroke:var(--off);stroke-width:9;stroke-linecap:round} .lt.track.on .core{stroke:var(--track)} .lt.track .glow{stroke:var(--track);stroke-width:30;stroke-linecap:round;filter:url(#blur)}
+.lt.lamp .core{fill:var(--off)} .lt.lamp.on .core{fill:var(--lamp)} .lt.lamp .glow{fill:var(--lamp);filter:url(#blur2)}
+.lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none} .lt.on .tag{fill:var(--fg)}
+@media (prefers-reduced-motion:reduce){.lt .core,.lt .glow{transition:none}}
+/* info panel */
+.info h3{margin:0 0 4px;font-size:16px} .info .sub{margin-bottom:10px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px} .kv b{font-weight:600;color:var(--muted)}
+.list{display:grid;gap:6px;margin-top:10px}
+.item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:7px 9px;border:1px solid var(--line);border-radius:9px;font-size:13px;cursor:pointer}
+.item:hover,.item.sel{background:var(--hover);border-color:var(--a-pale)}
+.item .b{width:26px;height:26px;border-radius:50%;background:var(--a);color:var(--on-a);display:grid;place-items:center;font-weight:700;font-size:12px}
+.item small{display:block;color:var(--muted)}
+.room{border-top:1px solid var(--line);padding-top:8px;margin-top:8px} .room:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.roomhead{display:flex;align-items:center;gap:8px;margin-bottom:6px} .roomhead b{font-weight:600;font-size:13px} .roomhead button{margin-left:auto}
+.light{display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:8px;padding:5px 4px;border-radius:6px} .light:hover{background:var(--hover)}
+.light .sw{width:18px;height:18px;border-radius:50%;background:var(--off);cursor:pointer} .light.on .sw{background:var(--warm);box-shadow:0 0 8px var(--warm)} .light.on.t .sw{background:var(--track);box-shadow:0 0 8px var(--track)}
+.light .n{font-size:13px;min-width:0} .light .n small{display:block;color:var(--muted);font-size:11px} .light input[type=range]{width:80px;accent-color:var(--a)} .light.off input{opacity:.35}
+.scenes{display:flex;flex-wrap:wrap;gap:6px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-top:8px} .legend i{display:inline-block;width:14px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.log{font-family:ui-monospace,monospace;font-size:11px;line-height:1.5;color:var(--muted);max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.gal a{display:grid;gap:6px;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--card)} .gal a:hover{border-color:var(--a-pale)}
+.gal img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left;border-radius:8px;background:var(--tile)} .gal b{font-size:13px} .gal small{color:var(--muted);font-size:12px}
+dialog.view{border:none;border-radius:12px;padding:0;max-width:min(96vw,1400px);background:var(--card)} dialog.view::backdrop{background:rgba(0,0,0,.6)} dialog.view img{max-width:96vw;max-height:88vh;display:block} dialog.view .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;font-size:13px}
+/* docs */
+.docs{display:grid;gap:8px}
+.doc{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.doc .ic{width:38px;height:38px;border-radius:9px;background:var(--a-soft);color:var(--a-strong);display:grid;place-items:center;font-weight:700;font-size:11px}
+.doc .n{font-weight:600;font-size:14px;min-width:0;overflow-wrap:anywhere} .doc small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.doc .act{display:flex;gap:6px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:13px;margin-top:12px} .drop.over{border-color:var(--a);background:var(--a-faint)}
+.drop input{display:none}
+.err{color:var(--warn);font-size:13px;min-height:1.2em;margin-top:6px}
+dialog.acct{border:none;border-radius:14px;padding:20px;max-width:380px;width:92vw;background:var(--card);color:var(--fg)} dialog.acct::backdrop{background:rgba(0,0,0,.35)}
+dialog.acct label{display:grid;gap:5px;font-size:13px;color:var(--muted);font-weight:600;margin-top:12px}
+dialog.acct input{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 11px;width:100%} dialog.acct input:focus{outline:none;border-color:var(--a)}
+dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.toast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/"><div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></div>
+      <div><h1>Stan Škalinova</h1><div class="sub">A1, prizemlje. Tlocrt s mjerama, svjetla, pogledi i dokumenti.</div></div></a>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
+      <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="tlocrt" aria-selected="true">Tlocrt</button>
+    <button role="tab" data-tab="svjetla" aria-selected="false">Svjetla</button>
+    <button role="tab" data-tab="pogledi" aria-selected="false">Pogledi i renderi</button>
+    <button role="tab" data-tab="dokumenti" aria-selected="false">Dokumenti</button>
+  </nav>
+
+  <!-- TLOCRT -->
+  <section id="tab-tlocrt" class="two">
+    <div class="card">
+      <div class="toggles">
+        <button data-layer="fu" aria-pressed="true">Namještaj</button>
+        <button data-layer="dm" aria-pressed="true">Kote</button>
+        <button data-layer="lt" aria-pressed="false">Svjetla</button>
+      </div>
+      <svg class="plan" id="planSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Tlocrt stana"></svg>
+      <div class="sub" style="margin-top:8px">Klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
+    </div>
+    <div class="card info" id="info"></div>
+  </section>
+
+  <!-- SVJETLA -->
+  <section id="tab-svjetla" class="two" hidden>
+    <div class="card">
+      <svg class="plan" id="lightSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Svjetla na tlocrtu"></svg>
+      <div class="legend"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>privjesna, točkasta</span><span id="count"></span></div>
+    </div>
+    <div style="display:grid;gap:12px">
+      <div class="card"><h2>Scene</h2><div class="scenes">
+        <button class="primary" data-scene="sve">Sve upali</button><button data-scene="vecer">Večer</button><button data-scene="film">Film</button><button data-scene="noc">Noćno</button><button data-scene="ugasi">Sve ugasi</button></div>
+        <div class="sub" style="margin-top:8px">Probna ploča. Stanje se pamti u ovom pregledniku, uređaji još nisu spojeni.</div></div>
+      <div class="card" id="lightList"><h2>Svjetla po prostorijama</h2></div>
+      <div class="card"><h2>Pozivi (simulirano)</h2><div class="log" id="log">spremno</div></div>
+    </div>
+  </section>
+
+  <!-- POGLEDI -->
+  <section id="tab-pogledi" hidden>
+    <div class="card"><h2>Pogledi po prostorijama i renderi</h2><div class="sub" style="margin-bottom:12px">Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal"></div></div>
+  </section>
+
+  <!-- DOKUMENTI -->
+  <section id="tab-dokumenti" hidden>
+    <div class="card">
+      <h2>Dokumenti</h2>
+      <div class="sub" style="margin-bottom:12px">Ugrađeni dokumenti su dio stranice. Vlastite dodaješ kad si prijavljen; spremaju se u isti repozitorij kao Aparati (grana <code>data</code>, mapa <code>stan/</code>) i vidiš ih na svakom uređaju.</div>
+      <div class="docs" id="docs"></div>
+      <div class="drop" id="drop"><input type="file" id="fileIn" multiple><span id="dropText">Povuci datoteke ovdje ili <u>odaberi</u>. Do 25 MB po datoteci.</span></div>
+      <div class="err" id="docErr"></div>
+    </div>
+  </section>
+</div>
+
+<dialog class="acct" id="acctDlg">
+  <h2 id="acctTitle">Prijava</h2>
+  <div id="loginView">
+    <div class="sub">Isti račun kao u Aparatima i Hubu.</div>
+    <label>Korisničko ime<input id="lUser" type="text" autocomplete="username" autocapitalize="none"></label>
+    <label>Lozinka<input id="lPass" type="password" autocomplete="current-password"></label>
+    <div class="err" id="lErr"></div>
+    <div class="row"><button id="acctClose" type="button">Zatvori</button><button class="primary" id="loginBtn" type="button">Prijavi se</button></div>
+  </div>
+  <div id="acctView" hidden>
+    <div class="sub" id="acctWho"></div>
+    <div class="err" id="acctErr"></div>
+    <div class="row"><button id="logoutBtn" type="button">Odjavi se</button><button class="primary" type="button" onclick="document.getElementById('acctDlg').close()">Zatvori</button></div>
+  </div>
+</dialog>
+<dialog class="view" id="viewDlg"><div class="bar"><span id="viewTitle"></span><button class="sm" onclick="document.getElementById('viewDlg').close()">Zatvori</button></div><img id="viewImg" alt=""></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== podaci: cm, ishodište JZ kut kuhinje, y prema sjeveru ===================== */
+const ROOMS = [
+  {k:'b', name:'Dnevni boravak i kuhinja', area:'26.52 m², parket', poly:[[0,0],[370,0],[370,215],[470,215],[470,610],[0,610]], lx:235, ly:420,
+   dims:'Kuhinjski dio 370 × 215, boravak 470 × 395. Strop pretpostavljen 260.',
+   notes:['Prolazi u kuhinji: 70 između sudopera i šanka, 85 na ulazu uz visoke elemente.','Otvoreno: kupljena indukcija ima 80 cm, element je 70; izvlačni stol iz šanka; struja na zidu s hladnjakom.','Klizna vrata u vrt otvarati krilom dalje od garniture.']},
+  {k:'h', name:'Hodnik', area:'5.61 m², parket', poly:[[480,216],[805,216],[805,336],[650,336],[650,466],[485,466],[485,336],[480,336]], lx:640, ly:262,
+   dims:'Predsoblje 125 × 130, hodnik 325 × 120. Ulazna vrata 100, niša za ormarić 40 u zidu prema kupaoni.',
+   notes:['Ormarić 130 × 40 u niši, fronta u ravnini zida, push-to-open.','Ogledalo 100 × 224 točno nasuprot ulaznih vrata; zidne plohe cijelom linijom tog zida.','Otvoreno: položaj razvodnog ormara i dizalice topline, koji robot usisavač.']},
+  {k:'w', name:'Kupaona', area:'oko 5.8 m², spojena s WC-om', poly:[[660,346],[820,346],[820,216],[1000,216],[1000,456],[660,456]], lx:905, ly:300,
+   dims:'Kupaona 180 × 240, tuš 130 × 110 na mjestu starog WC-a.',
+   notes:['Stup perilica + sušilica 64 × 72 s ladicom s rešetkom i rolom papira iz boka.','Viseća školjka s predzidom 20, komodica 90 × 50 s ogledalom do stropa.','Otvoreno: šaht 30 cm između tuša i kupaone, mjere uređaja.']},
+  {k:'s', name:'Spavaća soba', area:'11.72 m², parket', poly:[[380,-150],[710,-150],[710,205],[380,205]], lx:545, ly:30,
+   dims:'330 × 355. Prozor 140, vrata 80 iz hodnika.',
+   notes:['Ormar u L bez sokla: 255 uz zid kuhinje, 185 uz zid hodnika; vrata, ladica 60 do 75, vrata.','Krevet 180 × 200 nizak uz panel uzglavlja, noćni ormarić samo na strani prozora.','Stol 100 × 60 uz prozor, police u čelu ormara iznad ploče.']},
+  {k:'d', name:'Dječja soba', area:'9.94 m², parket', poly:[[720,-150],[1000,-150],[1000,205],[720,205]], lx:860, ly:30,
+   dims:'280 × 355. Prozor 140, vrata 80 iz hodnika.',
+   notes:['Ormar 198 × 60 uz zid hodnika, stol u L uz prozor (100 + 125, ploča 78).','Krevet 90 × 200 uz zid prema spavaćoj, 75 do putanje vrata.','Bez spuštenog stropa i bez rasvjete iz knauf dokumenta.']},
+  {k:'l', name:'Lođa', area:'oko 5.0 m², pločice', poly:[[0,-165],[360,-165],[360,-25],[0,-25]], lx:180, ly:-95,
+   dims:'360 × 140, ograda na južnoj strani.',
+   notes:['Ormar 145 × 45 do stropa u kutu uz spavaću sobu, dvoja vrata.','Materijal za vani: vodootporna ploča ili kompakt, ne obični iveral.']},
+];
+const WALLS=[[-25,-175,1030,496],[-25,496,480,640]];
+const OPEN=[[470,215,480,335],[510,466,610,496],[625,205,705,216],[722,205,802,216],[805,225,820,305],[55,-25,140,0]];
+const GLASS=[[139,-12,305,-12],[-12,160,-12,456],[54,622,310,622],[498,-162,638,-162],[760,-162,900,-162]];
+const DOORS=[[510,466,100,'s'],[705,205,80,'sw'],[722,205,80,'se'],[820,225,80,'e'],[97,-25,85,'n']];
+const FURN = [{"r":"k","n":"1 Visoki ormar 40","x0":0,"y0":0,"x1":60,"y1":40,"t":"od poda do stropa"},{"r":"k","n":"2 Hladnjak","x0":0,"y0":40,"x1":60,"y1":100,"t":"niša 60, Bosch KIN96VFD0"},{"r":"k","n":"3 Pećnica + mikrovalna","x0":0,"y0":100,"x1":60,"y1":160,"t":"kolona 60"},{"r":"k","n":"4 Perilica suđa","x0":145,"y0":0,"x1":205,"y1":60,"t":"60"},{"r":"k","n":"5 Sudoper","x0":205,"y0":0,"x1":265,"y1":60,"t":"pod prozorom"},{"r":"k","n":"6 Kutni element","x0":265,"y0":0,"x1":310,"y1":60,"t":"vrata 45"},{"r":"k","n":"kut","x0":310,"y0":0,"x1":370,"y1":60,"t":""},{"r":"k","n":"7 Indukcija","x0":310,"y0":60,"x1":370,"y1":130,"t":"element 70, ploča 60 ili 80 (otvoreno)"},{"r":"k","n":"8 Viseći elementi","x0":335,"y0":0,"x1":370,"y1":215,"t":"65 + 60 napa + 45 + 45, do stropa"},{"r":"k","n":"9 Šank 225 × 85","x0":145,"y0":130,"x1":370,"y1":215,"t":"elementi 60 + prepust 25, 3 stolice"},{"r":"b","n":"A Garnitura 275 × 220","x0":367.5,"y0":335,"x1":467.5,"y1":610,"t":"duži krak"},{"r":"b","n":"A kraći krak","x0":247.5,"y0":510,"x1":367.5,"y1":610,"t":""},{"r":"b","n":"C Stolić 100 × 60","x0":267,"y0":370,"x1":327,"y1":470,"t":""},{"r":"b","n":"D TV komoda 260 × 45","x0":2.5,"y0":345,"x1":45,"y1":605,"t":"viseća, visina 30"},{"r":"b","n":"E TV 55\"","x0":0,"y0":478,"x1":6,"y1":601,"t":"na zidu"},{"r":"h","n":"F Ormarić 130 × 40","x0":610,"y0":336,"x1":650,"y1":466,"t":"u niši: vrata 50, police 25, sjedenje 55"},{"r":"h","n":"G Ploča s kukicama","x0":485,"y0":336,"x1":488,"y1":466,"t":"cijelom visinom"},{"r":"h","n":"I Ogledalo 100 × 224","x0":510,"y0":216,"x1":610,"y1":221,"t":"nasuprot vrata"},{"r":"w","n":"J Perilica + sušilica 64 × 72","x0":928,"y0":392,"x1":1000,"y1":456,"t":"stup, tri vrata"},{"r":"w","n":"K WC školjka","x0":928,"y0":331,"x1":1000,"y1":367,"t":"viseća, predzid 20"},{"r":"w","n":"L Komodica 90 × 50","x0":950,"y0":216,"x1":1000,"y1":306,"t":"ogledalo do stropa"},{"r":"w","n":"M Tuš 130 × 110","x0":660,"y0":346,"x1":790,"y1":456,"t":"otvoren prema kupaoni"},{"r":"s","n":"N Ormar 255 × 60","x0":380,"y0":-50,"x1":440,"y1":205,"t":"uz zid kuhinje"},{"r":"s","n":"N Ormar 185 × 60","x0":440,"y0":145,"x1":625,"y1":205,"t":"uz zid hodnika"},{"r":"s","n":"O Stol 100 × 60","x0":380,"y0":-150,"x1":440,"y1":-50,"t":"ploča 78"},{"r":"s","n":"Q Krevet 180 × 200","x0":500,"y0":-100,"x1":700,"y1":80,"t":"nizak, 10 od panela"},{"r":"s","n":"R Noćni ormarić 50 × 40","x0":667.5,"y0":-150,"x1":707.5,"y1":-100,"t":"vrh 45"},{"r":"s","n":"P Panel uzglavlja","x0":707.5,"y0":-150,"x1":710,"y1":205,"t":"iveral, 100 visok"},{"r":"d","n":"T Ormar 198 × 60","x0":802,"y0":145,"x1":1000,"y1":205,"t":"uz zid hodnika"},{"r":"d","n":"U Stol u L","x0":940,"y0":-150,"x1":1000,"y1":-50,"t":"krak 100"},{"r":"d","n":"U Stol u L","x0":815,"y0":-150,"x1":940,"y1":-90,"t":"krak 125, ploča 78"},{"r":"d","n":"W Krevet 90 × 200","x0":722.5,"y0":-150,"x1":812.5,"y1":50,"t":"uz zid prema spavaćoj"},{"r":"d","n":"V Panel uzglavlja","x0":720,"y0":-150,"x1":722.5,"y1":125,"t":""},{"r":"l","n":"S Ormar 145 × 45","x0":315,"y0":-165,"x1":360,"y1":-20,"t":"do stropa, dvoja vrata"}];
+const DIMS=[['h',0,470,635,'470'],['v',215,610,-50,'395'],['h',0,370,-48,'370'],['v',0,215,392,'215'],['h',485,610,480,'125'],['v',336,466,598,'130'],['h',480,805,232,'325'],['h',820,1000,470,'180'],['v',216,456,1012,'240'],['h',660,790,470,'130'],['h',380,710,-195,'330'],['v',-150,205,370,'355'],['h',720,1000,-195,'280'],['v',-150,205,1012,'355'],['h',0,360,-178,'360'],['v',-165,-25,-50,'140'],['h',-25,1030,-215,'1055'],['v',-175,640,-70,'815'],['h',55,140,16,'85'],['h',139,305,16,'165'],['h',54,310,595,'256'],['h',510,610,452,'100']];
+const LIGHTS=[
+  {id:'U1',room:'Dnevni boravak',type:'led',g:[0,456,0,610],n:'LED iznad TV-a'},{id:'U3',room:'Dnevni boravak',type:'led',g:[470,335,470,610],n:'LED iza garniture'},
+  {id:'U4',room:'Hodnik',type:'led',g:[370,216,805,216],n:'LED uz ogledalo i obloge'},{id:'U5',room:'Hodnik',type:'led',g:[485,336,485,466],n:'LED uz ploču s kukicama'},
+  {id:'U7',room:'Spavaća soba',type:'led',g:[710,-150,710,205],n:'LED uz uzglavlje'},
+  {id:'V1',room:'Dnevni boravak',type:'track',g:[120,275,120,560],n:'Vodilica uz TV zid'},{id:'V2',room:'Dnevni boravak',type:'track',g:[330,275,330,560],n:'Vodilica uz garnituru'},
+  {id:'V3',room:'Kuhinja',type:'track',g:[100,100,270,100],n:'Vodilica nad radnom zonom'},{id:'V4',room:'Hodnik',type:'track',g:[400,276,780,276],n:'Vodilica kroz hodnik'},
+  {id:'V5',room:'Spavaća soba',type:'track',g:[470,-120,470,120],n:'Vodilica uz ormar'},{id:'V6',room:'Spavaća soba',type:'track',g:[600,-120,600,120],n:'Vodilica nad krevetom'},
+  {id:'V8',room:'Kupaona',type:'track',g:[900,250,900,420],n:'Vodilica, mat siva'},
+  {id:'L1',room:'Kuhinja',type:'lamp',g:[150,172,310,172],n:'Linijska lampa nad šankom'},{id:'L2',room:'Hodnik',type:'lamp',g:[560,401],n:'Privjesna uz ulaz'},
+  {id:'L3',room:'Hodnik',type:'lamp',g:[560,330],n:'Privjesna uz ogledalo'},{id:'L4',room:'Kupaona',type:'lamp',g:[725,401],n:'Svjetlo u tušu'},
+];
+const SCENES={sve:Object.fromEntries(LIGHTS.map(l=>[l.id,100])),ugasi:{},vecer:{U1:60,U3:60,U4:40,U5:40,U7:50,L1:70,L2:60,L3:60},film:{U1:25,U3:35,U4:15},noc:{U4:10,U5:10,L4:30}};
+const GALLERY=[
+  ['tlocrt_namjestaj.jpg','Tlocrt s namještajem','radna verzija v37, legenda sa strane'],['tlocrt_cisti.jpg','Tlocrt bez namještaja','zidovi, otvori, kote, vrt'],
+  ['kuhinja.jpg','Kuhinja, pogledi K1 do K4','dogovoreno'],['boravak.jpg','Dnevni boravak, pogledi B1 do B3','dogovoreno'],['hodnik.jpg','Hodnik, pogledi H1 do H3','prijedlog'],
+  ['kupaona.jpg','Kupaona, pogledi KP1 i KP2','prijedlog'],['spavaca.jpg','Spavaća soba, pogledi S1 do S3','prijedlog'],['djecja.jpg','Dječja soba, pogledi D1 do D4','prijedlog'],
+  ['lodja.jpg','Lođa, pogledi L1 i L2','prijedlog'],['svjetla_sve.jpg','Spušteni strop, svi slojevi','utori, vodilice, lampe'],
+  ['akso_boravak.jpg','Aksonometrija boravka i kuhinje','3D maketa iz koordinata'],['blender_boravak_1.jpg','Render: iz hodnika prema kuhinji','Blender, bijela maketa'],['blender_boravak_2.jpg','Render: iz kuhinje prema vrtu','Blender, bijela maketa'],
+];
+const BUILTIN_DOCS=[
+  {name:'Stan_A1_cijeli_stan_final.pdf',title:'Cijeli stan, tlocrt i pogledi',size:4014078,url:'dok/Stan_A1_cijeli_stan_final.pdf',builtin:true},
+  {name:'Stan_A1_spusteni_strop_final.pdf',title:'Spušteni strop: utori, šine, LED, vodilice, lampe',size:2631324,url:'dok/Stan_A1_spusteni_strop_final.pdf',builtin:true},
+  {name:'Projektni_brief.md',title:'Projektni brief (stanje 12. 10. 2026.)',size:7598,url:'dok/Projektni_brief.md',builtin:true},
+];
+
+/* ===================== pomoćno ===================== */
+const Y=y=>610-y; const svgNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent,text){const e=document.createElementNS(svgNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;parent.appendChild(e);return e;}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function fmtSize(b){return b>1e6?(b/1e6).toFixed(1)+' MB':b>1e3?Math.round(b/1e3)+' KB':b+' B'}
+
+/* ===================== tabovi ===================== */
+const tabs=document.querySelectorAll('nav.tabs button');
+function showTab(id){tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));['tlocrt','svjetla','pogledi','dokumenti'].forEach(t=>document.getElementById('tab-'+t).hidden=t!==id);try{localStorage.setItem('stan.tab',id)}catch(e){}}
+tabs.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+let startTab='tlocrt';try{startTab=localStorage.getItem('stan.tab')||'tlocrt'}catch(e){} if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
+
+/* ===================== tlocrt ===================== */
+function drawBase(svg, withRooms){
+  const gw=el('g',{},svg), gr=el('g',{},svg);
+  WALLS.forEach(([x0,y0,x1,y1])=>el('rect',{x:x0,y:Y(y1),width:x1-x0,height:y1-y0,class:'wl'},gw));
+  ROOMS.forEach(r=>el('polygon',{points:r.poly.map(([x,y])=>`${x},${Y(y)}`).join(' '),class:(r.k==='w'||r.k==='l')?'tl':'fl'},gr));
+  el('rect',{x:610,y:Y(466),width:40,height:120,class:'tl'},gr);
+  OPEN.forEach(([x0,y0,x1,y1])=>el('rect',{x:x0,y:Y(y1),width:x1-x0,height:y1-y0,class:'fl'},gr));
+  GLASS.forEach(([x0,y0,x1,y1])=>el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'gl'},gr));
+  DOORS.forEach(([hx,hy,w,dir])=>{ // list kao linija + luk
+    const d={s:[0,-1,1,0],sw:[0,-1,-1,0],se:[0,-1,1,0],e:[1,0,0,-1],n:[0,1,1,0]}[dir]; // [leaf dx,dy, sweep x, sweep y]
+    const ex=hx+d[0]*w, ey=hy+d[1]*w;
+    el('line',{x1:hx,y1:Y(hy),x2:ex,y2:Y(ey),class:'door'},gr);
+    const sx=hx+d[2]*w, sy=hy+d[3]*w; const sweep = dir==='sw'?0:1;
+    el('path',{d:`M${ex},${Y(ey)} A${w},${w} 0 0 ${sweep} ${sx},${Y(sy)}`,class:'doorarc'},gr);
+  });
+  const gl=el('g',{},svg);
+  ROOMS.forEach(r=>{el('text',{x:r.lx,y:Y(r.ly),class:'lbl','text-anchor':'middle'},gl,r.name);el('text',{x:r.lx,y:Y(r.ly)+22,class:'lbl s','text-anchor':'middle'},gl,r.area);});
+  el('text',{x:185,y:Y(95),class:'lbl s','text-anchor':'middle'},gl,'Kuhinja');
+  return gr;
+}
+const plan=document.getElementById('planSvg');
+drawBase(plan);
+const gRm=el('g',{},plan), gFu=el('g',{class:'fu-layer'},plan), gDm=el('g',{class:'dm'},plan), gLt=el('g',{},plan);
+const furnNodes=[];
+FURN.forEach((f,i)=>{
+  const cls='fu '+(f.n.startsWith('A ')?'sofa':f.n.startsWith('E ')||f.n.startsWith('7 ')?'dark':f.n.startsWith('M ')?'tile':'');
+  const g=el('g',{class:cls,'data-i':i},gFu);
+  el('rect',{x:f.x0,y:Y(f.y1),width:f.x1-f.x0,height:f.y1-f.y0,rx:2},g);
+  const w=f.x1-f.x0,h=f.y1-f.y0; if(w>=58&&h>=24){const t=el('text',{x:(f.x0+f.x1)/2,y:Y((f.y0+f.y1)/2)+4,'text-anchor':'middle'},g,f.n.split(' ').slice(0,3).join(' '));}
+  g.style.cursor='pointer'; g.addEventListener('click',e=>{e.stopPropagation();selectFurn(i);}); furnNodes.push(g);
+});
+DIMS.forEach(([o,a,b,c,lab])=>{
+  if(o==='h'){el('line',{x1:a,y1:Y(c),x2:b,y2:Y(c)},gDm);[a,b].forEach(x=>el('line',{x1:x-5,y1:Y(c)+5,x2:x+5,y2:Y(c)-5},gDm));el('text',{x:(a+b)/2,y:Y(c)-6,'text-anchor':'middle'},gDm,lab);}
+  else{el('line',{x1:c,y1:Y(a),x2:c,y2:Y(b)},gDm);[a,b].forEach(y=>el('line',{x1:c-5,y1:Y(y)+5,x2:c+5,y2:Y(y)-5},gDm));el('text',{x:c-8,y:Y((a+b)/2)+5,'text-anchor':'end'},gDm,lab);}
+});
+ROOMS.forEach(r=>{const p=el('polygon',{points:r.poly.map(([x,y])=>`${x},${Y(y)}`).join(' '),class:'rm','data-k':r.k},gRm);p.addEventListener('click',()=>selectRoom(r.k));});
+// svjetla na tlocrtu (samo prikaz, bez interakcije), sakriveno dok se ne upali sloj
+function drawLight(l, parent, interactive){
+  const g=el('g',{class:'lt '+l.type,'data-id':l.id},parent); const [x0,y0,x1,y1]=l.g;
+  if(l.type==='lamp'&&l.g.length===2){el('circle',{cx:x0,cy:Y(y0),r:26,class:'glow'},g);el('circle',{cx:x0,cy:Y(y0),r:11,class:'core'},g);el('text',{x:x0+16,y:Y(y0)-14,class:'tag'},g,l.id);}
+  else if(l.type==='lamp'){el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'glow',style:'stroke:var(--lamp);stroke-width:34;stroke-linecap:round'},g);el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'core',style:'stroke-width:9;stroke-linecap:round;stroke:var(--off)'},g);el('text',{x:(x0+x1)/2-12,y:Y(y0)-14,class:'tag'},g,l.id);}
+  else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}
+    el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'glow'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'core'},g);
+    const vert=x0===x1;el('text',{x:vert?ax+14:(ax+bx)/2-12,y:vert?Y((ay+by)/2)+6:Y(ay)-14,class:'tag'},g,l.id);}
+  if(interactive){g.setAttribute('tabindex',0);g.setAttribute('role','button');g.addEventListener('click',()=>toggle(l.id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});}
+  el('title',{},g,l.id+' '+l.n); return g;
+}
+const planLights={}; LIGHTS.forEach(l=>planLights[l.id]=drawLight(l,gLt,false)); gLt.style.display='none';
+// slojevi
+const layerEls={fu:gFu,dm:gDm,lt:gLt};
+document.querySelectorAll('[data-layer]').forEach(b=>{
+  let on=b.getAttribute('aria-pressed')==='true'; try{const s=localStorage.getItem('stan.layer.'+b.dataset.layer);if(s!==null)on=s==='1'}catch(e){}
+  b.setAttribute('aria-pressed',on); layerEls[b.dataset.layer].style.display=on?'':'none';
+  b.addEventListener('click',()=>{on=!on;b.setAttribute('aria-pressed',on);layerEls[b.dataset.layer].style.display=on?'':'none';try{localStorage.setItem('stan.layer.'+b.dataset.layer,on?'1':'0')}catch(e){}});
+});
+// info panel
+const info=document.getElementById('info');
+function selectRoom(k){
+  document.querySelectorAll('.rm').forEach(p=>p.classList.toggle('sel',p.dataset.k===k)); furnNodes.forEach(g=>g.style.filter='');
+  const r=ROOMS.find(x=>x.k===k); const items=FURN.map((f,i)=>({f,i})).filter(o=>o.f.r===k);
+  info.innerHTML=`<h3>${esc(r.name)}</h3><div class="sub">${esc(r.area)}</div><div class="kv"><b>Mjere</b><span>${esc(r.dims)}</span></div>
+    <div class="list">${items.map(o=>`<div class="item" data-i="${o.i}"><span class="b">${esc(o.f.n.split(' ')[0])}</span><span>${esc(o.f.n.slice(o.f.n.indexOf(' ')+1))}<small>${o.f.x1-o.f.x0} × ${o.f.y1-o.f.y0} u tlocrtu${o.f.t?', '+esc(o.f.t):''}</small></span></div>`).join('')}</div>
+    <div class="list" style="margin-top:12px">${r.notes.map(n=>`<div class="sub">• ${esc(n)}</div>`).join('')}</div>`;
+  info.querySelectorAll('.item').forEach(it=>it.addEventListener('click',()=>selectFurn(+it.dataset.i)));
+  try{localStorage.setItem('stan.room',k)}catch(e){}
+}
+function selectFurn(i){
+  const f=FURN[i]; selectRoom(f.r);
+  furnNodes.forEach((g,j)=>g.style.filter=j===i?'drop-shadow(0 0 6px var(--a))':''); info.querySelectorAll('.item').forEach(it=>it.classList.toggle('sel',+it.dataset.i===i));
+  const sel=info.querySelector('.item.sel'); if(sel) sel.scrollIntoView({block:'nearest'});
+}
+let startRoom='b';try{startRoom=localStorage.getItem('stan.room')||'b'}catch(e){} selectRoom(startRoom);
+
+/* ===================== svjetla ===================== */
+const lsvg=document.getElementById('lightSvg'); drawBase(lsvg); const gL=el('g',{},lsvg);
+el('defs',{},lsvg).innerHTML='<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter><filter id="blur2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="18"/></filter>';
+const nodes={}; LIGHTS.forEach(l=>nodes[l.id]=drawLight(l,gL,true));
+let state=Object.fromEntries(LIGHTS.map(l=>[l.id,{on:false,level:100}]));
+let savedLights=null;try{savedLights=JSON.parse(localStorage.getItem('stan.lights')||'null');}catch(e){}
+if(savedLights)Object.keys(state).forEach(k=>{if(savedLights[k])state[k]=savedLights[k]});else Object.entries(SCENES.vecer).forEach(([k,v])=>{state[k]={on:true,level:v}});
+const log=document.getElementById('log'), rows={};
+function api(m,p,b){const line=document.createElement('div');line.innerHTML=`<b>${m} /api/${p}</b> ${b?esc(JSON.stringify(b)):''}`;log.prepend(line);while(log.children.length>30)log.lastChild.remove();}
+const byRoom={};LIGHTS.forEach(l=>(byRoom[l.room]=byRoom[l.room]||[]).push(l));
+const list=document.getElementById('lightList');
+Object.entries(byRoom).forEach(([room,ls])=>{
+  const sec=document.createElement('div');sec.className='room';const h=document.createElement('div');h.className='roomhead';h.innerHTML=`<b>${esc(room)}</b>`;
+  const b=document.createElement('button');b.className='sm';b.textContent='Sve';b.addEventListener('click',()=>{const all=ls.every(l=>state[l.id].on);ls.forEach(l=>setLight(l.id,!all,null,'room'));});h.appendChild(b);sec.appendChild(h);
+  ls.forEach(l=>{const r=document.createElement('div');r.className='light off '+(l.type==='track'?'t':'');
+    r.innerHTML=`<div class="sw" role="button" tabindex="0" aria-label="${l.id}"></div><div class="n">${l.id} ${esc(l.n)}<small>${l.type==='led'?'LED traka 2700K':l.type==='track'?'magnetska vodilica':'privjesna / točkasta'}</small></div><input type="range" id="lvl-${l.id}" min="5" max="100" value="100" aria-label="jačina ${l.id}">`;
+    r.querySelector('.sw').addEventListener('click',()=>toggle(l.id));r.querySelector('.sw').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});
+    r.querySelector('input').addEventListener('input',e=>setLight(l.id,true,+e.target.value,'dim'));sec.appendChild(r);rows[l.id]=r;});
+  list.appendChild(sec);
+});
+function render(id){const s=state[id];[nodes[id],planLights[id]].forEach(g=>{g.classList.toggle('on',s.on);g.querySelector('.glow').style.opacity=s.on?(0.25+0.75*s.level/100):0;});
+  const r=rows[id];r.classList.toggle('on',s.on);r.classList.toggle('off',!s.on);r.querySelector('input').value=s.level;
+  document.getElementById('count').textContent=Object.values(state).filter(x=>x.on).length+' upaljeno';}
+function persist(){try{localStorage.setItem('stan.lights',JSON.stringify(state))}catch(e){}}
+function setLight(id,on,level,src){const s=state[id];s.on=on;if(level!=null)s.level=level;render(id);persist();if(src!=='scene')api('PUT','lights/'+id,{on:s.on,level:s.on?s.level:0});}
+function toggle(id){setLight(id,!state[id].on,null,'click')}
+document.querySelectorAll('[data-scene]').forEach(b=>b.addEventListener('click',()=>{const sc=SCENES[b.dataset.scene];LIGHTS.forEach(l=>setLight(l.id,l.id in sc,sc[l.id]??state[l.id].level,'scene'));api('POST','scenes/'+b.dataset.scene,sc);}));
+LIGHTS.forEach(l=>render(l.id));
+
+/* ===================== pogledi ===================== */
+const gal=document.getElementById('gal');
+GALLERY.forEach(([f,t,s])=>{const a=document.createElement('a');a.href='slike/'+f;a.innerHTML=`<img loading="lazy" src="slike/${f}" alt="${esc(t)}"><b>${esc(t)}</b><small>${esc(s)}</small>`;
+  a.addEventListener('click',e=>{e.preventDefault();document.getElementById('viewImg').src='slike/'+f;document.getElementById('viewTitle').textContent=t;document.getElementById('viewDlg').showModal();});gal.appendChild(a);});
+document.getElementById('viewDlg').addEventListener('click',e=>{if(e.target.id==='viewDlg')e.target.close()});
+
+/* ===================== dokumenti ===================== */
+const DOC_DIR='stan/', DOC_INDEX='stan/index.json';
+let userDocs=[], docsSha=null;
+function drawDocs(){
+  const box=document.getElementById('docs'); box.innerHTML='';
+  [...BUILTIN_DOCS,...userDocs].forEach(d=>{
+    const ext=(d.name.split('.').pop()||'').toUpperCase().slice(0,4); const row=document.createElement('div'); row.className='doc';
+    row.innerHTML=`<div class="ic">${esc(ext)}</div><div class="n">${esc(d.title||d.name)}<small>${esc(d.name)} · ${fmtSize(d.size)}${d.builtin?' · ugrađeno':' · '+new Date(d.at||0).toLocaleDateString('hr-HR')}</small></div><div class="act"></div>`;
+    const act=row.querySelector('.act');
+    const dl=document.createElement('button'); dl.className='sm'; dl.textContent='Preuzmi'; dl.addEventListener('click',()=>download(d)); act.appendChild(dl);
+    if(!d.builtin){const rm=document.createElement('button'); rm.className='sm'; rm.textContent='Obriši'; rm.addEventListener('click',()=>removeDoc(d)); act.appendChild(rm);}
+    box.appendChild(row);
+  });
+  document.getElementById('dropText').innerHTML=connected()?'Povuci datoteke ovdje ili <u>odaberi</u>. Do 25 MB po datoteci.':'Za dodavanje vlastitih dokumenata prijavi se gore desno.';
+}
+async function download(d){
+  if(d.builtin){const a=document.createElement('a');a.href=d.url;a.download=d.name;document.body.appendChild(a);a.click();a.remove();return;}
+  try{const r=await gh('GET','/repos/'+sync.repo+'/contents/'+encodeURI(d.path)+'?ref='+encodeURIComponent(sync.branch),null,'application/vnd.github.raw+json');
+    if(!r.ok)throw new Error('greška '+r.status); const blob=await r.blob(); const u=URL.createObjectURL(blob); const a=document.createElement('a');a.href=u;a.download=d.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);}
+  catch(e){document.getElementById('docErr').textContent='Preuzimanje nije uspjelo: '+e.message;}
+}
+async function loadDocs(){
+  if(!connected()){userDocs=[];drawDocs();return;}
+  try{const r=await gh('GET','/repos/'+sync.repo+'/contents/'+DOC_INDEX+'?ref='+encodeURIComponent(sync.branch));
+    if(r.status===404){userDocs=[];docsSha=null;}else{checkAuth(r);const j=await r.json();docsSha=j.sha;userDocs=JSON.parse(b64decode(j.content||''))||[];}
+    setStatus('ok');}
+  catch(e){setStatus(e instanceof SyncError?'error':'offline',e.message);} drawDocs();
+}
+async function saveIndex(){
+  const body={message:'Stan: dokumenti',content:b64encode(JSON.stringify(userDocs,null,1)+'\n'),branch:sync.branch}; if(docsSha)body.sha=docsSha;
+  const r=await gh('PUT','/repos/'+sync.repo+'/contents/'+DOC_INDEX,body); checkAuth(r); if(!r.ok)throw new SyncError('Spremanje popisa nije uspjelo ('+r.status+').'); const j=await r.json(); docsSha=j.content.sha;
+}
+async function uploadFiles(files){
+  const err=document.getElementById('docErr'); err.textContent='';
+  if(!connected()){err.textContent='Prijavi se da bi dodavao dokumente.';return;}
+  for(const file of files){
+    if(file.size>25e6){err.textContent=file.name+' je veća od 25 MB.';continue;}
+    const safe=file.name.replace(/[^\w.\- ()čćžšđČĆŽŠĐ]/g,'_'); const path=DOC_DIR+'dokumenti/'+safe;
+    toast('Šaljem '+safe+'…');
+    try{
+      const buf=await file.arrayBuffer(); let bin='';const u8=new Uint8Array(buf);for(let i=0;i<u8.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));
+      let sha=null; const ex=await gh('GET','/repos/'+sync.repo+'/contents/'+encodeURI(path)+'?ref='+encodeURIComponent(sync.branch)); if(ex.ok){sha=(await ex.json()).sha;}
+      const body={message:'Stan: '+safe,content:btoa(bin),branch:sync.branch}; if(sha)body.sha=sha;
+      const r=await gh('PUT','/repos/'+sync.repo+'/contents/'+encodeURI(path),body); checkAuth(r); if(!r.ok)throw new SyncError('Slanje nije uspjelo ('+r.status+').');
+      userDocs=userDocs.filter(d=>d.path!==path); userDocs.push({name:safe,title:safe.replace(/\.[^.]+$/,'').replace(/[_]+/g,' '),size:file.size,path,at:Date.now()});
+      await saveIndex(); drawDocs(); toast('Dodano: '+safe);
+    }catch(e){err.textContent=e instanceof SyncError?e.message:'Nema veze s GitHubom.';}
+  }
+}
+async function removeDoc(d){
+  if(!connected())return; const row=[...document.querySelectorAll('.doc')].find(r=>r.textContent.includes(d.name)); if(row&&!row.dataset.confirm){row.dataset.confirm='1';row.querySelector('.act button:last-child').textContent='Sigurno obriši';setTimeout(()=>{delete row.dataset.confirm;if(row.isConnected)row.querySelector('.act button:last-child').textContent='Obriši';},4000);return;}
+  try{const ex=await gh('GET','/repos/'+sync.repo+'/contents/'+encodeURI(d.path)+'?ref='+encodeURIComponent(sync.branch)); if(ex.ok){const sha=(await ex.json()).sha; const r=await gh('DELETE','/repos/'+sync.repo+'/contents/'+encodeURI(d.path),{message:'Stan: obrisano '+d.name,sha,branch:sync.branch}); checkAuth(r);}
+    userDocs=userDocs.filter(x=>x.path!==d.path); await saveIndex(); drawDocs(); toast('Obrisano.');}
+  catch(e){document.getElementById('docErr').textContent=e instanceof SyncError?e.message:'Nema veze s GitHubom.';}
+}
+const drop=document.getElementById('drop'), fileIn=document.getElementById('fileIn');
+drop.addEventListener('click',()=>{if(connected())fileIn.click();else openAccount();});
+fileIn.addEventListener('change',()=>{uploadFiles([...fileIn.files]);fileIn.value='';});
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>uploadFiles([...e.dataTransfer.files]));
+
+/* ===================== tema ===================== */
+function isDark(){const t=document.documentElement.getAttribute('data-theme');return t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)}
+let theme=null;try{theme=localStorage.getItem('kb-theme')||null}catch(e){}
+function applyTheme(t){if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');document.getElementById('iconTheme').innerHTML=isDark()?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>':'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';}
+applyTheme(theme);
+document.getElementById('btnTheme').addEventListener('click',()=>{theme=isDark()?'light':'dark';try{localStorage.setItem('kb-theme',theme)}catch(e){}applyTheme(theme)});
+
+/* ===================== zajednički račun (isto kao Hub i Aparati) ===================== */
+const ACC_REPO_DEFAULT='zkaraman25/aparati', LS_SYNC='aparati.sync.v1', API='https://api.github.com', ACC_PATH='racun.json';
+let sync={repo:'',branch:'data',path:'data.json',token:'',user:'',ready:false,lastSync:0};
+try{Object.assign(sync,JSON.parse(localStorage.getItem(LS_SYNC)||'{}'));}catch(e){}
+const saveSync=()=>{try{localStorage.setItem(LS_SYNC,JSON.stringify(sync))}catch(e){}};
+const connected=()=>Boolean(sync.token&&sync.repo);
+class SyncError extends Error{}
+function gh(method,path,body,accept){const headers={Accept:accept||'application/vnd.github+json',Authorization:'Bearer '+sync.token};if(body)headers['Content-Type']='application/json';return fetch(API+path,{method,headers,body:body?JSON.stringify(body):undefined,cache:'no-store'});}
+function checkAuth(r){if(r.status===401)throw new SyncError('Token nije ispravan ili je istekao. Prijavi se ponovno.');if(r.status===403)throw new SyncError('Token nema dozvolu za ovaj repozitorij.');}
+const b64encode=t=>{let bin='';for(const b of new TextEncoder().encode(t))bin+=String.fromCharCode(b);return btoa(bin)};
+const b64decode=b=>new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g,'')),c=>c.charCodeAt(0)));
+function setStatus(kind,message){const btn=document.getElementById('statusBtn');btn.dataset.state=kind;document.getElementById('statusText').textContent={local:'Prijava',busy:'Sinkroniziram…',ok:sync.user||'Prijavljen',error:'Greška',offline:'Nema veze'}[kind];btn.title=message||'';const d=document.getElementById('acctDlg');if(d.open)drawAccount(message);}
+const fromB64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function passKey(password,salt,rounds){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:rounds,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
+async function unlockToken(rec,password,user){const key=await passKey(password,fromB64(rec.salt),Number(rec.rounds)||600000);const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:fromB64(rec.iv),additionalData:new TextEncoder().encode(user)},key,fromB64(rec.ct));return new TextDecoder().decode(plain);}
+async function readAccounts(repo,branch){const r=await fetch(API+'/repos/'+repo+'/contents/'+ACC_PATH+'?ref='+encodeURIComponent(branch),{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(r.status===404)return{users:{},missing:true};if(r.status===403||r.status===429)throw new SyncError('GitHub trenutno ne dopušta čitanje. Pričekaj par minuta.');if(!r.ok)throw new SyncError('Čitanje računa nije uspjelo ('+r.status+').');const j=await r.json();let users={};try{const d=JSON.parse(b64decode(j.content||''));if(d&&d.users)users=d.users;}catch(e){}return{users,missing:false};}
+function drawAccount(message){const on=connected();document.getElementById('loginView').hidden=on;document.getElementById('acctView').hidden=!on;document.getElementById('acctTitle').textContent=on?'Račun':'Prijava';if(on){document.getElementById('acctWho').textContent='Prijavljen si kao '+(sync.user||'?')+'. Dokumenti se spremaju u isti repozitorij kao Aparati.';document.getElementById('acctErr').textContent=message||'';}}
+function openAccount(){drawAccount();document.getElementById('lErr').textContent='';document.getElementById('lUser').value=sync.user||'';document.getElementById('lPass').value='';document.getElementById('acctDlg').showModal();}
+async function login(){const err=document.getElementById('lErr');err.textContent='';const user=document.getElementById('lUser').value.trim().toLowerCase(),password=document.getElementById('lPass').value;
+  if(!user){err.textContent='Upiši korisničko ime.';return;}if(!password){err.textContent='Upiši lozinku.';return;}if(!(crypto&&crypto.subtle)){err.textContent='Prijava radi samo na https adresi.';return;}
+  const repo=sync.repo||ACC_REPO_DEFAULT,branch=sync.branch||'data';const btn=document.getElementById('loginBtn');btn.disabled=true;btn.textContent='Prijavljujem…';
+  try{const acc=await readAccounts(repo,branch);const rec=acc.users[user];if(!rec){err.textContent=acc.missing?'Još nema računa. Napravi ga u Aparatima.':'Račun „'+user+'” ne postoji.';return;}
+    let token;try{token=await unlockToken(rec,password,user);}catch(e){err.textContent='Kriva lozinka.';return;}
+    Object.assign(sync,{repo,branch,path:sync.path||'data.json',token,user,ready:false,lastSync:Date.now()});saveSync();setStatus('ok');await loadDocs();drawAccount();toast('Prijavljen si kao '+user);}
+  catch(e){err.textContent=e instanceof SyncError?e.message:'Nema veze s GitHubom.';}finally{btn.disabled=false;btn.textContent='Prijavi se';}}
+function logout(){sync.token='';sync.user='';sync.ready=false;saveSync();setStatus('local');userDocs=[];drawDocs();drawAccount();toast('Odjavljen.');}
+document.getElementById('statusBtn').addEventListener('click',openAccount);document.getElementById('loginBtn').addEventListener('click',login);document.getElementById('logoutBtn').addEventListener('click',logout);
+document.getElementById('acctClose').addEventListener('click',()=>document.getElementById('acctDlg').close());document.getElementById('acctDlg').addEventListener('click',e=>{if(e.target.id==='acctDlg')e.target.close()});
+document.getElementById('lPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+setStatus(connected()?'ok':'local'); drawDocs(); if(connected())loadDocs();
+showTab(startTab);
+</script>
+</body>
+</html>
