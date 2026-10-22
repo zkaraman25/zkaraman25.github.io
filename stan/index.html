@@ -63,10 +63,10 @@ svg.plan{width:100%;height:auto;display:block;max-width:100%}
 .fu rect,.fu polygon{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5} .fu.sofa rect{fill:var(--sofa);stroke:#7f8f80} .fu.dark rect{fill:#2a2c30;stroke:#2a2c30} .fu.tile rect{fill:#dbe9f1;stroke:#7fa5bd}
 .fu text{fill:var(--wood-d);font-family:var(--font);font-size:11px;font-weight:600;pointer-events:none}
 .fu.sofa text{fill:#4f6050}
-.dm{pointer-events:none} .dm line{stroke:var(--dim);stroke-width:1.4} .dm text{fill:var(--dim);font-family:var(--font);font-size:13px;font-weight:600}
+.dm{pointer-events:none} .dm line{stroke:var(--dim);stroke-width:1.2} .dm text{fill:var(--dim);font-family:var(--font);font-size:17px;font-weight:700;paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
 .planwrap{position:relative}
 .tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);padding:7px 10px;border-radius:9px;font-size:13px;line-height:1.35;max-width:260px;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.25)} .tip b{font-size:15px} .tip small{display:block;opacity:.75;font-size:12px}
-.sg{stroke:transparent;stroke-width:14;stroke-linecap:butt;fill:none;cursor:crosshair} .sg.hot{stroke:var(--a);opacity:.55}
+.sg{stroke:transparent;stroke-width:34;stroke-linecap:butt;fill:none;cursor:crosshair} .sg.hot{stroke:var(--a);opacity:.55;stroke-width:16}
 .sg.win.hot{stroke:var(--glass)} .sg.door.hot,.sg.pass.hot{stroke:var(--dim)}
 .ms line{stroke:var(--dim);stroke-width:2.5;stroke-linecap:round} .ms circle{fill:var(--dim)} .ms text{fill:var(--dim);font-family:var(--font);font-size:15px;font-weight:700;paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
 .ms .pre line{stroke-dasharray:6 5} .ms .guide{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4}
@@ -338,8 +338,8 @@ FURN.forEach((f,i)=>{
   g.style.cursor='pointer'; g.addEventListener('click',e=>{if(measuring)return;e.stopPropagation();selectFurn(i);}); furnNodes.push(g);
 });
 DIMS.forEach(([o,a,b,c,lab])=>{
-  if(o==='h'){el('line',{x1:a,y1:Y(c),x2:b,y2:Y(c)},gDm);[a,b].forEach(x=>el('line',{x1:x-5,y1:Y(c)+5,x2:x+5,y2:Y(c)-5},gDm));el('text',{x:(a+b)/2,y:Y(c)-6,'text-anchor':'middle'},gDm,lab);}
-  else{el('line',{x1:c,y1:Y(a),x2:c,y2:Y(b)},gDm);[a,b].forEach(y=>el('line',{x1:c-5,y1:Y(y)+5,x2:c+5,y2:Y(y)-5},gDm));el('text',{x:c-8,y:Y((a+b)/2)+5,'text-anchor':'end'},gDm,lab);}
+  if(o==='h'){el('line',{x1:a,y1:Y(c),x2:b,y2:Y(c)},gDm);[a,b].forEach(x=>el('line',{x1:x-5,y1:Y(c)+5,x2:x+5,y2:Y(c)-5},gDm));el('text',{x:(a+b)/2,y:Y(c)-5,'text-anchor':'middle'},gDm,lab);}
+  else{el('line',{x1:c,y1:Y(a),x2:c,y2:Y(b)},gDm);[a,b].forEach(y=>el('line',{x1:c-5,y1:Y(y)+5,x2:c+5,y2:Y(y)-5},gDm));el('text',{x:c-7,y:Y((a+b)/2)+6,'text-anchor':'end'},gDm,lab);}
 });
 ROOMS.forEach(r=>{const p=el('polygon',{points:r.poly.map(([x,y])=>`${x},${Y(y)}`).join(' '),class:'rm','data-k':r.k},gRm);p.addEventListener('click',()=>{if(!measuring)selectRoom(r.k)});});
 /* ---- zidovi po prostorijama: svaki brid poligona, podijeljen po otvorima ---- */
@@ -411,7 +411,7 @@ const FSNAPX=new Set(),FSNAPY=new Set(); FURN.forEach(f=>{FSNAPX.add(f.x0);FSNAP
 function svgPt(e){const pt=plan.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(plan.getScreenCTM().inverse());return [q.x,610-q.y];}
 function snap(v,set,tol){let best=v,bd=tol;for(const s of set){const d=Math.abs(s-v);if(d<bd){bd=d;best=s}}return best;}
 function snapPt([x,y],alt){if(alt)return [Math.round(x),Math.round(y)];const fu=gFu.style.display!=='none';
-  let sx=snap(x,SNAPX,8),sy=snap(y,SNAPY,8); if(fu){if(sx===x)sx=snap(x,FSNAPX,6);if(sy===y)sy=snap(y,FSNAPY,6);} return [Math.round(sx*2)/2,Math.round(sy*2)/2];}
+  let sx=snap(x,SNAPX,16),sy=snap(y,SNAPY,16); if(fu){if(sx===x)sx=snap(x,FSNAPX,10);if(sy===y)sy=snap(y,FSNAPY,10);} return [Math.round(sx*2)/2,Math.round(sy*2)/2];}
 function drawMeasure(g,a,b){
   g.innerHTML=''; const dx=b[0]-a[0],dy=b[1]-a[1],d=Math.hypot(dx,dy);
   if(dx&&dy){el('line',{x1:a[0],y1:Y(a[1]),x2:b[0],y2:Y(a[1]),class:'guide'},g);el('line',{x1:b[0],y1:Y(a[1]),x2:b[0],y2:Y(b[1]),class:'guide'},g);}
