@@ -567,7 +567,9 @@ function renderTrain(){
   $('weekChips').innerHTML=chips;
 }
 function renderSet(){$('setTarget').value=state.target;$('setName').value=state.name||'';document.querySelectorAll('#themeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.t===(state.theme||'')));}
-function applyTheme(){const t=state.theme||'';if(t)document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;}
+function applyTheme(){const t=state.theme||'';if(t)document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;try{if(t)localStorage.setItem('kb-theme',t);else localStorage.removeItem('kb-theme')}catch(e){}}
+try{const kt=localStorage.getItem('kb-theme');state.theme=kt==='light'||kt==='dark'?kt:'';}catch(e){}
+addEventListener('storage',e=>{if(e.key==='kb-theme'){state.theme=e.newValue==='light'||e.newValue==='dark'?e.newValue:'';applyTheme();if(typeof renderSet==='function')renderSet();}});
 function isDarkNow(){const t=state.theme||'';return t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;}
 function renderAll(){renderHome();renderLog();renderTrain();renderSet();}
 
@@ -679,7 +681,7 @@ function showPage(p){document.querySelectorAll('.page').forEach(s=>{const show=s
 $('rangeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;range=+b.dataset.r;document.querySelectorAll('#rangeSeg button').forEach(x=>x.classList.toggle('on',x===b));renderChart();});
 
 /* ---- theme ---- */
-$('btnTheme').onclick=()=>{state.theme=isDarkNow()?'light':'dark';save(false);applyTheme();renderSet();};
+$('btnTheme').onclick=()=>{const t=state.theme||'';state.theme=t===''?'light':t==='light'?'dark':'';save(false);applyTheme();renderSet();};
 $('themeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.theme=b.dataset.t;save(false);applyTheme();renderSet();});
 /* ---- settings ---- */
 $('saveSet').onclick=()=>{const t=parseFloat($('setTarget').value);if(!(t>20&&t<400)){toast('Neispravan cilj');return;}state.target=Math.round(t*10)/10;state.name=$('setName').value.trim();save();renderAll();toast('Postavke spremljene');showPage('pageHome');};
