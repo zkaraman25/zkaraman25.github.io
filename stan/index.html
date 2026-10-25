@@ -57,6 +57,14 @@ svg.plan{width:100%;height:auto;display:block;max-width:100%}
 .toggles button[aria-pressed="true"]{background:var(--a-soft);border-color:var(--a-pale);color:var(--a-strong)}
 /* plan svg */
 .wl{fill:var(--wall)} .fl{fill:var(--floor)} .tl{fill:var(--tile)} .gl{stroke:var(--glass);stroke-width:5;fill:none}
+svg.pog .pf{fill:var(--floor);stroke:var(--line)} svg.pog .pw{fill:var(--wall)} svg.pog .pg{fill:var(--glass)} svg.pog .po{fill:var(--floor)}
+svg.pog .pe{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5;cursor:pointer} svg.pog .pe.hi{fill:none;stroke-dasharray:6 4} svg.pog .pe:hover{fill:var(--a-pale)}
+svg.pog .pt,svg.pog .et{fill:var(--fg);font-family:var(--font);font-size:13px;font-weight:600;pointer-events:none}
+svg.pog .ew{fill:var(--tile);stroke:var(--wall);stroke-width:2} svg.pog .eg{fill:var(--glass);opacity:.8} svg.pog .eo{fill:var(--card);stroke:var(--wall);stroke-width:1.5} svg.pog .ef{stroke:var(--wall);stroke-width:2} svg.pog .efl{stroke:var(--wall);stroke-width:4}
+svg.pog .ee{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5;cursor:pointer} svg.pog .ee.far{fill:var(--sofa);opacity:.9} svg.pog .ee:hover{fill:var(--a-pale)}
+svg.pog .dl{stroke:var(--dim);stroke-width:1.5} svg.pog .dg{stroke:var(--dim);stroke-width:1;opacity:.6} svg.pog .dt{fill:var(--dim);font-family:var(--font);font-size:14px;font-weight:700}
+svg.pog .sel{fill:none;stroke:var(--dim);stroke-width:2.5;stroke-dasharray:5 3}
+.kote{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px} .kote div{flex:1 1 80px;background:var(--a-faint);border-radius:10px;padding:6px 8px;text-align:center} .kote b{display:block;font-size:18px} .kote span{font-size:11px;color:var(--muted)}
 .lbl{fill:var(--muted);font-family:var(--font);font-size:22px;font-weight:600;pointer-events:none}
 .lbl.s{font-size:15px;font-weight:500}
 .rm{fill:transparent;cursor:pointer} .rm:hover{fill:var(--a-faint)} .rm.sel{fill:var(--a-soft);opacity:.7}
@@ -122,7 +130,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 <div class="wrap">
   <header>
     <a class="brand" href="/"><div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></div>
-      <div><h1>Stan Škalinova</h1><div class="sub">A1, prizemlje. Tlocrt s mjerama, svjetla, pogledi i dokumenti.</div></div></a>
+      <div><h1>Stan Škalinova</h1><div class="sub">A1, prizemlje. 3D model, tlocrt sa svjetlima, pogledi s kotama, renderi i dokumenti.</div></div></a>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
       <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
@@ -130,11 +138,18 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   </header>
 
   <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="3d" aria-selected="false">3D</button>
     <button role="tab" data-tab="tlocrt" aria-selected="true">Tlocrt</button>
-    <button role="tab" data-tab="svjetla" aria-selected="false">Svjetla</button>
-    <button role="tab" data-tab="pogledi" aria-selected="false">Pogledi i renderi</button>
+    <button role="tab" data-tab="pogledi" aria-selected="false">Pogledi</button>
+    <button role="tab" data-tab="renderi" aria-selected="false">Renderi</button>
     <button role="tab" data-tab="dokumenti" aria-selected="false">Dokumenti</button>
   </nav>
+
+  <!-- 3D -->
+  <section id="tab-3d" hidden>
+    <div class="card" style="padding:0;overflow:hidden"><iframe id="frame3d" title="3D model stana" style="width:100%;height:min(82vh,900px);border:0;display:block" loading="lazy" allow="fullscreen"></iframe></div>
+    <div class="sub" style="margin-top:8px">Jedan prst okreće, dva pomiču i zumiraju. Dodir na element daje mjere i proizvod iz liste Aparati. <a href="3d/" target="_blank" rel="noopener">Otvori na cijelom ekranu</a>.</div>
+  </section>
 
   <!-- TLOCRT -->
   <section id="tab-tlocrt" class="two">
@@ -150,13 +165,12 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
       <div class="sub" style="margin-top:8px" id="planHint">Pređi mišem preko zida za duljinu, klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
     </div>
     <div class="card info" id="info"></div>
-  </section>
-
   <!-- SVJETLA -->
-  <section id="tab-svjetla" class="two" hidden>
+  <div class="two" id="svjetlaBlok" style="grid-column:1/-1">
     <div class="card">
+      <h2>Svjetla</h2><div class="sub" style="margin-bottom:8px">Spušteni strop: utori s LED trakom, magnetske vodilice, ugradna svjetla. Klik na svjetlo pali i gasi.</div>
       <svg class="plan" id="lightSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Svjetla na tlocrtu"></svg>
-      <div class="legend"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>privjesna, točkasta</span><span id="count"></span></div>
+      <div class="legend"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>ugradna, točkasta</span><span id="count"></span></div>
     </div>
     <div style="display:grid;gap:12px">
       <div class="card"><h2>Scene</h2><div class="scenes">
@@ -165,11 +179,24 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
       <div class="card" id="lightList"><h2>Svjetla po prostorijama</h2></div>
       <div class="card"><h2>Pozivi (simulirano)</h2><div class="log" id="log">spremno</div></div>
     </div>
+  </div>
+
   </section>
 
   <!-- POGLEDI -->
-  <section id="tab-pogledi" hidden>
-    <div class="card"><h2>Pogledi po prostorijama i renderi</h2><div class="sub" style="margin-bottom:12px">Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal"></div></div>
+  <section id="tab-pogledi" class="two" hidden>
+    <div class="card" id="pogRoot">
+      <div class="toggles" id="pogRoom"></div>
+      <div class="toggles" id="pogView"></div>
+      <h2 id="pogTitle"></h2>
+      <svg class="plan pog" id="pogSvg" role="img" aria-label="Pogled"></svg>
+    </div>
+    <div class="card info" id="pogInfo"></div>
+  </section>
+
+  <!-- RENDERI -->
+  <section id="tab-renderi" hidden>
+    <div class="card"><h2>Pogledi po prostorijama i renderi (slike)</h2><div class="sub" style="margin-bottom:12px">Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal"></div></div>
   </section>
 
   <!-- DOKUMENTI -->
@@ -268,6 +295,64 @@ const FITS={
  d:[['Zid uz hodnik','198 za ormar','od putanje vrata (x 802) do kuta'],['Zid prema spavaćoj','355, od toga 275 za krevet','krevet 200 + 75 do putanje vrata'],['Zid prema susjednom stanu','355','stol u L uz prozor; iznad stola prazan zid'],['Širina sobe','280','krevet 90 + prolaz 185 ili stol 60'],['Prozor','140','parapet 90']],
  l:[['Kut uz spavaću sobu, dubina','45','od zida kuhinje do ograde 145 (provjeriti popločani dio, oko 115)'],['Širina lođe','360','vrata lođe 85 i prozor kuhinje 165 na zidu prema kuhinji']],
 };
+const FURN3=[
+ // kuhinja
+ {id:'k1',r:'b',n:'1 Visoki ormar 40',b:[0,0,60,40],z:[0,260],t:'tall',note:'od poda do stropa'},
+ {id:'k2',r:'b',n:'2 Hladnjak, ugradbeni',b:[0,40,60,100],z:[0,260],t:'tall',note:'niša 60, Bosch KIN96VFD0',prod:['hladnjak']},
+ {id:'k3',r:'b',n:'3 Kolona pećnica + mikrovalna',b:[0,100,60,160],z:[0,260],t:'column',note:'ladica 76, pećnica 60, mikrovalna 38, polica 20, ormarić 56',prod:['pečnica','pecnica','mikrovalna']},
+ {id:'k4',r:'b',n:'4 Perilica suđa',b:[145,0,205,60],z:[0,90],t:'base',note:'60, fronta u ravnini s kuhinjom',prod:['suđerica','sudjerica','perilica posuđa']},
+ {id:'k5',r:'b',n:'5 Sudoper pod prozorom',b:[205,0,265,60],z:[0,90],t:'sink',note:'element 60'},
+ {id:'k6',r:'b',n:'6 Kutni donji element',b:[265,0,310,60],z:[0,90],t:'base',note:'vrata 45, otvara cijeli kut'},
+ {id:'k6b',r:'b',n:'Kut',b:[310,0,370,60],z:[0,90],t:'base',note:'kutni dio ispod radne ploče'},
+ {id:'k7',r:'b',n:'7 Indukcija',b:[310,60,370,130],z:[0,90],t:'hob',note:'element 70; kupljena ploča Bosch PXE801DC1E je 80 cm (otvoreno)',prod:['indukcijska']},
+ {id:'k8',r:'b',n:'8 Viseći elementi',b:[335,0,370,215],z:[145,260],t:'upper',note:'65 + 60 s napom + 45 + 45, vrata do stropa',prod:['napa']},
+ {id:'k9',r:'b',n:'9 Šank 225 × 85',b:[145,130,370,215],z:[0,92],t:'bar',note:'elementi 60 + prepust 25 prema boravku, tri barske stolice',prod:['polubarska','barska']},
+ {id:'st1',r:'b',n:'Barska stolica 1',b:[170,222,210,262],z:[0,65],t:'stool',prod:['polubarska','barska']},
+ {id:'st2',r:'b',n:'Barska stolica 2',b:[238,222,278,262],z:[0,65],t:'stool',prod:['polubarska','barska']},
+ {id:'st3',r:'b',n:'Barska stolica 3',b:[306,222,346,262],z:[0,65],t:'stool',prod:['polubarska','barska']},
+ {id:'kava',r:'b',n:'Aparat za kavu',b:[8,8,38,32],z:[90,125],t:'coffee',note:'na radnoj ploči u kutu uz visoki ormar',prod:['kava','espresso']},
+ // boravak
+ {id:'A',r:'b',n:'A Kutna garnitura 275 × 220',b:[367.5,335,467.5,610],z:[0,70],t:'sofaL',note:'niska, modularna, dubina 100, sjedalo 42, naslon 70; duži krak uz zid prema hodniku',prod:['kutna garnitura','garnitura','sofa']},
+ {id:'A2',r:'b',n:'A Kraći krak garniture',b:[247.5,510,367.5,610],z:[0,70],t:'sofaS',note:'kraći krak do sredine prvog staklenog krila',prod:['kutna garnitura','garnitura','sofa']},
+ {id:'C',r:'b',n:'C Stolić 100 × 60',b:[267,370,327,470],z:[0,36],t:'table',note:'40 od garniture'},
+ {id:'D',r:'b',n:'D TV komoda 260 × 45',b:[2.5,345,45,605],z:[18,48],t:'tvunit',note:'viseća, visina 30; ploče 90, gramofon 60, ruteri 60, ladica 50',prod:['gramofon']},
+ {id:'E',r:'b',n:'E TV 55"',b:[2.5,478,7,601],z:[88,159],t:'tv',note:'na zidu, donji rub na 88, 322 od garniture',prod:['tv']},
+ {id:'B1',r:'b',n:'B Zidne plohe, TV zid',b:[0,456,2,610],z:[0,260],t:'panel',note:'samo na punom zidu od kraja prozora (y 456) do kuta; fuge prate komodu'},
+ {id:'B1b',r:'b',n:'B Zidne plohe ispod prozora',b:[0,335,2,456],z:[0,88],t:'panel',note:'iza komode, samo do parapeta prozora (90)'},
+ {id:'B2',r:'b',n:'B Zidne plohe iza garniture',b:[467.5,335,470,610],z:[0,260],t:'panel',note:'pet polja po 55'},
+ {id:'F1',r:'b',n:'Fotografija 150 × 100',b:[465.5,410,467.5,560],z:[110,210],t:'photo',note:'iznad garniture'},
+ {id:'sp1',r:'b',n:'Zvučnik Sonos',b:[12,352,36,366],z:[48,66],t:'speaker',prod:['zvučnik','sonos']},
+ {id:'sp2',r:'b',n:'Zvučnik Sonos',b:[12,584,36,598],z:[48,66],t:'speaker',prod:['zvučnik','sonos']},
+ // hodnik
+ {id:'F',r:'h',n:'F Ormarić 130 × 40 u niši',b:[610,336,650,466],z:[0,260],t:'hallF',note:'vrata 50 (robot dolje), police 25, sjedenje 55 s 2 ladice; push-to-open',prod:['robot']},
+ {id:'G',r:'h',n:'G Ploča s kukicama',b:[485,336,488,466],z:[0,260],t:'panel',note:'cijelom visinom, kukice na 180, magnetna vratašca dolje'},
+ {id:'I',r:'h',n:'I Ogledalo 100 × 224',b:[510,216,610,219],z:[18,242],t:'mirror',note:'točno nasuprot ulaznih vrata'},
+ {id:'H1',r:'h',n:'H Zidne plohe',b:[480,216,625,218],z:[0,260],t:'panel',note:'zid nasuprot vrata, oko vrata soba'},
+ {id:'H2',r:'h',n:'H Zidne plohe',b:[705,216,722,218],z:[0,260],t:'panel'},
+ // kupaona
+ {id:'J',r:'w',n:'J Perilica + sušilica 64 × 72',b:[928,392,1000,456],z:[0,250],t:'laundry',note:'stup, tri vrata 83/83/80, ladica s rešetkom',prod:['perilica rublja','sušilica','susilica']},
+ {id:'K',r:'w',n:'K Viseća WC školjka',b:[930,331,1000,367],z:[0,120],t:'wc',note:'os na y 349, predzid 20'},
+ {id:'L',r:'w',n:'L Komodica s umivaonikom 90 × 50',b:[950,216,1000,306],z:[55,100],t:'vanity',note:'viseća, ogledalo iznad do stropa'},
+ {id:'M',r:'w',n:'M Tuš 130 × 110',b:[660,346,790,456],z:[0,200],t:'shower',note:'na mjestu starog WC-a, otvoren prema kupaoni'},
+ // spavaća
+ {id:'N1',r:'s',n:'N Ormar 255 × 45',b:[380,-50,425,205],z:[0,260],t:'tall',note:'uz zid kuhinje, bez sokla; dubina 45 (probno, bila 60)'},
+ {id:'N2',r:'s',n:'N Ormar 200 × 45',b:[425,160,625,205],z:[0,260],t:'tall',note:'uz zid hodnika; dubina 45 (probno, bila 60); vrata, ladica 60 do 75, vrata'},
+ {id:'O',r:'s',n:'O Stol 100 × 45',b:[380,-150,425,-50],z:[0,78],t:'desk',note:'u ravnini s ormarom (dubina 45); dvije ladice 60 do 75, ploča na njima'},
+ {id:'Q',r:'s',n:'Q Krevet 180 × 200',b:[500,-100,700,80],z:[0,45],t:'bed',note:'nizak, madrac na 45, 10 od panela; uzglavlje prema istoku',prod:['krevet']},
+ {id:'R',r:'s',n:'R Noćni ormarić 50 × 40',b:[667.5,-150,707.5,-100],z:[25,45],t:'box',note:'viseći, vrh u ravnini madraca'},
+ {id:'P',r:'s',n:'P Panel uzglavlja',b:[707.5,-150,710,205],z:[0,100],t:'panel',note:'iveral, visina 100'},
+ // dječja
+ {id:'T',r:'d',n:'T Ormar 198 × 60',b:[802,145,1000,205],z:[0,260],t:'tall',note:'tri vrata po 66, bez sokla'},
+ {id:'U1',r:'d',n:'U Stol u L, krak 100',b:[940,-150,1000,-50],z:[0,78],t:'desk'},
+ {id:'U2',r:'d',n:'U Stol u L, krak 125',b:[815,-150,940,-90],z:[0,78],t:'desk',note:'ispod prozora, ploča na 78'},
+ {id:'W',r:'d',n:'W Krevet 90 × 200',b:[722.5,-150,812.5,50],z:[0,45],t:'bed1',note:'uzglavlje prema sjeveru, 75 do putanje vrata'},
+ {id:'V',r:'d',n:'V Panel uzglavlja',b:[720,-150,722.5,125],z:[0,100],t:'panel'},
+ // lođa
+ {id:'S',r:'l',n:'S Ormar na lođi 145 × 45',b:[315,-165,360,-20],z:[0,260],t:'tall',note:'dvoja vrata, do stropa, vodootporna ploča'},
+ {id:'rost',r:'l',n:'Roštilj',b:[20,-150,110,-95],z:[0,100],t:'grill',prod:['roštilj','rostilj']},
+];
+
+
 const LIGHTS=[
   {id:'U1',room:'Dnevni boravak',type:'led',g:[0,456,0,610],n:'LED iznad TV-a'},{id:'U3',room:'Dnevni boravak',type:'led',g:[470,335,470,610],n:'LED iza garniture'},
   {id:'U4',room:'Hodnik',type:'led',g:[370,216,805,216],n:'LED uz ogledalo i obloge'},{id:'U5',room:'Hodnik',type:'led',g:[485,336,485,466],n:'LED uz ploču s kukicama'},
@@ -302,9 +387,9 @@ function fmtSize(b){return b>1e6?(b/1e6).toFixed(1)+' MB':b>1e3?Math.round(b/1e3
 
 /* ===================== tabovi ===================== */
 const tabs=document.querySelectorAll('nav.tabs button');
-function showTab(id){tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));['tlocrt','svjetla','pogledi','dokumenti'].forEach(t=>document.getElementById('tab-'+t).hidden=t!==id);try{localStorage.setItem('stan.tab',id)}catch(e){}}
+function showTab(id){tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));['3d','tlocrt','pogledi','renderi','dokumenti'].forEach(t=>document.getElementById('tab-'+t).hidden=t!==id);if(id==='3d'){const fr=document.getElementById('frame3d');if(!fr.src)fr.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);}try{localStorage.setItem('stan.tab',id)}catch(e){}}
 tabs.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-let startTab='tlocrt';try{startTab=localStorage.getItem('stan.tab')||'tlocrt'}catch(e){} if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
+let startTab='tlocrt';try{startTab=localStorage.getItem('stan.tab')||'tlocrt'}catch(e){} if(!['3d','tlocrt','pogledi','renderi','dokumenti'].includes(startTab))startTab='tlocrt'; if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
 
 /* ===================== tlocrt ===================== */
 function drawBase(svg, withRooms){
@@ -612,5 +697,6 @@ document.getElementById('lPass').addEventListener('keydown',e=>{if(e.key==='Ente
 setStatus(connected()?'ok':'local'); drawDocs(); if(connected())loadDocs();
 showTab(startTab);
 </script>
+<script src="pogledi.js"></script>
 </body>
 </html>
