@@ -51,12 +51,25 @@ function drawRoomPlan(svg,r,onPick){
   // namještaj
   const items=FURN3.filter(f=>f.r===r.k);
   items.forEach(f=>{const [a,b,c,d]=f.b;const rr=el('rect',{x:a,y:Y(d),width:c-a,height:d-b,class:'pe'+(f.z[0]>=100?' hi':''),'data-id':f.id},g);
-    el('text',{x:(a+c)/2,y:Y((b+d)/2),class:'pt','text-anchor':'middle','dominant-baseline':'middle'},g,f.n.split(' ')[0]);
+    if((c-a)>30&&(d-b)>25)el('text',{x:(a+c)/2,y:Y((b+d)/2),class:'pt','text-anchor':'middle','dominant-baseline':'middle'},g,f.n.split(' ')[0]);
     rr.addEventListener('click',()=>onPick(f,'plan'));});
   // ukupne kote
   const gd=el('g',{class:'dims'},g);
   dim(gd,x0,Y(y0),x1,Y(y0),`${x1-x0}`,34); dim(gd,x0,Y(y0),x0,Y(y1),`${y1-y0}`,-34);
+  callouts(svg,g,items.map(f=>({f,x:(f.b[0]+f.b[2])/2,y:Y((f.b[1]+f.b[3])/2),t:f.n,s:`${f.b[2]-f.b[0]} × ${f.b[3]-f.b[1]}`})),x0-M,x1+M,-(y1)-M,y1-y0+2*M,onPick);
   return {g,Y};
+}
+/* oznake s linijama na rubu, kao u 3D modelu: lijevi stupac za elemente u lijevoj polovici, desni za desnu */
+function callouts(svg,g,items,vx0,vx1,vy0,vh,onPick){
+  const COL=230, STEP=34, gc=el('g',{class:'callouts'},g);
+  const mid=(vx0+vx1)/2; const L=items.filter(i=>i.x<mid).sort((a,b)=>a.y-b.y), R=items.filter(i=>i.x>=mid).sort((a,b)=>a.y-b.y);
+  const place=(ls,side)=>{const ys=[];ls.forEach(it=>ys.push(Math.max(it.y,ys.length?ys[ys.length-1]+STEP:vy0+20)));const over=ys[ys.length-1]-(vy0+vh-10);if(over>0)for(let i=0;i<ys.length;i++)ys[i]-=over;
+    ls.forEach((it,i)=>{const ty=ys[i];const tx=side==='L'?vx0-COL+10:vx1+COL-10;const bend=side==='L'?vx0-14:vx1+14;
+      el('polyline',{points:`${side==='L'?tx+120:tx-120},${ty} ${bend},${ty} ${it.x},${it.y}`,class:'cl'},gc);el('circle',{cx:it.x,cy:it.y,r:3,class:'cd'},gc);
+      const t=el('text',{x:tx,y:ty-2,class:'ct','text-anchor':side==='L'?'start':'end'},gc,it.t.length>26?it.t.slice(0,25)+'…':it.t);el('text',{x:tx,y:ty+11,class:'cs','text-anchor':side==='L'?'start':'end'},gc,it.s);
+      t.style.cursor='pointer';t.addEventListener('click',()=>onPick(it.f,'plan'));});};
+  if(L.length)place(L,'L'); if(R.length)place(R,'R');
+  const vb=svg.getAttribute('viewBox').split(' ').map(Number); svg.setAttribute('viewBox',`${vb[0]-(L.length?COL:0)} ${vb[1]} ${vb[2]+(L.length?COL:0)+(R.length?COL:0)} ${vb[3]}`);
 }
 function planDims(svg,ctx,r,f){
   svg.querySelectorAll('.pick').forEach(e=>e.remove());
@@ -94,6 +107,7 @@ function drawElevation(svg,r,w,onPick){
     rr.addEventListener('click',()=>onPick(f,'elev',w,it));});
   el('line',{x1:0,y1:H3,x2:L,y2:H3,class:'efl'},g);
   const gd=el('g',{class:'dims'},g); dim(gd,0,H3,L,H3,`${Math.round(L)}`,40); dim(gd,L,0,L,H3,`${H3}`,40);
+  callouts(svg,g,items.filter(it=>it.dist<=12).map(it=>({f:it.f,x:X((it.l+it.r)/2),y:Yz((it.f.z[0]+it.f.z[1])/2),t:it.f.n,s:`${Math.round(it.r-it.l)} × ${it.f.z[1]-it.f.z[0]}${it.f.z[0]?', od poda '+it.f.z[0]:''}`})),-M,L+M,-M+10,H3+2*M,(f)=>onPick(f,'elev',w,items.find(i=>i.f===f)));
   return {g,X,Yz,L};
 }
 function elevDims(svg,ctx,w,it){
