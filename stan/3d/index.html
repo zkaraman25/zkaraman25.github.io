@@ -40,7 +40,7 @@ a{color:var(--a)}
 #lbl .l{position:absolute;font-size:13px;font-weight:600;color:var(--ink);background:var(--lblbg);padding:3px 8px;border-radius:8px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;transform:translateY(-50%)}
 #lbl .l small{display:block;font-weight:400;color:var(--mut);font-size:11.5px} #lbl .l.dim{opacity:.28} #lbl .l{transition:opacity .25s,background .25s,color .25s} #lbl .l.sel{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)} #lbl .l.sel small{color:rgba(255,255,255,.8)} #lbl svg line.dim,#lbl svg circle.dim{opacity:.18} #lbl svg line.sel{stroke-width:2.5;stroke:var(--a) !important} #lbl svg circle.sel{fill:var(--a) !important;r:5}
 #lbl .n{position:absolute;pointer-events:auto;cursor:pointer;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}
-#lblList{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));display:flex;gap:6px;overflow-x:auto;padding:6px 10px;z-index:3;pointer-events:auto;scrollbar-width:none}
+#lblList{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));} body.emb #lblList{bottom:4px;display:flex;gap:6px;overflow-x:auto;padding:6px 10px;z-index:3;pointer-events:auto;scrollbar-width:none}
 #lblList span{flex:none;background:var(--lblbg);border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap}
 #lblList span.sel{background:var(--a);color:#fff} #lbl .n.sel{background:var(--a);transform:translate(-50%,-50%) scale(1.25)}
 #lblList b{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;align-items:center;justify-content:center;margin-right:5px}
@@ -4220,8 +4220,17 @@ function setIzo(on){
   G.ext.children.forEach(m=>{if(m.userData.ground)m.visible=!on;});
   applyWallMode(); localStorage.setItem('stan3d.izo',on?'1':'0'); $('lbl').style.display=on?'':'none'; $('lblList').hidden=!on; lastAz=null;
 }
-function fitOrtho(k){ // zumiraj ortografsku kameru na sobu ili na cijeli stan
-  const w=canvas.clientWidth,h=canvas.clientHeight,asp=w/h; let half=7.2; if(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);half=0.5*((Math.max(...xs)-Math.min(...xs))+(Math.max(...ys)-Math.min(...ys)))/100*0.6+1.2;} if(asp<1)half=half*0.95/asp;
+let lastFit=null;
+function fitOrtho(k,pos,tgt){ // zumiraj ortografsku kameru na sobu ili na cijeli stan; u portretu po stvarnoj projekciji (puna širina ekrana)
+  const w=canvas.clientWidth,h=canvas.clientHeight,asp=w/h; let half=7.2; if(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);half=0.5*((Math.max(...xs)-Math.min(...xs))+(Math.max(...ys)-Math.min(...ys)))/100*0.6+1.2;}
+  if(pos&&tgt)lastFit={k,pos,tgt};
+  if(asp<1&&pos&&tgt){const cam=new THREE.OrthographicCamera(-asp,asp,1,-1,0.1,300);cam.position.copy(pos);cam.up.set(0,1,0);cam.lookAt(tgt);cam.updateMatrixWorld();
+    const rs=k?[ROOMS.find(r=>r.k===k)]:ROOMS;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;const v=new THREE.Vector3();
+    rs.forEach(r=>r.poly.forEach(p=>[0,260].forEach(z=>{v.set(p[0]*S,z*S,-p[1]*S).project(cam);const X=v.x*asp,Y=v.y;x0=Math.min(x0,X);x1=Math.max(x1,X);y0=Math.min(y0,Y);y1=Math.max(y1,Y);})));
+    const cx=(x0+x1)/2,cy=(y0+y1)/2,right=new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,1);
+    const sh=right.multiplyScalar(cx).add(up.multiplyScalar(cy));pos.add(sh);tgt.add(sh);
+    half=Math.max((x1-x0)/2/asp,(y1-y0)/2)/0.9;}
+  else if(asp<1)half=half*0.95/asp;
   orthoTarget=half; if(!camAnim)applyHalf(half);
 }
 let orthoTarget=null; function applyHalf(half){const asp=canvas.clientWidth/canvas.clientHeight;ortho.left=-half*asp;ortho.right=half*asp;ortho.top=half;ortho.bottom=-half;ortho.zoom=1;ortho.updateProjectionMatrix();}
@@ -4276,11 +4285,11 @@ function flyTo(pos,tgt,half,dur){camAnim={p0:camera.position.clone(),t0:controls
 function roomCenter(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);return [(Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2];}
 const IZO_DIR={b:[1,1],h:[1,1],w:[-1,-1],s:[1,-1],d:[1,-1],l:[-1,-1]}; // iz kojeg kuta se gleda soba (x, y): stražnji zidovi su nasuprot
 function viewRoom(k){homeView=null;if(selected&&selected.f.r!==k){selected=null;clearGlow();if(selBox){scene.remove(selBox);selBox=null;}if(EMB)parent.postMessage({type:'sel',f:null,prods:[]},'*');}curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,$('tIzo').checked?1.15:0.3,-cy*S);
-  if($('tIzo').checked){const d=IZO_DIR[k]||[1,1];fitOrtho(k);flyTo(new THREE.Vector3(cx*S+d[0]*20,20*0.82,-cy*S-d[1]*20),t);return;}
+  if($('tIzo').checked){const d=IZO_DIR[k]||[1,1];const p=new THREE.Vector3(cx*S+d[0]*20,20*0.82,-cy*S-d[1]*20);fitOrtho(k,p,t);flyTo(p,t);return;}
   const port=innerHeight>innerWidth;flyTo(new THREE.Vector3(cx*S-1.4,port?6.2:5.0,-cy*S+(port?3.2:3.0)),t);if(!$('tNiski').checked){$('tNiski').checked=true;applyWallMode();toast('Zidovi spušteni radi pogleda; isključi u Prikazu');}}
 function viewPreset(p){
   const c=new THREE.Vector3(4.9,$('tIzo').checked?1.0:0.4,-2.2); curRoom=null; lastAz=null; homeView=null;
-  if($('tIzo').checked){fitOrtho(null);if(p==='iso'){flyTo(new THREE.Vector3(4.9+20,16.5+0.6,-2.2+20),c);return;}if(p==='top'){flyTo(new THREE.Vector3(4.9,40,-2.1),c.clone().setY(0));return;}if(p==='jug'){flyTo(new THREE.Vector3(4.9+16,16,-2.2+24),c);return;}if(p==='sjever'){flyTo(new THREE.Vector3(4.9-16,16,-2.2-24),c);return;}}
+  if($('tIzo').checked){if(p==='iso'){const q=new THREE.Vector3(4.9+20,16.5+0.6,-2.2+20);fitOrtho(null,q,c);flyTo(q,c);return;}fitOrtho(null);if(p==='top'){flyTo(new THREE.Vector3(4.9,40,-2.1),c.clone().setY(0));return;}if(p==='jug'){flyTo(new THREE.Vector3(4.9+16,16,-2.2+24),c);return;}if(p==='sjever'){flyTo(new THREE.Vector3(4.9-16,16,-2.2-24),c);return;}}
   if(p==='iso')flyTo(new THREE.Vector3(-3,9,7.5),c.clone().setY(0.6));
   if(p==='top')flyTo(new THREE.Vector3(4.9,16,-2.1),c.clone().setY(0));
   if(p==='jug')flyTo(new THREE.Vector3(5,6,6.5),c);
@@ -4294,7 +4303,7 @@ const ray=new THREE.Raycaster(); const ptr=new THREE.Vector2(); let selected=nul
 function pick(ev){const r=canvas.getBoundingClientRect();ptr.x=((ev.clientX-r.left)/r.width)*2-1;ptr.y=-((ev.clientY-r.top)/r.height)*2+1;ray.setFromCamera(ptr,camera);
   const vis=o=>{for(let p=o;p;p=p.parent){if(p.visible===false)return false;}return true;};
   const hits=ray.intersectObjects(G.furn.children,true);return hits.find(h=>h.object.userData.obj&&vis(h.object))||null;}
-const EMB=window.parent!==window; // ugrađen u app: opis ide u desni panel roditelja, ne u karticu
+const EMB=window.parent!==window; if(EMB)document.body.classList.add('emb'); // ugrađen u app: opis ide u desni panel roditelja, ne u karticu
 let glowMats=[], selT0=0, homeView=null; // homeView: kamera prije odabira, da se povratak animira
 function clearGlow(){glowMats.forEach(({o,m})=>{o.material=m;});glowMats=[];}
 function select(entry){
@@ -4395,7 +4404,7 @@ Object.entries(PALETTES).forEach(([k,p])=>{const o=document.createElement('optio
 const savedPal=localStorage.getItem('stan3d.pal');if(savedPal&&PALETTES[savedPal]){$('palSel').value=savedPal;PAL=PALETTES[savedPal];buildMats();}else{$('palSel').value='izo';}
 
 /* ---------- petlja ---------- */
-function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){renderer.setSize(w,h,false);persp.aspect=w/h;persp.updateProjectionMatrix();const half=(ortho.top-ortho.bottom)/2;ortho.left=-half*w/h;ortho.right=half*w/h;ortho.updateProjectionMatrix();}}
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){renderer.setSize(w,h,false);persp.aspect=w/h;persp.updateProjectionMatrix();const half=(ortho.top-ortho.bottom)/2;ortho.left=-half*w/h;ortho.right=half*w/h;ortho.updateProjectionMatrix();if(camera===ortho&&lastFit&&!camAnim){const p=lastFit.pos.clone(),t=lastFit.tgt.clone();fitOrtho(lastFit.k,p,t);camera.position.copy(p);controls.target.copy(t);applyHalf(orthoTarget);lastAz=null;}}}
 function loop(){resize();if(camAnim){const k=Math.min(1,(performance.now()-camAnim.s)/camAnim.d);const e=k<0.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;camera.position.lerpVectors(camAnim.p0,camAnim.p1,e);controls.target.lerpVectors(camAnim.t0,camAnim.t1,e);if(camera===ortho)applyHalf(camAnim.h0+(camAnim.h1-camAnim.h0)*e);if(k>=1){camAnim=null;$('lbl').style.opacity=1;}}
   controls.update();
   if(glowMats.length){const t=(performance.now()-selT0)/1000;const v=0.18+0.14*(0.5+0.5*Math.sin(t*3.2));glowMats.forEach(({c})=>c.emissiveIntensity=v);}
