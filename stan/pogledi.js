@@ -15,7 +15,7 @@ function wallsOf(r){
   for(let i=0;i<n;i++){const [ax,ay]=r.poly[i],[bx,by]=r.poly[(i+1)%n];const dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy);
     let nx=-dy/len,ny=dx/len; if(!ccw){nx=-nx;ny=-ny;} // lijeva normala = prema unutra za CCW
     const horiz=ay===by; const dir=horiz?(ny>0?'s':'n'):(nx>0?'w':'e');
-    out.push({k:r.k,i,a:[ax,ay],b:[bx,by],horiz,dir,lo:horiz?Math.min(ax,bx):Math.min(ay,by),hi:horiz?Math.max(ax,bx):Math.max(ay,by),c:horiz?ay:ax,nx,ny,len,name:DIRN[dir]});}
+    out.push({k:r.k,i,a:[ax,ay],b:[bx,by],horiz,dir,lo:horiz?Math.min(ax,bx):Math.min(ay,by),hi:horiz?Math.max(ax,bx):Math.max(ay,by),c:horiz?ay:ax,nx,ny,len,name:(typeof EDGE_NAMES!=='undefined'&&EDGE_NAMES[r.k]&&EDGE_NAMES[r.k][i])||DIRN[dir]});}
   return out;
 }
 // koordinata "uzduž zida" gledano iznutra, slijeva nadesno
@@ -111,7 +111,7 @@ function elevDims(svg,ctx,w,it){
 /* ---------- UI ---------- */
 function init(){
   const root=document.getElementById('pogRoot'); if(!root)return;
-  const roomSel=document.getElementById('pogRoom'), viewSel=document.getElementById('pogView'), svg=document.getElementById('pogSvg'), info=document.getElementById('pogInfo'), title=document.getElementById('pogTitle');
+  const roomSel=document.getElementById('pogRoom'), viewSel=document.getElementById('pogView'), svg=document.getElementById('pogSvg'), info=document.getElementById('info'), title=document.getElementById('pogTitle');
   ROOMS.forEach(r=>{const o=document.createElement('button');o.textContent=r.name;o.dataset.k=r.k;roomSel.appendChild(o);});
   let cur={k:'b',view:'plan'};
   function buildViews(){viewSel.innerHTML='';const r=ROOMS.find(r=>r.k===cur.k);
@@ -121,15 +121,16 @@ function init(){
   }
   function countSame(r,w){return wallsOf(r).filter(x=>x.dir===w.dir&&x.len>=60).length;}
   function draw(){const r=ROOMS.find(r=>r.k===cur.k);roomSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur.k));viewSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===cur.view));
-    info.innerHTML='<div class="sub">Klikni element za kote. Kote su u cm, prema nacrtu; prije izrade izmjeriti na licu mjesta.</div>';
     if(cur.view==='plan'){title.textContent=r.name+', tlocrt';const ctx=drawRoomPlan(svg,r,(f)=>{planDims(svg,ctx,r,f);showInfo(f,null);});}
     else{const w=wallsOf(r)[+cur.view.slice(1)];title.textContent=r.name+', '+w.name.toLowerCase()+' (pogled iznutra)';const ctx=drawElevation(svg,r,w,(f,_,w2,it)=>{elevDims(svg,ctx,w2,it);showInfo(f,it);});}
   }
   function showInfo(f,it){const [a,b,c,d]=f.b;
     info.innerHTML=`<h3>${esc(f.n)}</h3><div class="kote"><div><b>${c-a}</b><span>širina (x)</span></div><div><b>${d-b}</b><span>dubina (y)</span></div><div><b>${f.z[1]-f.z[0]}</b><span>visina</span></div><div><b>${f.z[0]}</b><span>od poda</span></div><div><b>${H3-f.z[1]}</b><span>do stropa</span></div></div>
       ${f.note?`<div style="margin-top:8px">${esc(f.note)}</div>`:''}<div class="sub" style="margin-top:8px">Tlocrt: x ${a}–${c}, y ${b}–${d}${it?`; u pogledu: ${Math.round(it.L0)}–${Math.round(it.L1)} od lijevog kuta, ${Math.round(it.dist)} od zida`:''}</div>`;}
-  roomSel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cur.k=b.dataset.k;cur.view='plan';buildViews();draw();});
-  buildViews();draw();
+  roomSel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cur.k=b.dataset.k;cur.view='plan';buildViews();draw();if(typeof selectRoom==='function'&&window.curRoomK!==cur.k){}});
+  window.Pogledi={wallsOf,drawRoomPlan,planDims,drawElevation,elevDims,show:(k,v)=>{cur.k=k;cur.view=v||'plan';buildViews();draw();}};
+  buildViews();
+  window.dispatchEvent(new Event('pogledi-ready'));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

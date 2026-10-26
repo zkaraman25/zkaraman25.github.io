@@ -11,7 +11,7 @@
 :root{
   --bg:#f3f5f8; --card:#ffffff; --fg:#111a24; --muted:#68717d; --line:#e2e7ee; --hover:#eef2f7;
   --a:#1f4e79; --a-strong:#173c5e; --a-soft:#e1ebf4; --a-pale:#bfd3e6; --a-faint:#eef3f8; --on-a:#ffffff; --warn:#b4532a;
-  --wall:#2c333d; --floor:#fbfaf6; --tile:#eef0f2; --wood:#d9c3a3; --wood-d:#9c7f58; --sofa:#cdd8cb; --glass:#8fbbdc; --dim:#c0392b;
+  --wall:#b5aa9b; --floor:#efe5d4; --tile:#e6e4df; --wood:#cdb18a; --wood-d:#8f7352; --sofa:#b7c4b1; --glass:#a9cfe4; --dim:#b8463a;
   --warm:#f0a51e; --track:#d6382f; --lamp:#f3b63f; --off:#c9cfd6;
   --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
@@ -19,13 +19,13 @@
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
-  --wall:#4a5363; --floor:#1b2129; --tile:#202834; --wood:#8a7050; --wood-d:#c4a67c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
+  --wall:#6a6459; --floor:#2b2620; --tile:#272a2e; --wood:#8a7050; --wood-d:#d2b48c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
   --warm:#ffcf7a; --track:#ff6b6b; --lamp:#ffc457; --off:#3b4049;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
 :root[data-theme="dark"]{
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
-  --wall:#4a5363; --floor:#1b2129; --tile:#202834; --wood:#8a7050; --wood-d:#c4a67c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
+  --wall:#6a6459; --floor:#2b2620; --tile:#272a2e; --wood:#8a7050; --wood-d:#d2b48c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
   --warm:#ffcf7a; --track:#ff6b6b; --lamp:#ffc457; --off:#3b4049;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
 *{box-sizing:border-box}
@@ -50,13 +50,21 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke
 nav.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px}
 nav.tabs button{border-radius:999px} nav.tabs button[aria-selected="true"]{background:var(--a-soft);border-color:var(--a-pale);color:var(--a-strong)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--sh);min-width:0}
-.two{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.mapcard{position:relative;padding-bottom:58px} .mapbar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--sh)}
+.mapbar button{border:0;background:transparent;border-radius:999px;padding:8px 16px} .mapbar button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
+#frame3d{width:100%;height:min(78vh,860px);border:0;display:block;border-radius:10px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px} .chips button{padding:6px 11px;font-size:13px;border-radius:999px} .chips button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)}
+.thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px} .thumbs a{display:block;border:1px solid var(--line);border-radius:10px;padding:6px;text-decoration:none;color:inherit;background:var(--card)} .thumbs a:hover{border-color:var(--a-pale)}
+.thumbs svg{width:100%;height:auto;display:block;pointer-events:none} .thumbs b{display:block;font-size:12px;margin-top:4px} .thumbs small{color:var(--muted);font-size:11px}
+.elcard .kote{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0} .elcard .kote div{flex:1 1 70px;background:var(--a-faint);border-radius:10px;padding:6px 8px;text-align:center} .elcard .kote b{display:block;font-size:18px} .elcard .kote span{font-size:11px;color:var(--muted)}
+.rgroup{margin-bottom:18px} .rgroup h3{margin:0 0 2px;font-size:15px} .rgroup .sub{margin-bottom:10px}
 @media (max-width:900px){.two{grid-template-columns:1fr}}
 svg.plan{width:100%;height:auto;display:block;max-width:100%}
 .toggles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .toggles button[aria-pressed="true"]{background:var(--a-soft);border-color:var(--a-pale);color:var(--a-strong)}
 /* plan svg */
-.wl{fill:var(--wall)} .fl{fill:var(--floor)} .tl{fill:var(--tile)} .gl{stroke:var(--glass);stroke-width:5;fill:none}
+.wl{fill:var(--wall);stroke:var(--wood-d);stroke-width:.8;stroke-opacity:.35} .fl{fill:var(--floor)} .tl{fill:var(--tile)} .gl{stroke:var(--glass);stroke-width:5;fill:none}
 svg.pog .pf{fill:var(--floor);stroke:var(--line)} svg.pog .pw{fill:var(--wall)} svg.pog .pg{fill:var(--glass)} svg.pog .po{fill:var(--floor)}
 svg.pog .pe{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5;cursor:pointer} svg.pog .pe.hi{fill:none;stroke-dasharray:6 4} svg.pog .pe:hover{fill:var(--a-pale)}
 svg.pog .pt,svg.pog .et{fill:var(--fg);font-family:var(--font);font-size:13px;font-weight:600;pointer-events:none}
@@ -138,35 +146,46 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   </header>
 
   <nav class="tabs" role="tablist">
-    <button role="tab" data-tab="3d" aria-selected="false">3D</button>
-    <button role="tab" data-tab="tlocrt" aria-selected="true">Tlocrt</button>
-    <button role="tab" data-tab="pogledi" aria-selected="false">Pogledi</button>
+    <button role="tab" data-tab="stan" aria-selected="true">Stan</button>
+    <button role="tab" data-tab="svjetla" aria-selected="false">Svjetla</button>
     <button role="tab" data-tab="renderi" aria-selected="false">Renderi</button>
     <button role="tab" data-tab="dokumenti" aria-selected="false">Dokumenti</button>
   </nav>
 
-  <!-- 3D -->
-  <section id="tab-3d" hidden>
-    <div class="card" style="padding:0;overflow:hidden"><iframe id="frame3d" title="3D model stana" style="width:100%;height:min(82vh,900px);border:0;display:block" loading="lazy" allow="fullscreen"></iframe></div>
-    <div class="sub" style="margin-top:8px">Jedan prst okreće, dva pomiču i zumiraju. Dodir na element daje mjere i proizvod iz liste Aparati. <a href="3d/" target="_blank" rel="noopener">Otvori na cijelom ekranu</a>.</div>
+  <!-- STAN: karta (tlocrt / pogledi / 3D) lijevo, opis desno -->
+  <section id="tab-stan" class="two">
+    <div class="card mapcard">
+      <div id="map-tlocrt">
+        <div class="toggles">
+          <button data-layer="fu" aria-pressed="false">Namještaj</button>
+          <button data-layer="dm" aria-pressed="true">Kote</button>
+          <span style="flex:1"></span>
+          <button id="btnMeasure" aria-pressed="false" title="Klikni dvije točke na tlocrtu">Mjeri</button>
+          <button id="btnClearMeasure" hidden>Obriši mjere</button>
+        </div>
+        <div class="planwrap"><svg class="plan" id="planSvg" viewBox="-110 -85 1200 965" role="img" aria-label="Tlocrt stana"></svg><div class="tip" id="tip" hidden></div></div>
+        <div class="sub" style="margin-top:8px" id="planHint">Pređi mišem preko zida za duljinu, klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
+      </div>
+      <div id="map-pogledi" hidden>
+        <div id="pogRoot">
+          <div class="toggles" id="pogRoom"></div>
+          <div class="toggles" id="pogView"></div>
+          <h2 id="pogTitle"></h2>
+          <svg class="plan pog" id="pogSvg" role="img" aria-label="Pogled"></svg>
+          <div class="sub" style="margin-top:8px">Klikni element u pogledu za kote. Sve u cm.</div>
+        </div>
+      </div>
+      <div id="map-3d" hidden>
+        <iframe id="frame3d" title="3D model stana" loading="lazy" allow="fullscreen"></iframe>
+        <div class="sub" style="margin-top:8px">Jedan prst okreće, dva pomiču i zumiraju. Klik na element otvara opis desno. <a href="3d/" target="_blank" rel="noopener">Cijeli ekran</a>.</div>
+      </div>
+      <div class="mapbar"><button data-map="tlocrt" aria-pressed="true">Tlocrt</button><button data-map="pogledi" aria-pressed="false">Pogledi</button><button data-map="3d" aria-pressed="false">3D</button></div>
+    </div>
+    <div class="card info"><div class="chips" id="roomChips"></div><div id="info"></div></div>
   </section>
 
-  <!-- TLOCRT -->
-  <section id="tab-tlocrt" class="two">
-    <div class="card">
-      <div class="toggles">
-        <button data-layer="fu" aria-pressed="false">Namještaj</button>
-        <button data-layer="dm" aria-pressed="true">Kote</button>
-        <span style="flex:1"></span>
-        <button id="btnMeasure" aria-pressed="false" title="Klikni dvije točke na tlocrtu">Mjeri</button>
-        <button id="btnClearMeasure" hidden>Obriši mjere</button>
-      </div>
-      <div class="planwrap"><svg class="plan" id="planSvg" viewBox="-110 -85 1200 965" role="img" aria-label="Tlocrt stana"></svg><div class="tip" id="tip" hidden></div></div>
-      <div class="sub" style="margin-top:8px" id="planHint">Pređi mišem preko zida za duljinu, klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
-    </div>
-    <div class="card info" id="info"></div>
   <!-- SVJETLA -->
-  <div class="two" id="svjetlaBlok" style="grid-column:1/-1">
+  <section id="tab-svjetla" class="two" hidden>
     <div class="card">
       <h2>Svjetla</h2><div class="sub" style="margin-bottom:8px">Spušteni strop: utori s LED trakom, magnetske vodilice, ugradna svjetla. Klik na svjetlo pali i gasi.</div>
       <svg class="plan" id="lightSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Svjetla na tlocrtu"></svg>
@@ -179,25 +198,11 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
       <div class="card" id="lightList"><h2>Svjetla po prostorijama</h2></div>
       <div class="card"><h2>Pozivi (simulirano)</h2><div class="log" id="log">spremno</div></div>
     </div>
-  </div>
-
-  </section>
-
-  <!-- POGLEDI -->
-  <section id="tab-pogledi" class="two" hidden>
-    <div class="card" id="pogRoot">
-      <div class="toggles" id="pogRoom"></div>
-      <div class="toggles" id="pogView"></div>
-      <h2 id="pogTitle"></h2>
-      <svg class="plan pog" id="pogSvg" role="img" aria-label="Pogled"></svg>
-    </div>
-    <div class="card info" id="pogInfo"></div>
   </section>
 
   <!-- RENDERI -->
   <section id="tab-renderi" hidden>
-    <div class="card" style="margin-bottom:12px"><h2>3D prikazi po prostorijama</h2><div class="sub" style="margin-bottom:12px">Izometrija iz koordinata tlocrta: stražnji zidovi puni, prednji izrezani, oznake s mjerama. Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal3d"></div></div>
-    <div class="card"><h2>Pogledi po prostorijama i renderi (slike)</h2><div class="sub" style="margin-bottom:12px">Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal"></div></div>
+    <div class="card"><h2>Renderi po prostorijama</h2><div class="sub" style="margin-bottom:14px">Za svaku prostoriju: mjere, izometrija s oznakama, pogledi zidova. Klik otvara sliku u punoj veličini.</div><div id="renders"></div></div>
   </section>
 
   <!-- DOKUMENTI -->
@@ -393,9 +398,10 @@ function fmtSize(b){return b>1e6?(b/1e6).toFixed(1)+' MB':b>1e3?Math.round(b/1e3
 
 /* ===================== tabovi ===================== */
 const tabs=document.querySelectorAll('nav.tabs button');
-function showTab(id){tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));['3d','tlocrt','pogledi','renderi','dokumenti'].forEach(t=>document.getElementById('tab-'+t).hidden=t!==id);if(id==='3d'){const fr=document.getElementById('frame3d');if(!fr.src)fr.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);}try{localStorage.setItem('stan.tab',id)}catch(e){}}
+const TABS=['stan','svjetla','renderi','dokumenti'];
+function showTab(id){if(!TABS.includes(id))id='stan';tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));TABS.forEach(t=>document.getElementById('tab-'+t).hidden=t!==id);try{localStorage.setItem('stan.tab',id)}catch(e){}}
 tabs.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-let startTab='tlocrt';try{startTab=localStorage.getItem('stan.tab')||'tlocrt'}catch(e){} if(!['3d','tlocrt','pogledi','renderi','dokumenti'].includes(startTab))startTab='tlocrt'; if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
+let startTab='stan';try{startTab=localStorage.getItem('stan.tab')||'stan'}catch(e){} if(!TABS.includes(startTab))startTab='stan'; if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
 
 /* ===================== tlocrt ===================== */
 function drawBase(svg, withRooms){
@@ -544,17 +550,57 @@ document.querySelectorAll('[data-layer]').forEach(b=>{
 });
 // info panel
 const info=document.getElementById('info');
+let curRoomK='b';
+const roomChips=document.getElementById('roomChips');
+ROOMS.forEach(r=>{const b=document.createElement('button');b.textContent=r.k==='b'?'Boravak i kuhinja':r.name;b.dataset.k=r.k;b.addEventListener('click',()=>{selectRoom(r.k);syncMapRoom(r.k);});roomChips.appendChild(b);});
+function syncMapRoom(k){ // karta prati odabranu sobu
+  if(mapMode==='3d')post3d({type:'room',k}); else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,'plan');
+}
+function viewThumbs(k){ // male sličice pogleda sobe: tlocrt i svaki zid; klik otvara pogled na karti
+  if(!window.Pogledi)return '';
+  const r=ROOMS.find(x=>x.k===k); const views=[['plan','Tlocrt']].concat(Pogledi.wallsOf(r).filter(w=>w.len>=60).map(w=>['w'+w.i,w.name]));
+  return `<h3 style="margin-top:14px;font-size:14px">Pogledi</h3><div class="thumbs">${views.map(([v,n])=>`<a href="#" data-view="${v}"><svg class="plan pog" data-view="${v}"></svg><b>${esc(n)}</b></a>`).join('')}</div>`;
+}
 function selectRoom(k){
+  curRoomK=k; roomChips.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
   document.querySelectorAll('.rm').forEach(p=>p.classList.toggle('sel',p.dataset.k===k)); furnNodes.forEach(g=>g.style.filter='');
   const r=ROOMS.find(x=>x.k===k); const items=FURN.map((f,i)=>({f,i})).filter(o=>o.f.r===k);
   info.innerHTML=`<h3>${esc(r.name)}</h3><div class="sub">${esc(r.area)}</div><div class="kv"><b>Mjere</b><span>${esc(r.dims)}</span></div>
     <div class="list">${items.map(o=>`<div class="item" data-i="${o.i}"><span class="b">${esc(o.f.n.split(' ')[0])}</span><span>${esc(o.f.n.slice(o.f.n.indexOf(' ')+1))}<small>${o.f.x1-o.f.x0} × ${o.f.y1-o.f.y0} u tlocrtu${o.f.t?', '+esc(o.f.t):''}</small></span></div>`).join('')}</div>
     <h3 style="margin-top:14px;font-size:14px">Što stane</h3>
     <div class="list">${(FITS[k]||[]).map(([w,l,t])=>`<div class="item" style="cursor:default;grid-template-columns:1fr"><span>${esc(w)}: <b>${esc(l)}</b><small>${esc(t)}</small></span></div>`).join('')}</div>
-    <div class="list" style="margin-top:12px">${r.notes.map(n=>`<div class="sub">• ${esc(n)}</div>`).join('')}</div>`;
+    <div class="list" style="margin-top:12px">${r.notes.map(n=>`<div class="sub">• ${esc(n)}</div>`).join('')}</div>${viewThumbs(k)}`;
   info.querySelectorAll('.item').forEach(it=>it.addEventListener('click',()=>selectFurn(+it.dataset.i)));
+  if(window.Pogledi){const r3=ROOMS.find(x=>x.k===k);info.querySelectorAll('.thumbs svg').forEach(sv=>{const v=sv.dataset.view;if(v==='plan')Pogledi.drawRoomPlan(sv,r3,()=>{});else Pogledi.drawElevation(sv,r3,Pogledi.wallsOf(r3)[+v.slice(1)],()=>{});});
+    info.querySelectorAll('.thumbs a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();setMap('pogledi');Pogledi.show(k,a.dataset.view);}));}
   try{localStorage.setItem('stan.room',k)}catch(e){}
 }
+/* ---- opis elementa iz 3D modela ---- */
+function showElement(f,prods){
+  const room=ROOMS.find(r=>r.k===f.r)||{name:''}; const [a,b,c,d]=f.b; const Hh=f.z[1]-f.z[0];
+  roomChips.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===f.r));
+  info.innerHTML=`<div class="elcard"><h3>${esc(f.n)}</h3><div class="sub">${esc(room.name)}</div>
+    <div class="kote"><div><b>${c-a}</b><span>širina</span></div><div><b>${d-b}</b><span>dubina</span></div><div><b>${Hh}</b><span>visina</span></div>${f.z[0]>0?`<div><b>${f.z[0]}</b><span>od poda</span></div>`:''}</div>
+    ${f.note?`<div style="font-size:13px;margin-bottom:8px">${esc(f.note)}</div>`:''}
+    <div class="sub">Položaj u tlocrtu: x ${a}–${c}, y ${b}–${d}</div>
+    ${(prods&&prods.length)?`<div class="list">${prods.map(p=>`<div class="item" style="grid-template-columns:1fr;cursor:default"><span>${esc(p.name)}<small>${esc(p.price||'')}${p.bought?' · kupljeno':''}${p.source?` · <a href="${esc(p.source)}" target="_blank" rel="noopener">otvori</a>`:''}</small></span></div>`).join('')}</div>`:''}
+    <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
+  document.getElementById('backRoom').addEventListener('click',()=>selectRoom(f.r));
+}
+/* ---- karta: tlocrt / pogledi / 3D ---- */
+let mapMode='tlocrt';
+const fr3d=document.getElementById('frame3d');
+function post3d(m){if(fr3d.contentWindow)fr3d.contentWindow.postMessage(m,'*');}
+function setMap(m){mapMode=m;document.querySelectorAll('.mapbar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.map===m));['tlocrt','pogledi','3d'].forEach(x=>document.getElementById('map-'+x).hidden=x!==m);
+  if(m==='3d'&&!fr3d.src)fr3d.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);
+  if(m==='3d')setTimeout(()=>post3d({type:'room',k:curRoomK}),fr3d.dataset.ready?0:1500);
+  if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,'plan');
+  try{localStorage.setItem('stan.map',m)}catch(e){}}
+document.querySelectorAll('.mapbar button').forEach(b=>b.addEventListener('click',()=>setMap(b.dataset.map)));
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'room',k:curRoomK});}
+  if(d.type==='sel'){if(d.f)showElement(d.f,d.prods);else selectRoom(curRoomK);}
+  if(d.type==='room'&&d.k&&d.k!==curRoomK)selectRoom(d.k);});
+addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);let m='tlocrt';try{m=localStorage.getItem('stan.map')||'tlocrt'}catch(e){}if(['tlocrt','pogledi','3d'].includes(m)&&m!=='tlocrt')setMap(m);});
 function selectFurn(i){
   const f=FURN[i]; selectRoom(f.r);
   furnNodes.forEach((g,j)=>g.style.filter=j===i?'drop-shadow(0 0 6px var(--a))':''); info.querySelectorAll('.item').forEach(it=>it.classList.toggle('sel',+it.dataset.i===i));
@@ -592,10 +638,16 @@ document.querySelectorAll('[data-scene]').forEach(b=>b.addEventListener('click',
 LIGHTS.forEach(l=>render(l.id));
 
 /* ===================== pogledi ===================== */
-function fillGal(id,list){const gal=document.getElementById(id);
-list.forEach(([f,t,s])=>{const a=document.createElement('a');a.href='slike/'+f;a.innerHTML=`<img loading="lazy" src="slike/${f}" alt="${esc(t)}"><b>${esc(t)}</b><small>${esc(s)}</small>`;
-  a.addEventListener('click',e=>{e.preventDefault();document.getElementById('viewImg').src='slike/'+f;document.getElementById('viewTitle').textContent=t;document.getElementById('viewDlg').showModal();});gal.appendChild(a);});}
-fillGal('gal3d',GALLERY3D); fillGal('gal',GALLERY);
+const IMGMETA={}; GALLERY3D.concat(GALLERY).forEach(([f,t,s])=>IMGMETA[f]=[t,s]);
+const RENDER_GROUPS=[['b',['izo_boravak.jpg','kuhinja.jpg','boravak.jpg','blender_boravak_1.jpg','blender_boravak_2.jpg']],['h',['izo_hodnik.jpg','hodnik.jpg']],['w',['izo_kupaona.jpg','kupaona.jpg']],['s',['izo_spavaca.jpg','spavaca.jpg']],['d',['izo_djecja.jpg','djecja.jpg']],['l',['izo_lodja.jpg','lodja.jpg']],['all',['tlocrt_namjestaj.jpg','tlocrt_cisti.jpg','svjetla_sve.jpg']]];
+function fillRenders(){const root=document.getElementById('renders');
+  RENDER_GROUPS.forEach(([k,files])=>{const r=ROOMS.find(x=>x.k===k);const g=document.createElement('div');g.className='rgroup';
+    g.innerHTML=`<h3>${r?esc(r.name):'Cijeli stan'}</h3><div class="sub">${r?esc(r.area)+'. '+esc(r.dims):'Tlocrt i spušteni strop'}</div><div class="gal"></div>`;
+    const gal=g.querySelector('.gal');
+    files.forEach(f=>{const [t,s2]=IMGMETA[f]||[f,''];const a=document.createElement('a');a.href='slike/'+f;a.innerHTML=`<img loading="lazy" src="slike/${f}" alt="${esc(t)}"><b>${esc(t)}</b><small>${esc(s2)}</small>`;
+      a.addEventListener('click',e=>{e.preventDefault();document.getElementById('viewImg').src='slike/'+f;document.getElementById('viewTitle').textContent=t;document.getElementById('viewDlg').showModal();});gal.appendChild(a);});
+    root.appendChild(g);});}
+fillRenders();
 document.getElementById('viewDlg').addEventListener('click',e=>{if(e.target.id==='viewDlg')e.target.close()});
 
 /* ===================== dokumenti ===================== */

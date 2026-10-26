@@ -4257,7 +4257,7 @@ let camAnim=null;
 function flyTo(pos,tgt){camAnim={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now()};}
 function roomCenter(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);return [(Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2];}
 const IZO_DIR={b:[1,1],h:[1,1],w:[-1,-1],s:[1,-1],d:[1,-1],l:[-1,-1]}; // iz kojeg kuta se gleda soba (x, y): stražnji zidovi su nasuprot
-function viewRoom(k){curRoom=k;lastAz=null;const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,0.3,-cy*S);
+function viewRoom(k){curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,0.3,-cy*S);
   if($('tIzo').checked){const d=IZO_DIR[k]||[1,1];fitOrtho(k);flyTo(new THREE.Vector3(cx*S+d[0]*20,20*0.82,-cy*S-d[1]*20),t);return;}
   const port=innerHeight>innerWidth;flyTo(new THREE.Vector3(cx*S-1.4,port?6.2:5.0,-cy*S+(port?3.2:3.0)),t);if(!$('tNiski').checked){$('tNiski').checked=true;applyWallMode();toast('Zidovi spušteni radi pogleda; isključi u Prikazu');}}
 function viewPreset(p){
@@ -4275,12 +4275,15 @@ const ray=new THREE.Raycaster(); const ptr=new THREE.Vector2(); let selected=nul
 
 function pick(ev){const r=canvas.getBoundingClientRect();ptr.x=((ev.clientX-r.left)/r.width)*2-1;ptr.y=-((ev.clientY-r.top)/r.height)*2+1;ray.setFromCamera(ptr,camera);
   const hits=ray.intersectObjects(G.furn.children,true);return hits.find(h=>h.object.userData.obj)||null;}
+const EMB=window.parent!==window; // ugrađen u app: opis ide u desni panel roditelja, ne u karticu
 function select(entry){
   if(selBox){scene.remove(selBox);selBox=null;} selected=entry;
+  if(EMB){parent.postMessage({type:'sel',f:entry?entry.f:null,prods:entry?matchProducts(entry.f).map(p=>({name:p.name,price:fmtPrice(p),source:p.source,bought:!!p.bought})):[]},'*');}
   if(!entry){$('card').hidden=true;return;}
   const bb=new THREE.Box3().setFromObject(entry.g);selBox=new THREE.Box3Helper(bb,0xd6455d);scene.add(selBox);
-  showCard(entry);
+  if(!EMB)showCard(entry);
 }
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);if(o)select(o);}});
 function showCard(entry){
   const f=entry.f;const [x0,y0,x1,y1]=f.b;  const room=ROOMS.find(r=>r.k===f.r);
   const prods=matchProducts(f);
@@ -4365,7 +4368,7 @@ function loop(){resize();if(camAnim){const k=Math.min(1,(performance.now()-camAn
   controls.update();
   if($('tIzo').checked){const az=Math.round(Math.atan2(camera.position.z-controls.target.z,camera.position.x-controls.target.x)*12);if(az!==lastAz){lastAz=az;applyWallMode();}drawLabels();}
   renderer.render(scene,camera);requestAnimationFrame(loop);}
-buildAll();loadProducts();
+buildAll();loadProducts();if(EMB)parent.postMessage({type:'ready'},'*');
 if(localStorage.getItem('stan3d.izo')==='0'){$('tIzo').checked=false;setIzo(false);}else{setIzo(true);viewPreset('iso');camAnim=null;camera.position.set(4.9+20,16.5,-2.2+20);}
 loop();
 setTimeout(()=>{$('hint').classList.add('hide')},6000);
