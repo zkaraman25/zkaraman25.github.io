@@ -30,9 +30,31 @@
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 40px}
-.wrap{max-width:1180px;margin:0 auto;display:grid;gap:16px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45;overflow:hidden}
+/* ---- cijeli ekran: pozornica, gornja traka, desni panel, donja traka ---- */
+header.top{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:10px;padding:10px 12px;pointer-events:none}
+header.top>*{pointer-events:auto} header.top .brand{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;box-shadow:var(--sh)}
+header.top h1{font-size:15px} header.top .logo{width:26px;height:26px;border-radius:50%} header.top .tr{margin-left:auto;display:flex;gap:8px;align-items:center}
+header.top .chips{margin:0;justify-content:center;flex:1;overflow-x:auto;scrollbar-width:none} header.top .chips button{box-shadow:var(--sh);white-space:nowrap}
+#stage{position:fixed;inset:0;padding:58px var(--sidew,380px) 72px 12px;transition:padding .2s} body.noside #stage{padding-right:12px}
+#stage>section{position:absolute;inset:58px var(--sidew,380px) 72px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0} body.noside #stage>section{right:12px}
+#stage>section[hidden]{display:none}
+#frame3d{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;border-radius:14px;border:1px solid var(--line)}
+svg.plan{max-width:100%;max-height:calc(100% - 70px);width:auto;height:auto;flex:1 1 auto;min-height:0}
+.toggles.over{position:absolute;top:8px;left:0;z-index:2;margin:0} .hint{position:absolute;bottom:0;left:0;right:0;font-size:12px;color:var(--muted);text-align:center;pointer-events:none}
+.stitle{position:absolute;top:52px;left:0;margin:0;font-size:14px;color:var(--muted);font-weight:600}
+#pogRoot{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 0 30px}
+.planwrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:44px 0 30px}
+.scroll{width:100%;height:100%;overflow:auto;padding:4px} .scroll .card{max-width:1100px;margin:0 auto}
+#side{position:fixed;top:58px;right:12px;bottom:72px;width:calc(var(--sidew,380px) - 24px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:14px;z-index:5;transition:transform .2s}
+body.noside #side{transform:translateX(calc(100% + 16px))} #sideToggle{position:absolute;top:8px;right:8px}
+#sideOpen{position:fixed;right:12px;top:66px;z-index:7;display:none} body.noside #sideOpen{display:inline-flex}
+.mapbar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.14);z-index:6;max-width:calc(100% - 16px);overflow-x:auto;scrollbar-width:none}
+.mapbar button{border:0;background:transparent;border-radius:999px;padding:8px 14px;white-space:nowrap;font-size:13px} .mapbar button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
+@media (max-width:900px){:root{--sidew:12px} #stage>section{right:12px}
+  #side{top:auto;left:8px;right:8px;bottom:64px;width:auto;max-height:44vh;border-radius:14px} body.noside #side{transform:translateY(calc(100% + 80px))} #sideOpen{top:auto;bottom:70px;right:12px}
+  .stitle{display:none} header.top{flex-wrap:wrap} header.top .chips{order:3;flex:1 0 100%;justify-content:flex-start;flex-wrap:nowrap} #stage>section{top:94px} header.top h1{display:none} header.top .brand{padding:5px 6px}}
+#roomChipsMobile{display:none}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
 .logo{width:38px;height:38px;border-radius:10px;background:var(--a);color:var(--on-a);display:grid;place-items:center;flex:none}
@@ -96,7 +118,7 @@ svg.plan.measuring,svg.plan.measuring .rm,svg.plan.measuring .fu,svg.plan.measur
 .lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none} .lt.on .tag{fill:var(--fg)}
 @media (prefers-reduced-motion:reduce){.lt .core,.lt .glow{transition:none}}
 /* info panel */
-.info h3{margin:0 0 4px;font-size:16px} .info .sub{margin-bottom:10px}
+#side h3{margin:0 0 4px;font-size:16px} #side .sub{margin-bottom:10px} #side h2{font-size:15px;margin:0 0 8px}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px} .kv b{font-weight:600;color:var(--muted)}
 .list{display:grid;gap:6px;margin-top:10px}
 .item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:7px 9px;border:1px solid var(--line);border-radius:9px;font-size:13px;cursor:pointer}
@@ -135,87 +157,85 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <a class="brand" href="/"><div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></div>
-      <div><h1>Stan Škalinova</h1><div class="sub">A1, prizemlje. 3D model, tlocrt sa svjetlima, pogledi s kotama, renderi i dokumenti.</div></div></a>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
-      <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
-    </div>
-  </header>
+<header class="top">
+  <a class="brand" href="/" title="Hub"><div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></div><h1>Stan Škalinova</h1></a>
+  <div class="chips" id="roomChips"></div>
+  <div class="tr">
+    <button class="icon" id="btn3dPrikaz" title="Prikaz 3D modela" hidden><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
+    <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
+  </div>
+</header>
 
-  <nav class="tabs" role="tablist">
-    <button role="tab" data-tab="stan" aria-selected="true">Stan</button>
-    <button role="tab" data-tab="svjetla" aria-selected="false">Svjetla</button>
-    <button role="tab" data-tab="renderi" aria-selected="false">Renderi</button>
-    <button role="tab" data-tab="dokumenti" aria-selected="false">Dokumenti</button>
-  </nav>
+<main id="stage">
+  <!-- 3D: cijeli stan i po sobama -->
+  <section id="m-3d"><iframe id="frame3d" title="3D model stana" allow="fullscreen"></iframe></section>
 
-  <!-- STAN: karta (tlocrt / pogledi / 3D) lijevo, opis desno -->
-  <section id="tab-stan" class="two">
-    <div class="card mapcard">
-      <div id="map-tlocrt">
-        <div class="toggles">
-          <button data-layer="fu" aria-pressed="false">Namještaj</button>
-          <button data-layer="dm" aria-pressed="true">Kote</button>
-          <span style="flex:1"></span>
-          <button id="btnMeasure" aria-pressed="false" title="Klikni dvije točke na tlocrtu">Mjeri</button>
-          <button id="btnClearMeasure" hidden>Obriši mjere</button>
-        </div>
-        <div class="planwrap"><svg class="plan" id="planSvg" viewBox="-110 -85 1200 965" role="img" aria-label="Tlocrt stana"></svg><div class="tip" id="tip" hidden></div></div>
-        <div class="sub" style="margin-top:8px" id="planHint">Pređi mišem preko zida za duljinu, klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
-      </div>
-      <div id="map-pogledi" hidden>
-        <div id="pogRoot">
-          <div class="toggles" id="pogRoom"></div>
-          <div class="toggles" id="pogView"></div>
-          <h2 id="pogTitle"></h2>
-          <svg class="plan pog" id="pogSvg" role="img" aria-label="Pogled"></svg>
-          <div class="sub" style="margin-top:8px">Klikni element u pogledu za kote. Sve u cm.</div>
-        </div>
-      </div>
-      <div id="map-3d" hidden>
-        <iframe id="frame3d" title="3D model stana" loading="lazy" allow="fullscreen"></iframe>
-        <div class="sub" style="margin-top:8px">Jedan prst okreće, dva pomiču i zumiraju. Klik na element otvara opis desno. <a href="3d/" target="_blank" rel="noopener">Cijeli ekran</a>.</div>
-      </div>
-      <div class="mapbar"><button data-map="tlocrt" aria-pressed="true">Tlocrt</button><button data-map="pogledi" aria-pressed="false">Pogledi</button><button data-map="3d" aria-pressed="false">3D</button></div>
+  <!-- TLOCRT cijelog stana -->
+  <section id="m-tlocrt" hidden>
+    <div class="toggles over">
+      <button data-layer="fu" aria-pressed="false">Namještaj</button>
+      <button data-layer="dm" aria-pressed="true">Kote</button>
+      <button id="btnMeasure" aria-pressed="false" title="Klikni dvije točke na tlocrtu">Mjeri</button>
+      <button id="btnClearMeasure" hidden>Obriši mjere</button>
     </div>
-    <div class="card info"><div class="chips" id="roomChips"></div><div id="info"></div></div>
+    <div class="planwrap"><svg class="plan" id="planSvg" viewBox="-110 -85 1200 965" role="img" aria-label="Tlocrt stana"></svg><div class="tip" id="tip" hidden></div></div>
+    <div class="sub hint" id="planHint">Pređi mišem preko zida za duljinu, klikni prostoriju ili element za mjere. Sve u cm, očitano s tlocrta investitora u mjerilu; prije izrade izmjeriti na licu mjesta.</div>
+  </section>
+
+  <!-- TLOCRT PO SOBAMA i POGLEDI (isti crtač) -->
+  <section id="m-pog" hidden>
+    <div id="pogRoot">
+      <div class="toggles over" id="pogView"></div>
+      <div class="toggles" id="pogRoom" hidden></div>
+      <h2 id="pogTitle" class="stitle"></h2>
+      <svg class="plan pog" id="pogSvg" role="img" aria-label="Pogled"></svg>
+      <div class="sub hint">Klikni element za kote. Sve u cm.</div>
+    </div>
   </section>
 
   <!-- SVJETLA -->
-  <section id="tab-svjetla" class="two" hidden>
-    <div class="card">
-      <h2>Svjetla</h2><div class="sub" style="margin-bottom:8px">Spušteni strop: utori s LED trakom, magnetske vodilice, ugradna svjetla. Klik na svjetlo pali i gasi.</div>
-      <svg class="plan" id="lightSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Svjetla na tlocrtu"></svg>
-      <div class="legend"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>ugradna, točkasta</span><span id="count"></span></div>
-    </div>
-    <div style="display:grid;gap:12px">
-      <div class="card"><h2>Scene</h2><div class="scenes">
-        <button class="primary" data-scene="sve">Sve upali</button><button data-scene="vecer">Večer</button><button data-scene="film">Film</button><button data-scene="noc">Noćno</button><button data-scene="ugasi">Sve ugasi</button></div>
-        <div class="sub" style="margin-top:8px">Probna ploča. Stanje se pamti u ovom pregledniku, uređaji još nisu spojeni.</div></div>
-      <div class="card" id="lightList"><h2>Svjetla po prostorijama</h2></div>
-      <div class="card"><h2>Pozivi (simulirano)</h2><div class="log" id="log">spremno</div></div>
-    </div>
+  <section id="m-svjetla" hidden>
+    <svg class="plan" id="lightSvg" viewBox="-110 -60 1190 900" role="img" aria-label="Svjetla na tlocrtu"></svg>
+    <div class="legend hint"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>ugradna, točkasta</span><span id="count"></span></div>
   </section>
 
   <!-- RENDERI -->
-  <section id="tab-renderi" hidden>
-    <div class="card"><h2>Renderi po prostorijama</h2><div class="sub" style="margin-bottom:14px">Za svaku prostoriju: mjere, izometrija s oznakama, pogledi zidova. Klik otvara sliku u punoj veličini.</div><div id="renders"></div></div>
-  </section>
+  <section id="m-renderi" hidden><div class="scroll"><div class="card"><h2>Renderi po prostorijama</h2><div class="sub" style="margin-bottom:14px">Za svaku prostoriju: mjere, izometrija s oznakama, pogledi zidova. Klik otvara sliku u punoj veličini.</div><div id="renders"></div></div></div></section>
 
   <!-- DOKUMENTI -->
-  <section id="tab-dokumenti" hidden>
-    <div class="card">
-      <h2>Dokumenti</h2>
-      <div class="sub" style="margin-bottom:12px">Ugrađeni dokumenti su dio stranice. Vlastite dodaješ kad si prijavljen; spremaju se u isti repozitorij kao Aparati (grana <code>data</code>, mapa <code>stan/</code>) i vidiš ih na svakom uređaju.</div>
-      <div class="docs" id="docs"></div>
-      <div class="drop" id="drop"><input type="file" id="fileIn" multiple><span id="dropText">Povuci datoteke ovdje ili <u>odaberi</u>. Do 25 MB po datoteci.</span></div>
-      <div class="err" id="docErr"></div>
-    </div>
-  </section>
-</div>
+  <section id="m-dok" hidden><div class="scroll"><div class="card">
+    <h2>Dokumenti</h2>
+    <div class="sub" style="margin-bottom:12px">Ugrađeni dokumenti su dio stranice. Vlastite dodaješ kad si prijavljen; spremaju se u isti repozitorij kao Aparati (grana <code>data</code>, mapa <code>stan/</code>) i vidiš ih na svakom uređaju.</div>
+    <div class="docs" id="docs"></div>
+    <div class="drop" id="drop"><input type="file" id="fileIn" multiple><span id="dropText">Povuci datoteke ovdje ili <u>odaberi</u>. Do 25 MB po datoteci.</span></div>
+    <div class="err" id="docErr"></div>
+  </div></div></section>
+</main>
+
+<!-- desni panel: opis sobe ili elementa; kod svjetala scene i popis -->
+<aside id="side">
+  <button class="icon sideclose" id="sideToggle" title="Sakrij / prikaži"><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+  <div id="info"></div>
+  <div id="sideLights" hidden>
+    <h2>Scene</h2><div class="scenes"><button class="primary" data-scene="sve">Sve upali</button><button data-scene="vecer">Večer</button><button data-scene="film">Film</button><button data-scene="noc">Noćno</button><button data-scene="ugasi">Sve ugasi</button></div>
+    <div class="sub" style="margin:8px 0 14px">Probna ploča. Stanje se pamti u ovom pregledniku, uređaji još nisu spojeni.</div>
+    <div id="lightList"><h2>Svjetla po prostorijama</h2></div>
+    <h2 style="margin-top:14px">Pozivi (simulirano)</h2><div class="log" id="log">spremno</div>
+  </div>
+</aside>
+
+<button class="icon" id="sideOpen" title="Prikaži opis"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg></button>
+<nav class="mapbar" id="modeBar">
+  <button data-mode="3d" aria-pressed="true">3D</button>
+  <button data-mode="sobe" aria-pressed="false">Po sobama</button>
+  <button data-mode="tlocrt" aria-pressed="false">Tlocrt</button>
+  <button data-mode="sobe-tlocrt" aria-pressed="false">Tlocrt sobe</button>
+  <button data-mode="pogledi" aria-pressed="false">Pogledi</button>
+  <button data-mode="svjetla" aria-pressed="false">Svjetla</button>
+  <button data-mode="renderi" aria-pressed="false">Renderi</button>
+  <button data-mode="dok" aria-pressed="false">Dokumenti</button>
+</nav>
 
 <dialog class="acct" id="acctDlg">
   <h2 id="acctTitle">Prijava</h2>
@@ -397,11 +417,11 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 function fmtSize(b){return b>1e6?(b/1e6).toFixed(1)+' MB':b>1e3?Math.round(b/1e3)+' KB':b+' B'}
 
 /* ===================== tabovi ===================== */
-const tabs=document.querySelectorAll('nav.tabs button');
-const TABS=['stan','svjetla','renderi','dokumenti'];
-function showTab(id){if(!TABS.includes(id))id='stan';tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));TABS.forEach(t=>document.getElementById('tab-'+t).hidden=t!==id);try{localStorage.setItem('stan.tab',id)}catch(e){}}
-tabs.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-let startTab='stan';try{startTab=localStorage.getItem('stan.tab')||'stan'}catch(e){} if(!TABS.includes(startTab))startTab='stan'; if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
+const tabs=[];
+const TABS=['3d','sobe','tlocrt','sobe-tlocrt','pogledi','svjetla','renderi','dok'];
+function showTab(id){setMode(id);}
+
+let startTab='3d';try{startTab=localStorage.getItem('stan.tab')||'3d'}catch(e){} if(!TABS.includes(startTab))startTab='3d'; if(location.hash&&/^#[a-z]+$/.test(location.hash))startTab=location.hash.slice(1);
 
 /* ===================== tlocrt ===================== */
 function drawBase(svg, withRooms){
@@ -553,9 +573,6 @@ const info=document.getElementById('info');
 let curRoomK='b';
 const roomChips=document.getElementById('roomChips');
 ROOMS.forEach(r=>{const b=document.createElement('button');b.textContent=r.k==='b'?'Boravak i kuhinja':r.name;b.dataset.k=r.k;b.addEventListener('click',()=>{selectRoom(r.k);syncMapRoom(r.k);});roomChips.appendChild(b);});
-function syncMapRoom(k){ // karta prati odabranu sobu
-  if(mapMode==='3d')post3d({type:'room',k}); else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,'plan');
-}
 function viewThumbs(k){ // male sličice pogleda sobe: tlocrt i svaki zid; klik otvara pogled na karti
   if(!window.Pogledi)return '';
   const r=ROOMS.find(x=>x.k===k); const views=[['plan','Tlocrt']].concat(Pogledi.wallsOf(r).filter(w=>w.len>=60).map(w=>['w'+w.i,w.name]));
@@ -572,7 +589,7 @@ function selectRoom(k){
     <div class="list" style="margin-top:12px">${r.notes.map(n=>`<div class="sub">• ${esc(n)}</div>`).join('')}</div>${viewThumbs(k)}`;
   info.querySelectorAll('.item').forEach(it=>it.addEventListener('click',()=>selectFurn(+it.dataset.i)));
   if(window.Pogledi){const r3=ROOMS.find(x=>x.k===k);info.querySelectorAll('.thumbs svg').forEach(sv=>{const v=sv.dataset.view;if(v==='plan')Pogledi.drawRoomPlan(sv,r3,()=>{});else Pogledi.drawElevation(sv,r3,Pogledi.wallsOf(r3)[+v.slice(1)],()=>{});});
-    info.querySelectorAll('.thumbs a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();setMap('pogledi');Pogledi.show(k,a.dataset.view);}));}
+    info.querySelectorAll('.thumbs a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const v=a.dataset.view;setMode(v==='plan'?'sobe-tlocrt':'pogledi');Pogledi.show(k,v,v==='plan');}));}
   try{localStorage.setItem('stan.room',k)}catch(e){}
 }
 /* ---- opis elementa iz 3D modela ---- */
@@ -587,20 +604,32 @@ function showElement(f,prods){
     <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
   document.getElementById('backRoom').addEventListener('click',()=>selectRoom(f.r));
 }
-/* ---- karta: tlocrt / pogledi / 3D ---- */
-let mapMode='tlocrt';
+/* ---- načini prikaza: jedan ekran, donja traka ---- */
+let mapMode='3d'; const MODE_SECTION={'3d':'m-3d',sobe:'m-3d',tlocrt:'m-tlocrt','sobe-tlocrt':'m-pog',pogledi:'m-pog',svjetla:'m-svjetla',renderi:'m-renderi',dok:'m-dok'};
 const fr3d=document.getElementById('frame3d');
 function post3d(m){if(fr3d.contentWindow)fr3d.contentWindow.postMessage(m,'*');}
-function setMap(m){mapMode=m;document.querySelectorAll('.mapbar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.map===m));['tlocrt','pogledi','3d'].forEach(x=>document.getElementById('map-'+x).hidden=x!==m);
-  if(m==='3d'&&!fr3d.src)fr3d.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);
-  if(m==='3d')setTimeout(()=>post3d({type:'room',k:curRoomK}),fr3d.dataset.ready?0:1500);
-  if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,'plan');
-  try{localStorage.setItem('stan.map',m)}catch(e){}}
-document.querySelectorAll('.mapbar button').forEach(b=>b.addEventListener('click',()=>setMap(b.dataset.map)));
-addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'room',k:curRoomK});}
-  if(d.type==='sel'){if(d.f)showElement(d.f,d.prods);else selectRoom(curRoomK);}
-  if(d.type==='room'&&d.k&&d.k!==curRoomK)selectRoom(d.k);});
-addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);let m='tlocrt';try{m=localStorage.getItem('stan.map')||'tlocrt'}catch(e){}if(['tlocrt','pogledi','3d'].includes(m)&&m!=='tlocrt')setMap(m);});
+function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
+  document.querySelectorAll('#modeBar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
+  ['m-3d','m-tlocrt','m-pog','m-svjetla','m-renderi','m-dok'].forEach(id=>document.getElementById(id).hidden=MODE_SECTION[m]!==id);
+  const roomy=['sobe','sobe-tlocrt','pogledi'].includes(m); roomChips.style.visibility=roomy?'':'hidden';
+  const hasSide=!['renderi','dok'].includes(m)&&!(m==='3d'); document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
+  document.getElementById('sideLights').hidden=m!=='svjetla'; info.hidden=m==='svjetla';
+  document.getElementById('btn3dPrikaz').hidden=!(m==='3d'||m==='sobe');
+  if(m==='3d'||m==='sobe'){if(!fr3d.src)fr3d.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);
+    const send=()=>m==='3d'?post3d({type:'preset',p:'iso'}):post3d({type:'room',k:curRoomK}); if(fr3d.dataset.ready)send();else fr3d.dataset.pending=m;}
+  if(m==='sobe-tlocrt'&&window.Pogledi)Pogledi.show(curRoomK,'plan',true);
+  if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,Pogledi.firstWall(curRoomK),false);
+  if(m==='sobe'||m==='sobe-tlocrt'||m==='pogledi')selectRoom(curRoomK);
+  if(hasSide&&matchMedia('(max-width:900px)').matches&&(m==='sobe'||m==='sobe-tlocrt'||m==='pogledi'))document.body.classList.add('noside');
+  try{localStorage.setItem('stan.tab',m)}catch(e){}}
+document.querySelectorAll('#modeBar button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+document.getElementById('sideToggle').addEventListener('click',()=>document.body.classList.add('noside'));document.getElementById('sideOpen').addEventListener('click',()=>document.body.classList.remove('noside'));
+document.getElementById('btn3dPrikaz').addEventListener('click',()=>post3d({type:'openPanel',which:'prikaz'}));
+function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='sobe-tlocrt'&&window.Pogledi)Pogledi.show(k,'plan',true);else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
+  if(d.type==='sel'){if(d.f){if(mapMode==='3d'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
+  if(d.type==='room'&&d.k&&d.k!==curRoomK){selectRoom(d.k);}});
+addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);if(mapMode==='sobe-tlocrt'||mapMode==='pogledi')syncMapRoom(curRoomK);});
 function selectFurn(i){
   const f=FURN[i]; selectRoom(f.r);
   furnNodes.forEach((g,j)=>g.style.filter=j===i?'drop-shadow(0 0 6px var(--a))':''); info.querySelectorAll('.item').forEach(it=>it.classList.toggle('sel',+it.dataset.i===i));

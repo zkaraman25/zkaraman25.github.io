@@ -4283,7 +4283,7 @@ function select(entry){
   const bb=new THREE.Box3().setFromObject(entry.g);selBox=new THREE.Box3Helper(bb,0xd6455d);scene.add(selBox);
   if(!EMB)showCard(entry);
 }
-addEventListener('message',e=>{const d=e.data||{};if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);if(o)select(o);}});
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='openPanel')openPanel(d.which||'prikaz');if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);if(o)select(o);}});
 function showCard(entry){
   const f=entry.f;const [x0,y0,x1,y1]=f.b;  const room=ROOMS.find(r=>r.k===f.r);
   const prods=matchProducts(f);
@@ -4368,7 +4368,7 @@ function loop(){resize();if(camAnim){const k=Math.min(1,(performance.now()-camAn
   controls.update();
   if($('tIzo').checked){const az=Math.round(Math.atan2(camera.position.z-controls.target.z,camera.position.x-controls.target.x)*12);if(az!==lastAz){lastAz=az;applyWallMode();}drawLabels();}
   renderer.render(scene,camera);requestAnimationFrame(loop);}
-buildAll();loadProducts();if(EMB)parent.postMessage({type:'ready'},'*');
+buildAll();loadProducts();if(EMB){document.querySelector('.bar').style.display='none';document.querySelector('header').style.display='none';$('hint').style.display='none';$('panel').style.bottom='16px';parent.postMessage({type:'ready'},'*');}
 if(localStorage.getItem('stan3d.izo')==='0'){$('tIzo').checked=false;setIzo(false);}else{setIzo(true);viewPreset('iso');camAnim=null;camera.position.set(4.9+20,16.5,-2.2+20);}
 loop();
 setTimeout(()=>{$('hint').classList.add('hide')},6000);

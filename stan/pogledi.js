@@ -116,7 +116,7 @@ function init(){
   let cur={k:'b',view:'plan'};
   function buildViews(){viewSel.innerHTML='';const r=ROOMS.find(r=>r.k===cur.k);
     const add=(id,label)=>{const b=document.createElement('button');b.textContent=label;b.dataset.v=id;b.setAttribute('aria-pressed',id===cur.view);b.addEventListener('click',()=>{cur.view=id;draw();});viewSel.appendChild(b);};
-    add('plan','Tlocrt');
+    if(planOnly){add('plan','Tlocrt');return;}
     wallsOf(r).forEach(w=>{const has=FURN3.some(f=>f.r===r.k)||EDGE_OPEN.some(o=>o[0]===r.k&&o[1]===w.i);if(w.len>=60)add('w'+w.i,w.name+(countSame(r,w)>1?' ('+Math.round(w.len)+')':''));});
   }
   function countSame(r,w){return wallsOf(r).filter(x=>x.dir===w.dir&&x.len>=60).length;}
@@ -128,7 +128,10 @@ function init(){
     info.innerHTML=`<h3>${esc(f.n)}</h3><div class="kote"><div><b>${c-a}</b><span>širina (x)</span></div><div><b>${d-b}</b><span>dubina (y)</span></div><div><b>${f.z[1]-f.z[0]}</b><span>visina</span></div><div><b>${f.z[0]}</b><span>od poda</span></div><div><b>${H3-f.z[1]}</b><span>do stropa</span></div></div>
       ${f.note?`<div style="margin-top:8px">${esc(f.note)}</div>`:''}<div class="sub" style="margin-top:8px">Tlocrt: x ${a}–${c}, y ${b}–${d}${it?`; u pogledu: ${Math.round(it.L0)}–${Math.round(it.L1)} od lijevog kuta, ${Math.round(it.dist)} od zida`:''}</div>`;}
   roomSel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cur.k=b.dataset.k;cur.view='plan';buildViews();draw();if(typeof selectRoom==='function'&&window.curRoomK!==cur.k){}});
-  window.Pogledi={wallsOf,drawRoomPlan,planDims,drawElevation,elevDims,show:(k,v)=>{cur.k=k;cur.view=v||'plan';buildViews();draw();}};
+  let planOnly=false;
+  window.Pogledi={wallsOf,drawRoomPlan,planDims,drawElevation,elevDims,
+    firstWall:k=>{const r=ROOMS.find(r=>r.k===k);const w=wallsOf(r).find(w=>w.len>=60);return w?'w'+w.i:'plan';},
+    show:(k,v,po)=>{cur.k=k;planOnly=!!po;cur.view=v||'plan';buildViews();draw();}};
   buildViews();
   window.dispatchEvent(new Event('pogledi-ready'));
 }
