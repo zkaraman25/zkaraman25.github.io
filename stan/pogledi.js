@@ -136,10 +136,9 @@ function init(){
   }
   function countSame(r,w){return wallsOf(r).filter(x=>x.dir===w.dir&&x.len>=60).length;}
   function draw(){const r=ROOMS.find(r=>r.k===cur.k);roomSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur.k));viewSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===cur.view));
-    if(window.buildStrip)buildStrip(r.k);
-    if(svg.dataset.room!==r.k){svg.dataset.room=r.k;const ctx=drawRoomPlan(svg,r,(f)=>{planDims(svg,ctx,r,f);showInfo(f,null);});}
-    if(cur.view.startsWith('img:')){if(window.focusCard)focusCard(cur.view);return;}
-    if(window.focusCard)focusCard('plan');
+    if(window.buildStrip&&window.stripRoomGet&&window.stripRoomGet()!==r.k)buildStrip(r.k);
+    if(svg.dataset.room!==r.k||cur.view==='plan'){svg.dataset.room=r.k;const ctx=drawRoomPlan(svg,r,(f)=>{planDims(svg,ctx,r,f);showInfo(f,null);});}
+    if(cur.view!=='plan')return;
     if(cur.view==='plan'||!svg.dataset.room||svg.dataset.room!==r.k){svg.dataset.room=r.k;const ctx=drawRoomPlan(svg,r,(f)=>{planDims(svg,ctx,r,f);showInfo(f,null);});if(cur.view!=='plan')return;}
     else{const w=wallsOf(r)[+cur.view.slice(1)];title.textContent=r.name+', '+w.name.toLowerCase()+' (pogled iznutra)';const ctx=drawElevation(svg,r,w,(f,_,w2,it)=>{elevDims(svg,ctx,w2,it);showInfo(f,it);});}
   }
