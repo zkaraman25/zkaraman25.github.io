@@ -36,26 +36,26 @@ header.top{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;align-item
 header.top>*{pointer-events:auto} header.top .brand{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;box-shadow:var(--sh)}
 header.top h1{font-size:15px} header.top .logo{width:26px;height:26px;border-radius:50%} header.top .tr{margin-left:auto;display:flex;gap:8px;align-items:center}
 header.top .chips{margin:0;justify-content:center;flex:1;overflow-x:auto;scrollbar-width:none} header.top .chips button{box-shadow:var(--sh);white-space:nowrap}
-#stage{position:fixed;inset:0;padding:58px var(--sidew,380px) 72px 12px;transition:padding .2s} body.noside #stage{padding-right:12px}
-#stage>section{position:absolute;inset:58px var(--sidew,380px) 72px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0} body.noside #stage>section{right:12px}
+#stage{position:fixed;inset:0;padding:100px var(--sidew,380px) 72px 12px;transition:padding .2s} body.noside #stage{padding-right:12px}
+#stage>section{position:absolute;inset:100px var(--sidew,380px) 72px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0} body.noside #stage>section{right:12px}
 #stage>section[hidden]{display:none}
 #frame3d{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent}
 body.compact{--sidew:250px} body.compact #side{padding:10px} body.compact #side .chips{flex-direction:column;align-items:stretch;padding-right:0;margin:30px 0 0} body.compact #side .chips button{justify-content:flex-start} body.compact #side #pogView{position:static;display:flex;flex-direction:column;gap:6px;margin:0 0 12px;z-index:auto} body.compact #side #pogView button{text-align:left} #side #pogView::before{content:'Pogled';display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:4px 0 2px}
 svg.plan{max-width:100%;max-height:calc(100% - 70px);width:auto;height:auto;flex:1 1 auto;min-height:0}
 .toggles.over{position:absolute;top:8px;left:0;z-index:2;margin:0} .hint{position:absolute;bottom:0;left:0;right:0;font-size:12px;color:var(--muted);text-align:center;pointer-events:none}
-.nacrti{width:100%;height:100%;overflow:auto;display:grid;gap:12px;align-content:start;padding:4px} .nacrti img{width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:zoom-in} .nacrti b{display:block;font-size:13px;margin:0 0 4px}
+.nacrti{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:4px} .nacrti div{max-width:100%;max-height:100%} .nacrti img{max-width:100%;max-height:calc(100vh - 220px);width:auto;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:zoom-in;display:block} .nacrti b{display:block;font-size:13px;margin:0 0 4px}
 .stitle{position:absolute;top:52px;left:0;margin:0;font-size:14px;color:var(--muted);font-weight:600}
 #pogRoot{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 0 30px}
 .planwrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:44px 0 30px}
 .scroll{width:100%;height:100%;overflow:auto;padding:4px} .scroll .card{max-width:1100px;margin:0 auto}
-#side{position:fixed;top:58px;right:12px;bottom:72px;width:calc(var(--sidew,380px) - 24px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:14px;z-index:5;transition:transform .2s}
+#side{position:fixed;top:100px;right:12px;bottom:72px;width:calc(var(--sidew,380px) - 24px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:14px;z-index:5;transition:transform .2s}
 body.noside #side{transform:translateX(calc(100% + 16px))} #sideToggle{position:absolute;top:8px;right:8px}
-#sideOpen{position:fixed;right:12px;top:66px;z-index:7;display:none} body.noside #sideOpen{display:inline-flex}
+#sideOpen{position:fixed;right:12px;top:106px;z-index:7;display:none} body.noside #sideOpen{display:inline-flex}
 .mapbar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.14);z-index:6;max-width:calc(100% - 16px);overflow-x:auto;scrollbar-width:none}
 .mapbar button{border:0;background:transparent;border-radius:999px;padding:8px 14px;white-space:nowrap;font-size:13px} .mapbar button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
 @media (max-width:900px){:root{--sidew:12px} #stage>section{right:12px}
   #side{top:auto;left:8px;right:8px;bottom:64px;width:auto;max-height:44vh;border-radius:14px} body.noside #side{transform:translateY(calc(100% + 80px))} #sideOpen{top:auto;bottom:70px;right:12px}
-  .stitle{display:none} header.top h1{display:none} header.top .brand{padding:5px 6px}}
+  .stitle{display:none} header.top h1{display:none} header.top .brand{padding:5px 6px} #tools{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none} #stage>section{top:100px}}
 #roomChipsMobile{display:none}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
@@ -123,6 +123,9 @@ svg.plan.night{--warm:#f0a324;--lamp:#ea8f3e;--track:#1b94a6} svg.plan.night .fl
 /* info panel */
 #side .chips{margin:4px 0 14px 0;padding-right:34px} #side .chips button{gap:6px} #side .chips svg.i{width:15px;height:15px}
 #side .tog{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px} #side .tog:last-child{border:0} #side .tog input[type=checkbox]{width:18px;height:18px;accent-color:var(--a)} #side select{font:inherit;font-size:13px;padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);max-width:58%}
+#tools{position:fixed;top:54px;left:12px;right:12px;z-index:6;display:flex;gap:10px;flex-wrap:wrap;align-items:center;pointer-events:none} #tools .tg{display:flex;gap:4px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--sh);pointer-events:auto;overflow-x:auto;scrollbar-width:none;max-width:100%}
+#tools .tg button{border:0;background:transparent;border-radius:999px;padding:6px 12px;font-size:12.5px;white-space:nowrap} #tools .tg button[aria-pressed="true"]{background:var(--a-soft);color:var(--a-strong)} #tools .tg select{font:inherit;font-size:12.5px;border:0;background:transparent;color:var(--fg);padding:4px 6px}
+#tools .tg[hidden]{display:none}
 #settings{position:fixed;top:56px;right:12px;width:300px;max-height:calc(100vh - 140px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 36px rgba(0,0,0,.18);padding:6px 14px 10px;z-index:8}
 #settings .sec{padding:8px 0;border-bottom:1px solid var(--line)} #settings .sec:last-child{border:0} #settings h4{margin:4px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
 #settings .chips{margin:0} #settings .chips button{padding:5px 10px;font-size:12.5px}
@@ -173,7 +176,6 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   <a class="brand" href="/" title="Hub"><div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></div><h1>Stan Škalinova</h1></a>
   <div class="chips" id="roomChips"></div>
   <div class="tr">
-    <button class="icon" id="btnSettings" title="Postavke prikaza"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="chip" id="statusBtn" type="button" data-state="local"><span class="dot"></span><span id="statusText">Prijava</span></button>
     <button class="icon" id="btnTheme" title="Dnevni / noćni mod"><svg class="i" id="iconTheme" viewBox="0 0 24 24"></svg></button>
   </div>
@@ -189,7 +191,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
       <button data-layer="fu" aria-pressed="false" hidden>Namještaj</button>
       <button data-layer="dm" aria-pressed="true" hidden>Kote</button>
       <button data-layer="lt" aria-pressed="false" hidden>Svjetla</button>
-      <button id="btnMeasure" aria-pressed="false" title="Klikni dvije točke na tlocrtu">Mjeri</button>
+      <button id="btnMeasure" aria-pressed="false" hidden>Mjeri</button>
       <button id="btnClearMeasure" hidden>Obriši mjere</button>
     </div>
     <div class="planwrap"><svg class="plan" id="planSvg" viewBox="-110 -85 1200 965" role="img" aria-label="Tlocrt stana"></svg><div class="tip" id="tip" hidden></div></div>
@@ -233,22 +235,12 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   </div>
 </aside>
 
-<div id="settings" class="pop" hidden>
-  <div class="sec" data-for="3d sobe"><h4>Pogled</h4><div class="chips" id="viewChips"><button data-preset="iso">Cijeli stan</button><button data-preset="top">Odozgo</button><button data-preset="jug">S lođe</button><button data-preset="sjever">S vrta</button><button data-preset="hodaj">S garniture</button></div></div>
-  <div class="sec" data-for="3d sobe"><h4>3D model</h4>
-    <label class="sw"><span>Izometrija s presjekom</span><input type="checkbox" data-set="tIzo" checked><i></i></label>
-    <label class="sw"><span>Oznake s mjerama</span><input type="checkbox" data-set="tOznake" checked><i></i></label>
-    <label class="sw"><span>Strop</span><input type="checkbox" data-set="tStrop"><i></i></label>
-    <label class="sw"><span>Rasvjeta</span><input type="checkbox" data-set="tSvjetla" checked><i></i></label>
-    <label class="sw"><span>Noć</span><input type="checkbox" data-set="tNoc"><i></i></label>
-    <label class="sw"><span>Materijali</span><select data-set="palSel"><option value="izo">Pastel (kao nacrti)</option><option value="skyline">Skyline 90 (URSA)</option><option value="svijetlo">Bijelo + hrast</option><option value="tamno">Grafit + orah</option></select></label></div>
-  <div class="sec" data-for="tlocrt"><h4>Tlocrt</h4>
-    <label class="sw"><span>Namještaj</span><input type="checkbox" data-layer-set="fu"><i></i></label>
-    <label class="sw"><span>Kote</span><input type="checkbox" data-layer-set="dm"><i></i></label>
-    <label class="sw"><span>Svjetla</span><input type="checkbox" data-layer-set="lt"><i></i></label></div>
-  <div class="sec" data-for="pogledi"><h4>Točne mjere</h4>
-    <label class="sw"><span>Oznake elemenata</span><input type="checkbox" id="setPogLabels" checked><i></i></label></div>
-  <div class="sec"><h4>Izgled</h4><div class="seg" id="themeSeg"><button data-t="">Sustav</button><button data-t="light">Svijetlo</button><button data-t="dark">Tamno</button></div></div>
+<div id="tools">
+  <div class="tg" data-for="3d sobe"><button data-preset="iso">Cijeli stan</button><button data-preset="top">Odozgo</button><button data-preset="jug">S lođe</button><button data-preset="sjever">S vrta</button><button data-preset="hodaj">S garniture</button></div>
+  <div class="tg" data-for="3d sobe"><button data-set="tIzo" aria-pressed="true">Presjek</button><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tStrop" aria-pressed="false">Strop</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
+    <select data-set="palSel" title="Materijali"><option value="izo">Pastel</option><option value="skyline">Skyline 90</option><option value="svijetlo">Bijelo + hrast</option><option value="tamno">Grafit + orah</option></select></div>
+  <div class="tg" data-for="tlocrt"><button data-layer-set="fu" aria-pressed="false">Namještaj</button><button data-layer-set="dm" aria-pressed="true">Kote</button><button data-layer-set="lt" aria-pressed="false">Svjetla</button><button id="btnMeasure2" aria-pressed="false">Mjeri</button><button id="btnClear2" hidden>Obriši mjere</button></div>
+  <div class="tg" data-for="pogledi"><button id="setPogLabels" aria-pressed="true">Oznake elemenata</button></div>
 </div>
 <button class="icon" id="sideOpen" title="Prikaži opis"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg></button>
 <nav class="mapbar" id="modeBar">
@@ -561,13 +553,13 @@ function drawMeasure(g,a,b){
 }
 const btnM=document.getElementById('btnMeasure'), btnC=document.getElementById('btnClearMeasure'), hint=document.getElementById('planHint');
 const HINT0=hint.textContent;
-function setMeasuring(on){measuring=on;btnM.setAttribute('aria-pressed',on);plan.classList.toggle('measuring',on);hideTip();msStart=null;if(msPre){msPre.remove();msPre=null}
+function setMeasuring(on){measuring=on;btnM.setAttribute('aria-pressed',on);document.getElementById('btnMeasure2').setAttribute('aria-pressed',on);plan.classList.toggle('measuring',on);hideTip();msStart=null;if(msPre){msPre.remove();msPre=null}
   hint.textContent=on?'Klikni prvu pa drugu točku. Hvata se za zidove i otvore (i namještaj kad je sloj upaljen); drži Alt za slobodnu točku. Esc završava.':HINT0;}
 btnM.addEventListener('click',()=>setMeasuring(!measuring));
-btnC.addEventListener('click',()=>{measures.splice(0).forEach(g=>g.remove());btnC.hidden=true;});
+btnC.addEventListener('click',()=>{measures.splice(0).forEach(g=>g.remove());btnC.hidden=true;document.getElementById('btnClear2').hidden=true;});
 plan.addEventListener('click',e=>{if(!measuring)return;const p=snapPt(svgPt(e),e.altKey);
   if(!msStart){msStart=p;msPre=el('g',{class:'pre'},gMs);drawMeasure(msPre,p,p);return;}
-  const g=el('g',{},gMs);drawMeasure(g,msStart,p);measures.push(g);btnC.hidden=false;msPre.remove();msPre=null;msStart=null;});
+  const g=el('g',{},gMs);drawMeasure(g,msStart,p);measures.push(g);btnC.hidden=false;document.getElementById('btnClear2').hidden=false;msPre.remove();msPre=null;msStart=null;});
 plan.addEventListener('pointermove',e=>{if(!measuring)return;const p=snapPt(svgPt(e),e.altKey);if(msStart&&msPre)drawMeasure(msPre,msStart,p);
   showTip(`<b>x ${p[0]}, y ${p[1]}</b>${msStart?`<small>od x ${msStart[0]}, y ${msStart[1]}: ${Math.round(Math.hypot(p[0]-msStart[0],p[1]-msStart[1]))} cm</small>`:'<small>klikni prvu točku</small>'}`,e);});
 plan.addEventListener('pointerleave',()=>{if(measuring)hideTip()});
@@ -589,7 +581,7 @@ const layerEls={fu:gFu,dm:gDm,lt:gLt};
 document.querySelectorAll('[data-layer]').forEach(b=>{
   let on=b.getAttribute('aria-pressed')==='true'; try{const s=localStorage.getItem('stan.layer.'+b.dataset.layer);if(s!==null)on=s==='1'}catch(e){}
   b.setAttribute('aria-pressed',on); layerEls[b.dataset.layer].style.display=on?'':'none';
-  b.addEventListener('click',()=>{on=!on;b.setAttribute('aria-pressed',on);layerEls[b.dataset.layer].style.display=on?'':'none';try{localStorage.setItem('stan.layer.'+b.dataset.layer,on?'1':'0')}catch(e){}if(b.dataset.layer==='lt')updateSideLights();const sw=document.querySelector(`#settings [data-layer-set="${b.dataset.layer}"]`);if(sw)sw.checked=on;});
+  b.addEventListener('click',()=>{on=!on;b.setAttribute('aria-pressed',on);layerEls[b.dataset.layer].style.display=on?'':'none';try{localStorage.setItem('stan.layer.'+b.dataset.layer,on?'1':'0')}catch(e){}if(b.dataset.layer==='lt')updateSideLights();const sw=document.querySelector(`#tools [data-layer-set="${b.dataset.layer}"]`);if(sw)sw.setAttribute('aria-pressed',on);});
 });
 // info panel
 const info=document.getElementById('info');
@@ -606,7 +598,7 @@ function viewThumbs(k){ // male sličice pogleda sobe: tlocrt i svaki zid; klik 
   return `<h3 style="margin-top:14px;font-size:14px">Pogledi</h3><div class="thumbs">${views.map(([v,n])=>`<a href="#" data-view="${v}"><svg class="plan pog" data-view="${v}"></svg><b>${esc(n)}</b></a>`).join('')}</div>`;
 }
 function selectRoom(k){
-  curRoomK=k; roomChips.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
+  curRoomK=k; if(mapMode==='tlocrt'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');info.hidden=false;} roomChips.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
   document.querySelectorAll('.rm').forEach(p=>p.classList.toggle('sel',p.dataset.k===k)); furnNodes.forEach(g=>g.style.filter='');
   const r=ROOMS.find(x=>x.k===k); const items=FURN.map((f,i)=>({f,i})).filter(o=>o.f.r===k);
   const brief=mapMode==='sobe'||mapMode==='pogledi';
@@ -626,7 +618,7 @@ function showElement(f,prods){
     <div class="sub">Položaj u tlocrtu: x ${a}–${c}, y ${b}–${d}</div>
     ${(prods&&prods.length)?`<div class="list">${prods.map(p=>`<div class="item" style="grid-template-columns:1fr;cursor:default"><span>${esc(p.name)}<small>${esc(p.price||'')}${p.bought?' · kupljeno':''}${p.source?` · <a href="${esc(p.source)}" target="_blank" rel="noopener">otvori</a>`:''}</small></span></div>`).join('')}</div>`:''}
     <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
-  document.getElementById('backRoom').addEventListener('click',()=>{selectRoom(f.r);if(mapMode==='sobe'||mapMode==='3d')info.hidden=true;});
+  document.getElementById('backRoom').addEventListener('click',()=>{if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');post3d({type:'sel',id:null});return;}selectRoom(f.r);if(mapMode==='sobe')info.hidden=true;});
 }
 /* ---- načini prikaza: jedan ekran, donja traka ---- */
 let mapMode='3d'; const MODE_SECTION={'3d':'m-3d',sobe:'m-3d',tlocrt:'m-tlocrt',pogledi:'m-pog',dok:'m-dok'};
@@ -636,28 +628,29 @@ function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   document.querySelectorAll('#modeBar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
   ['m-3d','m-tlocrt','m-pog','m-dok'].forEach(id=>document.getElementById(id).hidden=MODE_SECTION[m]!==id);
   const roomy=['sobe','pogledi'].includes(m); roomChips.hidden=!roomy; if(roomy)document.getElementById('side').prepend(roomChips); document.body.classList.toggle('compact',m==='sobe'); if(m==='sobe')info.hidden=true;
-  const hasSide=m!=='dok'; document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
+  const hasSide=m!=='dok'&&m!=='3d'&&m!=='tlocrt'; document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
+  if(m==='tlocrt')info.hidden=true;
   updateSideLights();
-  if(m==='3d')info.hidden=true; document.querySelectorAll('#settings .sec[data-for]').forEach(x=>x.hidden=!x.dataset.for.split(' ').includes(m)); if(m==='pogledi'){document.body.classList.add('compact');roomChips.after(document.getElementById('pogView'));document.getElementById('pogView').hidden=false;}else{const pv=document.getElementById('pogView');if(pv.parentElement!==document.getElementById('pogRoot'))document.getElementById('pogRoot').prepend(pv);}
+  if(m==='3d')info.hidden=true; document.querySelectorAll('#tools .tg[data-for]').forEach(x=>x.hidden=!x.dataset.for.split(' ').includes(m)); if(m==='pogledi'){document.body.classList.add('compact');roomChips.after(document.getElementById('pogView'));document.getElementById('pogView').hidden=false;}else{const pv=document.getElementById('pogView');if(pv.parentElement!==document.getElementById('pogRoot'))document.getElementById('pogRoot').prepend(pv);}
   if(m==='3d'||m==='sobe'){if(!fr3d.src)fr3d.src='3d/index.html?v=4&lite='+(matchMedia('(pointer:coarse)').matches?1:0);
     const send=()=>m==='3d'?post3d({type:'preset',p:'iso'}):post3d({type:'room',k:curRoomK}); if(fr3d.dataset.ready)send();else fr3d.dataset.pending=m;}
   if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,Pogledi.firstWall(curRoomK),false);
-  if(m==='sobe'||m==='pogledi'||m==='tlocrt')selectRoom(curRoomK);
+  if(m==='sobe'||m==='pogledi')selectRoom(curRoomK);
   if(hasSide&&matchMedia('(max-width:900px)').matches&&(m==='sobe'||m==='pogledi'))document.body.classList.add('noside');
   try{localStorage.setItem('stan.tab',m)}catch(e){}}
 document.querySelectorAll('#modeBar button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
 document.getElementById('sideToggle').addEventListener('click',()=>document.body.classList.add('noside'));document.getElementById('sideOpen').addEventListener('click',()=>document.body.classList.remove('noside'));
-document.querySelectorAll('#settings [data-set]').forEach(el=>el.addEventListener('change',()=>post3d({type:'set',id:el.dataset.set,value:el.type==='checkbox'?el.checked:el.value})));
-document.querySelectorAll('#settings [data-layer-set]').forEach(el=>{const b=document.querySelector(`[data-layer="${el.dataset.layerSet}"]`);el.checked=b.getAttribute('aria-pressed')==='true';el.addEventListener('change',()=>{if((b.getAttribute('aria-pressed')==='true')!==el.checked)b.click();});});
-const settings=document.getElementById('settings'), btnSettings=document.getElementById('btnSettings');
-btnSettings.addEventListener('click',e=>{e.stopPropagation();settings.hidden=!settings.hidden;});
-document.addEventListener('click',e=>{if(!settings.hidden&&!settings.contains(e.target)&&e.target!==btnSettings)settings.hidden=true;});
-document.getElementById('setPogLabels').addEventListener('change',e=>{document.body.classList.toggle('nopoglbl',!e.target.checked);});
+document.querySelectorAll('#tools [data-set]').forEach(el=>{if(el.tagName==='SELECT'){el.addEventListener('change',()=>post3d({type:'set',id:'palSel',value:el.value}));return;}
+  el.addEventListener('click',()=>{const on=el.getAttribute('aria-pressed')!=='true';el.setAttribute('aria-pressed',on);post3d({type:'set',id:el.dataset.set,value:on});});});
+document.querySelectorAll('#tools [data-layer-set]').forEach(el=>{const b=document.querySelector(`[data-layer="${el.dataset.layerSet}"]`);el.setAttribute('aria-pressed',b.getAttribute('aria-pressed'));el.addEventListener('click',()=>b.click());});
+document.getElementById('btnMeasure2').addEventListener('click',()=>document.getElementById('btnMeasure').click());
+document.getElementById('btnClear2').addEventListener('click',()=>document.getElementById('btnClearMeasure').click());
+document.getElementById('setPogLabels').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);document.body.classList.toggle('nopoglbl',!on);});
 document.querySelectorAll('#viewChips button').forEach(b=>b.addEventListener('click',()=>{post3d({type:'preset',p:b.dataset.preset});if(mapMode==='sobe')setMode('3d');}));
 function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}
 addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});post3d({type:'getState'});}
-  if(d.type==='state'){Object.entries(d.s).forEach(([k,v])=>{const el=document.querySelector(`#settings [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.type==='checkbox')el.checked=!!v;else el.value=v;});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
-  if(d.type==='sel'){if(d.f){info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){info.hidden=true;}else selectRoom(curRoomK);}
+  if(d.type==='state'){Object.entries(d.s).forEach(([k,v])=>{const el=document.querySelector(`#tools [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.tagName==='SELECT')el.value=v;else el.setAttribute('aria-pressed',!!v);});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
+  if(d.type==='sel'){if(d.f){if(mapMode==='3d'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
   if(d.type==='room'&&d.k&&d.k!==curRoomK){selectRoom(d.k);}});
 addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);if(mapMode==='pogledi')syncMapRoom(curRoomK);});
 function selectFurn(i){
@@ -672,7 +665,7 @@ const lsvg=document.getElementById('lightSvg'); drawBase(lsvg); const gL=el('g',
 el('defs',{},lsvg).innerHTML='<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter><filter id="blur2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="18"/></filter>';
 const nodes={}; LIGHTS.forEach(l=>nodes[l.id]=drawLight(l,gL,true));
 plan.appendChild(lsvg.querySelector('defs').cloneNode(true)); const planLights={}; LIGHTS.forEach(l=>planLights[l.id]=drawLight(l,gLt,true));
-function updateSideLights(){const on=mapMode==='tlocrt'&&document.querySelector('[data-layer="lt"]').getAttribute('aria-pressed')==='true';document.getElementById('sideLights').hidden=!on;info.hidden=on||mapMode==='sobe';
+function updateSideLights(){const on=mapMode==='tlocrt'&&document.querySelector('[data-layer="lt"]').getAttribute('aria-pressed')==='true';document.getElementById('sideLights').hidden=!on;info.hidden=on||mapMode==='sobe';if(mapMode==='tlocrt'){const show=on||!info.hidden;document.getElementById('side').hidden=!show;document.getElementById('sideOpen').hidden=!show;document.body.classList.toggle('noside',!show);}
   // sloj svjetala: samo svjetla, bez namještaja, kota i oznaka zidova
   [gFu,gDm,gSg].forEach(g=>g.style.visibility=on?'hidden':''); plan.classList.toggle('night',on); if(!on){['fu','dm'].forEach(k=>{const b=document.querySelector(`[data-layer="${k}"]`);layerEls[k].style.display=b.getAttribute('aria-pressed')==='true'?'':'none';});} document.querySelectorAll('[data-layer="fu"],[data-layer="dm"],#btnMeasure').forEach(b=>b.disabled=on);}
 let state=Object.fromEntries(LIGHTS.map(l=>[l.id,{on:false,level:100}]));
@@ -701,12 +694,17 @@ document.querySelectorAll('[data-scene]').forEach(b=>b.addEventListener('click',
 LIGHTS.forEach(l=>render(l.id));
 
 /* ===================== pogledi ===================== */
-const NACRTI={b:[['izo_boravak.jpg','Izometrija boravka i kuhinje'],['kuhinja.jpg','Kuhinja, pogledi K1 do K4'],['boravak.jpg','Dnevni boravak, pogledi B1 do B3'],['blender_boravak_1.jpg','Render iz hodnika prema kuhinji'],['blender_boravak_2.jpg','Render iz kuhinje prema vrtu']],
-  h:[['izo_hodnik.jpg','Izometrija hodnika'],['hodnik.jpg','Hodnik, pogledi H1 do H3']],w:[['izo_kupaona.jpg','Izometrija kupaone'],['kupaona.jpg','Kupaona, pogledi KP1 i KP2']],
-  s:[['izo_spavaca.jpg','Izometrija spavaće sobe'],['spavaca.jpg','Spavaća soba, pogledi S1 do S3']],d:[['izo_djecja.jpg','Izometrija dječje sobe'],['djecja.jpg','Dječja soba, pogledi D1 do D4']],l:[['izo_lodja.jpg','Izometrija lođe'],['lodja.jpg','Lođa, pogledi L1 i L2']]};
-function showNacrti(k){const box=document.getElementById('nacrti');box.innerHTML=(NACRTI[k]||[]).map(([f,t])=>`<div><b>${esc(t)}</b><img loading="lazy" src="slike/${f}" alt="${esc(t)}" data-f="${f}" data-t="${esc(t)}"></div>`).join('');
-  box.querySelectorAll('img').forEach(im=>im.addEventListener('click',()=>{document.getElementById('viewImg').src='slike/'+im.dataset.f;document.getElementById('viewTitle').textContent=im.dataset.t;document.getElementById('viewDlg').showModal();}));}
-window.showNacrti=showNacrti;
+const VIEWS={b:[['izo_boravak','3D nacrt boravka i kuhinje'],['K1','Zid s hladnjakom i pećnicom'],['K2','Zid prema spavaćoj: indukcija, napa, viseći'],['K3','Šank iz kuhinje'],['K4','Strana sudopera'],['B1','TV zid: komoda i zidne plohe'],['B2','Zid iza garniture: plohe i fotografija'],['B3','Bočni pogled prema vrtu'],['blender_boravak_1','Render iz hodnika prema kuhinji'],['blender_boravak_2','Render iz kuhinje prema vrtu']],
+  h:[['izo_hodnik','3D nacrt hodnika'],['H1','Zid prema kupaoni: ormarić u niši'],['H2','Zid prema boravku: ploča s kukicama'],['H3','Zid nasuprot ulaznih vrata: plohe, ogledalo']],
+  w:[['izo_kupaona','3D nacrt kupaone'],['KP1','Zid prema susjednom stanu: stup, školjka, komodica'],['KP2','Bočni presjek prema tušu']],
+  s:[['izo_spavaca','3D nacrt spavaće sobe'],['S1','Zid prema dječjoj: uzglavlje, krevet, ormarić'],['S2','Zid prema kuhinji: stol i ormar'],['S3','Od prozora prema vratima: police, ormar 185']],
+  d:[['izo_djecja','3D nacrt dječje sobe'],['D1','Zid prema susjednom stanu: ormar, stol'],['D2','Zid prema spavaćoj: panel i krevet'],['D3','Od prozora prema vratima: ormar 198'],['D4','Od vrata prema prozoru: stol ispod prozora']],
+  l:[['izo_lodja','3D nacrt lođe'],['L1','Sprijeda: ormar uz zid spavaće sobe'],['L2','S boka: od ograde prema zidu kuhinje']]};
+window.VIEWS=VIEWS;
+function imgSrc(id){return /^(izo_|blender_)/.test(id)?'slike/'+id+'.jpg':'slike/pog/'+id+'.jpg';}
+function showNacrt(id,title){const box=document.getElementById('nacrti');box.innerHTML=`<div><img src="${imgSrc(id)}" alt="${esc(title)}"></div>`;
+  box.querySelector('img').addEventListener('click',()=>{document.getElementById('viewImg').src=imgSrc(id);document.getElementById('viewTitle').textContent=title;document.getElementById('viewDlg').showModal();});}
+window.showNacrt=showNacrt;
 document.getElementById('viewDlg').addEventListener('click',e=>{if(e.target.id==='viewDlg')e.target.close()});
 
 /* ===================== dokumenti ===================== */
@@ -778,13 +776,12 @@ function isDark(){const t=document.documentElement.getAttribute('data-theme');re
 let theme='';try{theme=localStorage.getItem('kb-theme')||''}catch(e){} if(theme!=='light'&&theme!=='dark')theme='';
 const ICONS={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',auto:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'};
 function applyTheme(){if(theme)document.documentElement.setAttribute('data-theme',theme);else document.documentElement.removeAttribute('data-theme');if(typeof postTheme==='function')postTheme();
-  document.querySelectorAll('#themeSeg button').forEach(x=>x.classList.toggle('on',x.dataset.t===theme));
   const b=document.getElementById('btnTheme');b.querySelector('svg').innerHTML=theme?ICONS[theme==='dark'?'moon':'sun']:ICONS.auto;b.title=theme===''?'Prati uređaj. Klik: svijetlo':theme==='light'?'Svijetlo. Klik: tamno':'Tamno. Klik: prati uređaj';}
 applyTheme(); mq.addEventListener('change',applyTheme);
 function postTheme(){if(typeof post3d==='function')post3d({type:'theme',dark:isDark()});}
 document.getElementById('btnTheme').addEventListener('click',()=>{theme=theme===''?'light':theme==='light'?'dark':'';try{if(theme)localStorage.setItem('kb-theme',theme);else localStorage.removeItem('kb-theme')}catch(e){}applyTheme();toast(theme===''?'Prati uređaj':theme==='light'?'Svijetlo':'Tamno')});
 addEventListener('storage',e=>{if(e.key==='kb-theme'){theme=e.newValue==='light'||e.newValue==='dark'?e.newValue:'';applyTheme()}});
-document.querySelectorAll('#themeSeg button').forEach(b=>b.addEventListener('click',()=>{theme=b.dataset.t;try{if(theme)localStorage.setItem('kb-theme',theme);else localStorage.removeItem('kb-theme')}catch(e){}applyTheme();}));
+
 
 /* ===================== zajednički račun (isto kao Hub i Aparati) ===================== */
 const ACC_REPO_DEFAULT='zkaraman25/aparati', LS_SYNC='aparati.sync.v1', API='https://api.github.com', ACC_PATH='racun.json';

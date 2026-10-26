@@ -131,14 +131,13 @@ function init(){
   function buildViews(){viewSel.innerHTML='';const r=ROOMS.find(r=>r.k===cur.k);
     const add=(id,label)=>{const b=document.createElement('button');b.textContent=label;b.dataset.v=id;b.setAttribute('aria-pressed',id===cur.view);b.addEventListener('click',()=>{cur.view=id;draw();});viewSel.appendChild(b);};
     if(planOnly){add('plan','Tlocrt');return;}
-    add('plan','Tlocrt sobe');
-    wallsOf(r).forEach(w=>{const has=FURN3.some(f=>f.r===r.k)||EDGE_OPEN.some(o=>o[0]===r.k&&o[1]===w.i);if(w.len>=60)add('w'+w.i,w.name+(countSame(r,w)>1?' ('+Math.round(w.len)+')':''));});
-    add('nacrti','Nacrti i renderi');
+    ((window.VIEWS&&window.VIEWS[r.k])||[]).forEach(([id,lab])=>add('img:'+id,(/^[A-Z]+\d$/.test(id)?id+' · ':'')+lab));
+    add('plan','Tlocrt sobe s kotama');
   }
   function countSame(r,w){return wallsOf(r).filter(x=>x.dir===w.dir&&x.len>=60).length;}
   function draw(){const r=ROOMS.find(r=>r.k===cur.k);roomSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur.k));viewSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===cur.view));
-    const nac=document.getElementById('nacrti'); const isN=cur.view==='nacrti'; if(nac){nac.hidden=!isN;svg.style.display=isN?'none':'';const h=document.getElementById('pogHint');if(h)h.hidden=isN;}
-    if(isN){title.textContent=r.name+', nacrti i renderi';if(window.showNacrti)showNacrti(cur.k);return;}
+    const nac=document.getElementById('nacrti'); const isN=cur.view.startsWith('img:'); if(nac){nac.hidden=!isN;svg.style.display=isN?'none':'';const h=document.getElementById('pogHint');if(h)h.hidden=isN;}
+    if(isN){const id=cur.view.slice(4);const lab=((window.VIEWS&&window.VIEWS[r.k])||[]).find(v=>v[0]===id);title.textContent=r.name+(lab?', '+lab[1]:'');if(window.showNacrt)showNacrt(id,lab?lab[1]:id);return;}
     if(cur.view==='plan'){title.textContent=r.name+', tlocrt';const ctx=drawRoomPlan(svg,r,(f)=>{planDims(svg,ctx,r,f);showInfo(f,null);});}
     else{const w=wallsOf(r)[+cur.view.slice(1)];title.textContent=r.name+', '+w.name.toLowerCase()+' (pogled iznutra)';const ctx=drawElevation(svg,r,w,(f,_,w2,it)=>{elevDims(svg,ctx,w2,it);showInfo(f,it);});}
   }
@@ -148,7 +147,7 @@ function init(){
   roomSel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cur.k=b.dataset.k;cur.view='plan';buildViews();draw();if(typeof selectRoom==='function'&&window.curRoomK!==cur.k){}});
   let planOnly=false;
   window.Pogledi={wallsOf,drawRoomPlan,planDims,drawElevation,elevDims,
-    firstWall:k=>{const r=ROOMS.find(r=>r.k===k);const w=wallsOf(r).find(w=>w.len>=60);return w?'w'+w.i:'plan';},
+    firstWall:k=>{const v=window.VIEWS&&window.VIEWS[k];return v&&v.length?'img:'+v[0][0]:'plan';},
     show:(k,v,po)=>{cur.k=k;planOnly=!!po;cur.view=v||'plan';buildViews();draw();}};
   buildViews();
   window.dispatchEvent(new Event('pogledi-ready'));
