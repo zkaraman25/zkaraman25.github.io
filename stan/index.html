@@ -11,22 +11,22 @@
 :root{
   --bg:#f3f5f8; --card:#ffffff; --fg:#111a24; --muted:#68717d; --line:#e2e7ee; --hover:#eef2f7;
   --a:#1f4e79; --a-strong:#173c5e; --a-soft:#e1ebf4; --a-pale:#bfd3e6; --a-faint:#eef3f8; --on-a:#ffffff; --warn:#b4532a;
-  --wall:#c6bdb0; --floor:#e9dcc4; --tile:#e5e3df; --wood:#c4a57a; --wood-d:#8b6f4e; --sofa:#b7c4b1; --glass:#b9d7e8; --dim:#b8463a;
-  --warm:#e8a33a; --track:#2f8f9d; --lamp:#d9955a; --off:#cfd3d8;
+  --wall:#bdb5a9; --floor:#f0ebe2; --tile:#e4e6e6; --wood:#d3cabc; --wood-d:#857a6a; --sofa:#b7c4b1; --glass:#bcd6e6; --dim:#5f6f80;
+  --warm:#e3b25c; --track:#3a8f9c; --lamp:#d7a06a; --off:#cfd3d8;
   --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
 }
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
-  --wall:#78705f; --floor:#3b3226; --tile:#2a2e33; --wood:#8a7050; --wood-d:#d2b48c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
-  --warm:#f3b955; --track:#52b9c6; --lamp:#eaa66d; --off:#3b4049;
+  --wall:#6e685f; --floor:#2c2b28; --tile:#262a2d; --wood:#5c564d; --wood-d:#c8bdae; --sofa:#56695a; --glass:#5f90b8; --dim:#9fb0c0;
+  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
 :root[data-theme="dark"]{
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
-  --wall:#78705f; --floor:#3b3226; --tile:#2a2e33; --wood:#8a7050; --wood-d:#d2b48c; --sofa:#56695a; --glass:#5f90b8; --dim:#ef7f72;
-  --warm:#f3b955; --track:#52b9c6; --lamp:#eaa66d; --off:#3b4049;
+  --wall:#6e685f; --floor:#2c2b28; --tile:#262a2d; --wood:#5c564d; --wood-d:#c8bdae; --sofa:#56695a; --glass:#5f90b8; --dim:#9fb0c0;
+  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -40,7 +40,7 @@ header.top .chips{margin:0;justify-content:center;flex:1;overflow-x:auto;scrollb
 #stage>section{position:absolute;inset:58px var(--sidew,380px) 72px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0} body.noside #stage>section{right:12px}
 #stage>section[hidden]{display:none}
 #frame3d{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent}
-#m-3d{inset:0 !important}
+body.compact{--sidew:250px} body.compact #side{padding:10px} body.compact #side .chips{flex-direction:column;align-items:stretch;padding-right:0;margin:30px 0 0} body.compact #side .chips button{justify-content:flex-start}
 svg.plan{max-width:100%;max-height:calc(100% - 70px);width:auto;height:auto;flex:1 1 auto;min-height:0}
 .toggles.over{position:absolute;top:8px;left:0;z-index:2;margin:0} .hint{position:absolute;bottom:0;left:0;right:0;font-size:12px;color:var(--muted);text-align:center;pointer-events:none}
 .nacrti{width:100%;height:100%;overflow:auto;display:grid;gap:12px;align-content:start;padding:4px} .nacrti img{width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:zoom-in} .nacrti b{display:block;font-size:13px;margin:0 0 4px}
@@ -585,8 +585,6 @@ function selectRoom(k){
   const brief=mapMode==='sobe'||mapMode==='pogledi';
   info.innerHTML=`<h3>${esc(r.name)}</h3><div class="sub">${esc(r.area)}</div><div class="kv"><b>Mjere</b><span>${esc(r.dims)}</span></div>
     ${brief?'':`<div class="list">${items.map(o=>`<div class="item" data-i="${o.i}"><span class="b">${esc(o.f.n.split(' ')[0])}</span><span>${esc(o.f.n.slice(o.f.n.indexOf(' ')+1))}<small>${o.f.x1-o.f.x0} × ${o.f.y1-o.f.y0} u tlocrtu${o.f.t?', '+esc(o.f.t):''}</small></span></div>`).join('')}</div>
-    <h3 style="margin-top:14px;font-size:14px">Što stane</h3>
-    <div class="list">${(FITS[k]||[]).map(([w,l,t])=>`<div class="item" style="cursor:default;grid-template-columns:1fr"><span>${esc(w)}: <b>${esc(l)}</b><small>${esc(t)}</small></span></div>`).join('')}</div>
 `}<div class="list" style="margin-top:12px">${r.notes.map(n=>`<div class="sub">• ${esc(n)}</div>`).join('')}</div>`;
   info.querySelectorAll('.item').forEach(it=>it.addEventListener('click',()=>selectFurn(+it.dataset.i)));
   try{localStorage.setItem('stan.room',k)}catch(e){}
@@ -601,7 +599,7 @@ function showElement(f,prods){
     <div class="sub">Položaj u tlocrtu: x ${a}–${c}, y ${b}–${d}</div>
     ${(prods&&prods.length)?`<div class="list">${prods.map(p=>`<div class="item" style="grid-template-columns:1fr;cursor:default"><span>${esc(p.name)}<small>${esc(p.price||'')}${p.bought?' · kupljeno':''}${p.source?` · <a href="${esc(p.source)}" target="_blank" rel="noopener">otvori</a>`:''}</small></span></div>`).join('')}</div>`:''}
     <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
-  document.getElementById('backRoom').addEventListener('click',()=>selectRoom(f.r));
+  document.getElementById('backRoom').addEventListener('click',()=>{selectRoom(f.r);if(mapMode==='sobe')info.hidden=true;});
 }
 /* ---- načini prikaza: jedan ekran, donja traka ---- */
 let mapMode='3d'; const MODE_SECTION={'3d':'m-3d',sobe:'m-3d',tlocrt:'m-tlocrt',pogledi:'m-pog',dok:'m-dok'};
@@ -610,14 +608,14 @@ function post3d(m){if(fr3d.contentWindow)fr3d.contentWindow.postMessage(m,'*');}
 function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   document.querySelectorAll('#modeBar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
   ['m-3d','m-tlocrt','m-pog','m-dok'].forEach(id=>document.getElementById(id).hidden=MODE_SECTION[m]!==id);
-  const roomy=['sobe','pogledi'].includes(m); roomChips.hidden=!roomy; if(roomy)document.getElementById('side').prepend(roomChips);
+  const roomy=['sobe','pogledi'].includes(m); roomChips.hidden=!roomy; if(roomy)document.getElementById('side').prepend(roomChips); document.body.classList.toggle('compact',m==='sobe'); if(m==='sobe')info.hidden=true;
   const hasSide=m!=='dok'&&m!=='3d'; document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
   updateSideLights();
   document.getElementById('btn3dPrikaz').hidden=!(m==='3d'||m==='sobe');
   if(m==='3d'||m==='sobe'){if(!fr3d.src)fr3d.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);
     const send=()=>m==='3d'?post3d({type:'preset',p:'iso'}):post3d({type:'room',k:curRoomK}); if(fr3d.dataset.ready)send();else fr3d.dataset.pending=m;}
   if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,Pogledi.firstWall(curRoomK),false);
-  if(m==='sobe'||m==='pogledi')selectRoom(curRoomK);
+  if(m==='sobe'||m==='pogledi'||m==='tlocrt')selectRoom(curRoomK);
   if(hasSide&&matchMedia('(max-width:900px)').matches&&(m==='sobe'||m==='pogledi'))document.body.classList.add('noside');
   try{localStorage.setItem('stan.tab',m)}catch(e){}}
 document.querySelectorAll('#modeBar button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
@@ -625,7 +623,7 @@ document.getElementById('sideToggle').addEventListener('click',()=>document.body
 document.getElementById('btn3dPrikaz').addEventListener('click',()=>post3d({type:'openPanel',which:'prikaz'}));
 function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}
 addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
-  if(d.type==='sel'){if(d.f){if(mapMode==='3d'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
+  if(d.type==='sel'){if(d.f){if(mapMode==='3d'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
   if(d.type==='room'&&d.k&&d.k!==curRoomK){selectRoom(d.k);}});
 addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);if(mapMode==='pogledi')syncMapRoom(curRoomK);});
 function selectFurn(i){
@@ -640,7 +638,9 @@ const lsvg=document.getElementById('lightSvg'); drawBase(lsvg); const gL=el('g',
 el('defs',{},lsvg).innerHTML='<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter><filter id="blur2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="18"/></filter>';
 const nodes={}; LIGHTS.forEach(l=>nodes[l.id]=drawLight(l,gL,true));
 plan.appendChild(lsvg.querySelector('defs').cloneNode(true)); const planLights={}; LIGHTS.forEach(l=>planLights[l.id]=drawLight(l,gLt,true));
-function updateSideLights(){const on=mapMode==='tlocrt'&&document.querySelector('[data-layer="lt"]').getAttribute('aria-pressed')==='true';document.getElementById('sideLights').hidden=!on;info.hidden=on;}
+function updateSideLights(){const on=mapMode==='tlocrt'&&document.querySelector('[data-layer="lt"]').getAttribute('aria-pressed')==='true';document.getElementById('sideLights').hidden=!on;info.hidden=on||mapMode==='sobe';
+  // sloj svjetala: samo svjetla, bez namještaja, kota i oznaka zidova
+  [gFu,gDm,gSg].forEach(g=>g.style.visibility=on?'hidden':''); if(!on){['fu','dm'].forEach(k=>{const b=document.querySelector(`[data-layer="${k}"]`);layerEls[k].style.display=b.getAttribute('aria-pressed')==='true'?'':'none';});} document.querySelectorAll('[data-layer="fu"],[data-layer="dm"],#btnMeasure').forEach(b=>b.disabled=on);}
 let state=Object.fromEntries(LIGHTS.map(l=>[l.id,{on:false,level:100}]));
 let savedLights=null;try{savedLights=JSON.parse(localStorage.getItem('stan.lights')||'null');}catch(e){}
 if(savedLights)Object.keys(state).forEach(k=>{if(savedLights[k])state[k]=savedLights[k]});else Object.entries(SCENES.vecer).forEach(([k,v])=>{state[k]={on:true,level:v}});

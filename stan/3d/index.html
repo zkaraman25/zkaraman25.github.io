@@ -4274,7 +4274,8 @@ function viewPreset(p){
 const ray=new THREE.Raycaster(); const ptr=new THREE.Vector2(); let selected=null; let selBox=null;
 
 function pick(ev){const r=canvas.getBoundingClientRect();ptr.x=((ev.clientX-r.left)/r.width)*2-1;ptr.y=-((ev.clientY-r.top)/r.height)*2+1;ray.setFromCamera(ptr,camera);
-  const hits=ray.intersectObjects(G.furn.children,true);return hits.find(h=>h.object.userData.obj)||null;}
+  const vis=o=>{for(let p=o;p;p=p.parent){if(p.visible===false)return false;}return true;};
+  const hits=ray.intersectObjects(G.furn.children,true);return hits.find(h=>h.object.userData.obj&&vis(h.object))||null;}
 const EMB=window.parent!==window; // ugrađen u app: opis ide u desni panel roditelja, ne u karticu
 function select(entry){
   if(selBox){scene.remove(selBox);selBox=null;} selected=entry;
@@ -4283,7 +4284,7 @@ function select(entry){
   const bb=new THREE.Box3().setFromObject(entry.g);selBox=new THREE.Box3Helper(bb,0xd6455d);scene.add(selBox);
   if(!EMB)showCard(entry);
 }
-function applyTheme3d(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.body.style.background=EMB?'transparent':(dark?'#0e1319':'#f3f5f8');}
+function applyTheme3d(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.documentElement.style.colorScheme=dark?'dark':'light';document.body.style.background=EMB?'transparent':(dark?'#0e1319':'#f3f5f8');}
 if(!EMB){const mq=matchMedia('(prefers-color-scheme:dark)');applyTheme3d(mq.matches);mq.addEventListener('change',e=>applyTheme3d(e.matches));}
 addEventListener('message',e=>{const d=e.data||{};if(d.type==='theme')applyTheme3d(!!d.dark);if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='openPanel')openPanel(d.which||'prikaz');if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);if(o)select(o);}});
 function showCard(entry){
