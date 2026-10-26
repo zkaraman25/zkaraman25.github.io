@@ -12,7 +12,7 @@
   --bg:#f3f5f8; --card:#ffffff; --fg:#111a24; --muted:#68717d; --line:#e2e7ee; --hover:#eef2f7;
   --a:#1f4e79; --a-strong:#173c5e; --a-soft:#e1ebf4; --a-pale:#bfd3e6; --a-faint:#eef3f8; --on-a:#ffffff; --warn:#b4532a;
   --wall:#bdb5a9; --floor:#f0ebe2; --tile:#e4e6e6; --wood:#d3cabc; --wood-d:#857a6a; --sofa:#b7c4b1; --glass:#bcd6e6; --dim:#5f6f80;
-  --warm:#e3b25c; --track:#3a8f9c; --lamp:#d7a06a; --off:#cfd3d8; --night-floor:#e9e4da; --night-tile:#dfe1e1; --night-wall:#aaa397;
+  --warm:#e8b53d; --track:#e4792c; --lamp:#f3cf5a; --off:#cfd3d8; --night-floor:#e9e4da; --night-tile:#dfe1e1; --night-wall:#aaa397;
   --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
 }
@@ -20,13 +20,13 @@
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
   --wall:#6e685f; --floor:#2c2b28; --tile:#262a2d; --wood:#5c564d; --wood-d:#c8bdae; --sofa:#56695a; --glass:#5f90b8; --dim:#9fb0c0;
-  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049; --night-floor:#1b1a18; --night-tile:#181b1e; --night-wall:#6e685f;
+  --warm:#f3c24e; --track:#ff8c3a; --lamp:#ffe07a; --off:#3b4049; --night-floor:#1b1a18; --night-tile:#181b1e; --night-wall:#6e685f;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
 :root[data-theme="dark"]{
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
   --wall:#6e685f; --floor:#2c2b28; --tile:#262a2d; --wood:#5c564d; --wood-d:#c8bdae; --sofa:#56695a; --glass:#5f90b8; --dim:#9fb0c0;
-  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049; --night-floor:#1b1a18; --night-tile:#181b1e; --night-wall:#6e685f;
+  --warm:#f3c24e; --track:#ff8c3a; --lamp:#ffe07a; --off:#3b4049; --night-floor:#1b1a18; --night-tile:#181b1e; --night-wall:#6e685f;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -117,7 +117,7 @@ svg.plan.measuring,svg.plan.measuring .rm,svg.plan.measuring .fu,svg.plan.measur
 .lt.led .core{stroke:var(--off);stroke-width:8;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm);filter:drop-shadow(0 0 6px var(--warm))} .lt.led .glow{stroke:var(--warm);stroke-width:60;stroke-linecap:round;filter:url(#blur)}
 .lt.track .core{stroke:var(--off);stroke-width:10;stroke-linecap:round} .lt.track.on .core{stroke:var(--track);filter:drop-shadow(0 0 6px var(--track))} .lt.track .glow{stroke:var(--track);stroke-width:48;stroke-linecap:round;filter:url(#blur)}
 .lt.lamp .core{fill:var(--off)} .lt.lamp.on .core{fill:var(--lamp);filter:drop-shadow(0 0 8px var(--lamp))} .lt.lamp .glow{fill:var(--lamp);filter:url(#blur2)}
-svg.plan.night{--warm:#f0a324;--lamp:#ea8f3e;--track:#1b94a6} svg.plan.night .fl{fill:var(--night-floor)} svg.plan.night .tl{fill:var(--night-tile)} svg.plan.night .lbl{fill:var(--muted)} svg.plan.night .wl{fill:var(--night-wall)}
+svg.plan.night{--warm:#eeb020;--track:#e8702a;--lamp:#f2c936} svg.plan.night .fl{fill:var(--night-floor)} svg.plan.night .tl{fill:var(--night-tile)} svg.plan.night .lbl{fill:var(--muted)} svg.plan.night .wl{fill:var(--night-wall)}
 .lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none} .lt.on .tag{fill:var(--fg)}
 @media (prefers-reduced-motion:reduce){.lt .core,.lt .glow{transition:none}}
 /* info panel */
@@ -227,7 +227,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   <button class="icon sideclose" id="sideToggle" title="Sakrij / prikaži"><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
   <div id="info"></div>
   <div id="sideLights" hidden>
-    <div class="legend" style="margin:0 0 10px"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>ugradna, točkasta</span><span id="count"></span></div>
+    <div class="legend" style="margin:0 0 10px"><span><i style="background:var(--warm)"></i>zidna LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica s lampama</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>viseća / točkasta lampa</span><span id="count"></span></div>
     <h2>Scene</h2><div class="scenes"><button class="primary" data-scene="sve">Sve upali</button><button data-scene="vecer">Večer</button><button data-scene="film">Film</button><button data-scene="noc">Noćno</button><button data-scene="ugasi">Sve ugasi</button></div>
     <div class="sub" style="margin:8px 0 14px">Probna ploča. Stanje se pamti u ovom pregledniku, uređaji još nisu spojeni.</div>
     <div id="lightList"><h2>Svjetla po prostorijama</h2></div>
@@ -236,8 +236,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 </aside>
 
 <div id="tools">
-  <div class="tg" data-for="3d sobe"><button data-preset="iso">Cijeli stan</button><button data-preset="top">Odozgo</button><button data-preset="jug">S lođe</button><button data-preset="sjever">S vrta</button><button data-preset="hodaj">S garniture</button></div>
-  <div class="tg" data-for="3d sobe"><button data-set="tIzo" aria-pressed="true">Presjek</button><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tStrop" aria-pressed="false">Strop</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
+  <div class="tg" data-for="3d sobe"><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tStrop" aria-pressed="false">Strop</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
     <select data-set="palSel" title="Materijali"><option value="izo">Pastel</option><option value="skyline">Skyline 90</option><option value="svijetlo">Bijelo + hrast</option><option value="tamno">Grafit + orah</option></select></div>
   <div class="tg" data-for="tlocrt"><button data-layer-set="fu" aria-pressed="false">Namještaj</button><button data-layer-set="dm" aria-pressed="true">Kote</button><button data-layer-set="lt" aria-pressed="false">Svjetla</button><button id="btnMeasure2" aria-pressed="false">Mjeri</button><button id="btnClear2" hidden>Obriši mjere</button></div>
   <div class="tg" data-for="pogledi"><button id="setPogLabels" aria-pressed="true">Oznake elemenata</button></div>
@@ -646,7 +645,7 @@ document.querySelectorAll('#tools [data-layer-set]').forEach(el=>{const b=docume
 document.getElementById('btnMeasure2').addEventListener('click',()=>document.getElementById('btnMeasure').click());
 document.getElementById('btnClear2').addEventListener('click',()=>document.getElementById('btnClearMeasure').click());
 document.getElementById('setPogLabels').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);document.body.classList.toggle('nopoglbl',!on);});
-document.querySelectorAll('#viewChips button').forEach(b=>b.addEventListener('click',()=>{post3d({type:'preset',p:b.dataset.preset});if(mapMode==='sobe')setMode('3d');}));
+
 function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}
 addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});post3d({type:'getState'});}
   if(d.type==='state'){Object.entries(d.s).forEach(([k,v])=>{const el=document.querySelector(`#tools [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.tagName==='SELECT')el.value=v;else el.setAttribute('aria-pressed',!!v);});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
