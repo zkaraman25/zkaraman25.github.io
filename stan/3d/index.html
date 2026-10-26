@@ -39,9 +39,10 @@ a{color:var(--a)}
 #lbl svg{position:absolute;inset:0;width:100%;height:100%}
 #lbl .l{position:absolute;font-size:13px;font-weight:600;color:var(--ink);background:var(--lblbg);padding:3px 8px;border-radius:8px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;transform:translateY(-50%)}
 #lbl .l small{display:block;font-weight:400;color:var(--mut);font-size:11.5px} #lbl .l.dim{opacity:.28} #lbl .l{transition:opacity .25s,background .25s,color .25s} #lbl .l.sel{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)} #lbl .l.sel small{color:rgba(255,255,255,.8)} #lbl svg line.dim,#lbl svg circle.dim{opacity:.18} #lbl svg line.sel{stroke-width:2.5;stroke:var(--a) !important} #lbl svg circle.sel{fill:var(--a) !important;r:5}
-#lbl .n{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}
+#lbl .n{position:absolute;pointer-events:auto;cursor:pointer;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}
 #lblList{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));display:flex;gap:6px;overflow-x:auto;padding:6px 10px;z-index:3;pointer-events:auto;scrollbar-width:none}
 #lblList span{flex:none;background:var(--lblbg);border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap}
+#lblList span.sel{background:var(--a);color:#fff} #lbl .n.sel{background:var(--a);transform:translate(-50%,-50%) scale(1.25)}
 #lblList b{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;align-items:center;justify-content:center;margin-right:5px}
 #hint{position:fixed;left:50%;transform:translateX(-50%);top:calc(56px + env(safe-area-inset-top));background:rgba(30,36,48,.85);color:#fff;font-size:13px;padding:8px 14px;border-radius:999px;transition:opacity .6s;pointer-events:none;z-index:3;white-space:nowrap}
 #hint.hide{opacity:0}
@@ -4220,7 +4221,7 @@ function setIzo(on){
   applyWallMode(); localStorage.setItem('stan3d.izo',on?'1':'0'); $('lbl').style.display=on?'':'none'; $('lblList').hidden=!on; lastAz=null;
 }
 function fitOrtho(k){ // zumiraj ortografsku kameru na sobu ili na cijeli stan
-  const w=canvas.clientWidth,h=canvas.clientHeight,asp=w/h; let half=7.2; if(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);half=0.5*((Math.max(...xs)-Math.min(...xs))+(Math.max(...ys)-Math.min(...ys)))/100*0.6+1.2;} if(asp<1)half*=1.25/asp;
+  const w=canvas.clientWidth,h=canvas.clientHeight,asp=w/h; let half=7.2; if(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);half=0.5*((Math.max(...xs)-Math.min(...xs))+(Math.max(...ys)-Math.min(...ys)))/100*0.6+1.2;} if(asp<1)half=half*0.95/asp;
   orthoTarget=half; if(!camAnim)applyHalf(half);
 }
 let orthoTarget=null; function applyHalf(half){const asp=canvas.clientWidth/canvas.clientHeight;ortho.left=-half*asp;ortho.right=half*asp;ortho.top=half;ortho.bottom=-half;ortho.zoom=1;ortho.updateProjectionMatrix();}
@@ -4241,14 +4242,16 @@ function drawLabels(){
   const seen=new Set();
   const get=it=>{let r=LBL.get(it.key);if(!r){const el=document.createElement('div');el.className='l';root.appendChild(el);
       const l1=document.createElementNS(NS,'line'),l2=document.createElementNS(NS,'line'),d=document.createElementNS(NS,'circle');d.setAttribute('r',4);[l1,l2].forEach(l=>{l.setAttribute('stroke-width','1.5')});lblSvg.append(l1,l2,d);
-      const n=document.createElement('div');n.className='n';root.appendChild(n);
+      const n=document.createElement('div');n.className='n';root.appendChild(n);if(it.id)n.addEventListener('click',()=>{const o=OBJS.find(o=>o.f.id===it.id);select(o||null);});else if(it.room)n.addEventListener('click',()=>viewRoom(it.room));
       r={el,l1,l2,d,n,html:''};LBL.set(it.key,r);
       if(it.id){el.style.pointerEvents='auto';el.style.cursor='pointer';el.addEventListener('click',()=>{const o=OBJS.find(o=>o.f.id===it.id);select(o||null);});}
       else if(it.room){el.style.pointerEvents='auto';el.style.cursor='pointer';el.addEventListener('click',()=>{viewRoom(it.room);});}}
     const html=`${esc(it.t)}<small>${esc(it.s)}</small>`; if(r.html!==html){r.el.innerHTML=html;r.html=html;} return r;};
   if(narrow){
     items.forEach((it,i)=>{const r=get(it);seen.add(it.key);r.el.style.display='none';[r.l1,r.l2,r.d].forEach(x=>x.style.display='none');r.n.style.display='';r.n.textContent=i+1;r.n.style.left=it.x+'px';r.n.style.top=it.y+'px';});
-    $('lblList').innerHTML=items.map((it,i)=>`<span><b>${i+1}</b>${esc(it.t)} · ${esc(it.s)}</span>`).join(''); $('lblList').hidden=false;
+    $('lblList').innerHTML=items.map((it,i)=>`<span data-k="${esc(it.key)}" class="${selected&&selected.f.id===it.id?'sel':''}"><b>${i+1}</b>${esc(it.t)} · ${esc(it.s)}</span>`).join(''); $('lblList').hidden=false;
+    $('lblList').querySelectorAll('span').forEach((sp,i)=>sp.onclick=()=>{const it=items[i];if(it.id){const o=OBJS.find(o=>o.f.id===it.id);select(o||null);}else if(it.room)viewRoom(it.room);});
+    items.forEach((it,i)=>{const r=LBL.get(it.key);if(r)r.n.classList.toggle('sel',!!(selected&&selected.f.id===it.id));});
   } else {
     $('lblList').hidden=true;
     const top=70, bottom=h-80, step=44, margin=16, colW=Math.min(270,w*0.26);
