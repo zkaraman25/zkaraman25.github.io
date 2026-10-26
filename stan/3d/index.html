@@ -6,7 +6,8 @@
 <title>Stan A1 — 3D</title>
 <style>
 :root{--a:#1f4e79;--a2:#d6455d;--bg:transparent;--ink:#1e2430;--line:#dcdad4;--mut:#6c7280;--card:#fff;--soft:#f3f1ec;--lblbg:rgba(255,255,255,.85);--leader:#46505c}
-:root[data-theme="dark"]{--a:#6ea4d8;--ink:#e8edf3;--line:#243040;--mut:#95a0ad;--card:#161c24;--soft:#1c242e;--lblbg:rgba(22,28,36,.88);--leader:#aab4c0}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark;--a:#6ea4d8;--ink:#e8edf3;--line:#243040;--mut:#95a0ad;--card:#161c24;--soft:#1c242e;--lblbg:rgba(22,28,36,.88);--leader:#aab4c0}
 *{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:transparent;color:var(--ink);font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
 header{position:fixed;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;display:flex;align-items:center;gap:10px;pointer-events:none}
@@ -4257,12 +4258,12 @@ let camAnim=null;
 function flyTo(pos,tgt){camAnim={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now()};}
 function roomCenter(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);return [(Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2];}
 const IZO_DIR={b:[1,1],h:[1,1],w:[-1,-1],s:[1,-1],d:[1,-1],l:[-1,-1]}; // iz kojeg kuta se gleda soba (x, y): stražnji zidovi su nasuprot
-function viewRoom(k){curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,0.3,-cy*S);
+function viewRoom(k){curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,$('tIzo').checked?1.15:0.3,-cy*S);
   if($('tIzo').checked){const d=IZO_DIR[k]||[1,1];fitOrtho(k);flyTo(new THREE.Vector3(cx*S+d[0]*20,20*0.82,-cy*S-d[1]*20),t);return;}
   const port=innerHeight>innerWidth;flyTo(new THREE.Vector3(cx*S-1.4,port?6.2:5.0,-cy*S+(port?3.2:3.0)),t);if(!$('tNiski').checked){$('tNiski').checked=true;applyWallMode();toast('Zidovi spušteni radi pogleda; isključi u Prikazu');}}
 function viewPreset(p){
-  const c=new THREE.Vector3(4.9,0.4,-2.2); curRoom=null; lastAz=null;
-  if($('tIzo').checked){fitOrtho(null);if(p==='iso'){flyTo(new THREE.Vector3(4.9+20,16.5,-2.2+20),c);return;}if(p==='top'){flyTo(new THREE.Vector3(4.9,40,-2.1),c.clone().setY(0));return;}if(p==='jug'){flyTo(new THREE.Vector3(4.9+16,16,-2.2+24),c);return;}if(p==='sjever'){flyTo(new THREE.Vector3(4.9-16,16,-2.2-24),c);return;}}
+  const c=new THREE.Vector3(4.9,$('tIzo').checked?1.0:0.4,-2.2); curRoom=null; lastAz=null;
+  if($('tIzo').checked){fitOrtho(null);if(p==='iso'){flyTo(new THREE.Vector3(4.9+20,16.5+0.6,-2.2+20),c);return;}if(p==='top'){flyTo(new THREE.Vector3(4.9,40,-2.1),c.clone().setY(0));return;}if(p==='jug'){flyTo(new THREE.Vector3(4.9+16,16,-2.2+24),c);return;}if(p==='sjever'){flyTo(new THREE.Vector3(4.9-16,16,-2.2-24),c);return;}}
   if(p==='iso')flyTo(new THREE.Vector3(-3,9,7.5),c.clone().setY(0.6));
   if(p==='top')flyTo(new THREE.Vector3(4.9,16,-2.1),c.clone().setY(0));
   if(p==='jug')flyTo(new THREE.Vector3(5,6,6.5),c);
@@ -4284,9 +4285,9 @@ function select(entry){
   const bb=new THREE.Box3().setFromObject(entry.g);selBox=new THREE.Box3Helper(bb,0xd6455d);scene.add(selBox);
   if(!EMB)showCard(entry);
 }
-function applyTheme3d(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.documentElement.style.colorScheme=dark?'dark':'light';document.body.style.background=EMB?'transparent':(dark?'#0e1319':'#f3f5f8');}
+function applyTheme3d(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.body.style.background=EMB?'transparent':(dark?'#0e1319':'#f3f5f8');}
 if(!EMB){const mq=matchMedia('(prefers-color-scheme:dark)');applyTheme3d(mq.matches);mq.addEventListener('change',e=>applyTheme3d(e.matches));}
-addEventListener('message',e=>{const d=e.data||{};if(d.type==='theme')applyTheme3d(!!d.dark);if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='openPanel')openPanel(d.which||'prikaz');if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);if(o)select(o);}});
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='theme')applyTheme3d(!!d.dark);if(d.type==='set'){const el=$(d.id);if(!el)return;if(el.type==='checkbox')el.checked=!!d.value;else el.value=d.value;el.dispatchEvent(new Event('change'));}if(d.type==='getState'){parent.postMessage({type:'state',s:{tIzo:$('tIzo').checked,tOznake:$('tOznake').checked,tStrop:$('tStrop').checked,tSvjetla:$('tSvjetla').checked,tNoc:$('tNoc').checked,pal:$('palSel').value}},'*');}if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='openPanel')openPanel(d.which||'prikaz');if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);if(o)select(o);}});
 function showCard(entry){
   const f=entry.f;const [x0,y0,x1,y1]=f.b;  const room=ROOMS.find(r=>r.k===f.r);
   const prods=matchProducts(f);

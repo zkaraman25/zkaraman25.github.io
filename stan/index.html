@@ -12,7 +12,7 @@
   --bg:#f3f5f8; --card:#ffffff; --fg:#111a24; --muted:#68717d; --line:#e2e7ee; --hover:#eef2f7;
   --a:#1f4e79; --a-strong:#173c5e; --a-soft:#e1ebf4; --a-pale:#bfd3e6; --a-faint:#eef3f8; --on-a:#ffffff; --warn:#b4532a;
   --wall:#bdb5a9; --floor:#f0ebe2; --tile:#e4e6e6; --wood:#d3cabc; --wood-d:#857a6a; --sofa:#b7c4b1; --glass:#bcd6e6; --dim:#5f6f80;
-  --warm:#e3b25c; --track:#3a8f9c; --lamp:#d7a06a; --off:#cfd3d8;
+  --warm:#e3b25c; --track:#3a8f9c; --lamp:#d7a06a; --off:#cfd3d8; --night-floor:#cfc9bd; --night-tile:#c8cbcc;
   --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; color-scheme:light;
 }
@@ -20,13 +20,13 @@
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
   --wall:#6e685f; --floor:#2c2b28; --tile:#262a2d; --wood:#5c564d; --wood-d:#c8bdae; --sofa:#56695a; --glass:#5f90b8; --dim:#9fb0c0;
-  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049;
+  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049; --night-floor:#1b1a18; --night-tile:#181b1e;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; } }
 :root[data-theme="dark"]{
   --bg:#0e1319; --card:#161c24; --fg:#e8edf3; --muted:#95a0ad; --line:#243040; --hover:#1c242e;
   --a:#6ea4d8; --a-strong:#8fbbe6; --a-soft:#1b2d40; --a-pale:#2a4a6a; --a-faint:#162233; --on-a:#0b1a12; --warn:#ec9a6e;
   --wall:#6e685f; --floor:#2c2b28; --tile:#262a2d; --wood:#5c564d; --wood-d:#c8bdae; --sofa:#56695a; --glass:#5f90b8; --dim:#9fb0c0;
-  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049;
+  --warm:#f0c36a; --track:#52b9c6; --lamp:#e8b07a; --off:#3b4049; --night-floor:#1b1a18; --night-tile:#181b1e;
   --sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.6); color-scheme:dark; }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -77,7 +77,6 @@ nav.tabs button{border-radius:999px} nav.tabs button[aria-selected="true"]{backg
 .two{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
 .mapcard{position:relative;padding-bottom:58px} .mapbar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--sh)}
 .mapbar button{border:0;background:transparent;border-radius:999px;padding:8px 16px} .mapbar button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
-#frame3d{width:100%;height:min(78vh,860px);border:0;display:block;border-radius:10px;background:#fff}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px} .chips button{padding:6px 11px;font-size:13px;border-radius:999px} .chips button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)}
 .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px} .thumbs a{display:block;border:1px solid var(--line);border-radius:10px;padding:6px;text-decoration:none;color:inherit;background:var(--card)} .thumbs a:hover{border-color:var(--a-pale)}
 .thumbs svg{width:100%;height:auto;display:block;pointer-events:none} .thumbs b{display:block;font-size:12px;margin-top:4px} .thumbs small{color:var(--muted);font-size:11px}
@@ -97,7 +96,7 @@ svg.pog .ee{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5;cursor:pointe
 svg.pog .dl{stroke:var(--dim);stroke-width:1.5} svg.pog .dg{stroke:var(--dim);stroke-width:1;opacity:.6} svg.pog .dt{fill:var(--dim);font-family:var(--font);font-size:14px;font-weight:700}
 svg.pog .sel{fill:none;stroke:var(--dim);stroke-width:2.5;stroke-dasharray:5 3}
 .kote{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px} .kote div{flex:1 1 80px;background:var(--a-faint);border-radius:10px;padding:6px 8px;text-align:center} .kote b{display:block;font-size:18px} .kote span{font-size:11px;color:var(--muted)}
-.lbl{fill:var(--muted);font-family:var(--font);font-size:22px;font-weight:600;pointer-events:none}
+.lbl{fill:var(--muted);font-family:var(--font);font-size:22px;font-weight:600;pointer-events:none;paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round;stroke-opacity:.9}
 .lbl.s{font-size:15px;font-weight:500}
 .rm{fill:transparent;cursor:pointer} .rm:hover{fill:var(--a-faint)} .rm.sel{fill:var(--a-soft);opacity:.7}
 .fu rect,.fu polygon{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.5} .fu.sofa rect{fill:var(--sofa);stroke:#7f8f80} .fu.dark rect{fill:#2a2c30;stroke:#2a2c30} .fu.tile rect{fill:#dbe9f1;stroke:#7fa5bd}
@@ -114,13 +113,16 @@ svg.plan.measuring,svg.plan.measuring .rm,svg.plan.measuring .fu,svg.plan.measur
 .door{stroke:var(--fg);fill:none;stroke-width:2} .doorarc{stroke:var(--muted);fill:none;stroke-width:1.5;stroke-dasharray:6 5}
 /* lights svg */
 .lt{cursor:pointer} .lt .core{transition:all .25s} .lt .glow{opacity:0;transition:opacity .35s} .lt.on .glow{opacity:1}
-.lt.led .core{stroke:var(--off);stroke-width:7;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm)} .lt.led .glow{stroke:var(--warm);stroke-width:36;stroke-linecap:round;filter:url(#blur)}
-.lt.track .core{stroke:var(--off);stroke-width:9;stroke-linecap:round} .lt.track.on .core{stroke:var(--track)} .lt.track .glow{stroke:var(--track);stroke-width:30;stroke-linecap:round;filter:url(#blur)}
-.lt.lamp .core{fill:var(--off)} .lt.lamp.on .core{fill:var(--lamp)} .lt.lamp .glow{fill:var(--lamp);filter:url(#blur2)}
+.lt.led .core{stroke:var(--off);stroke-width:8;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm);filter:drop-shadow(0 0 6px var(--warm))} .lt.led .glow{stroke:var(--warm);stroke-width:60;stroke-linecap:round;filter:url(#blur)}
+.lt.track .core{stroke:var(--off);stroke-width:10;stroke-linecap:round} .lt.track.on .core{stroke:var(--track);filter:drop-shadow(0 0 6px var(--track))} .lt.track .glow{stroke:var(--track);stroke-width:48;stroke-linecap:round;filter:url(#blur)}
+.lt.lamp .core{fill:var(--off)} .lt.lamp.on .core{fill:var(--lamp);filter:drop-shadow(0 0 8px var(--lamp))} .lt.lamp .glow{fill:var(--lamp);filter:url(#blur2)}
+svg.plan.night{--warm:#f3a62e;--lamp:#ef9a52;--track:#1f9fb0} :root[data-theme="dark"] svg.plan.night,:root:not([data-theme="light"]) svg.plan.night{--warm:#f0c36a;--lamp:#e8b07a;--track:#52b9c6}
+svg.plan.night .fl{fill:var(--night-floor)} svg.plan.night .tl{fill:var(--night-tile)} svg.plan.night .lbl{fill:var(--muted)}
 .lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none} .lt.on .tag{fill:var(--fg)}
 @media (prefers-reduced-motion:reduce){.lt .core,.lt .glow{transition:none}}
 /* info panel */
 #side .chips{margin:4px 0 14px 0;padding-right:34px} #side .chips button{gap:6px} #side .chips svg.i{width:15px;height:15px}
+#side .tog{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px} #side .tog:last-child{border:0} #side .tog input[type=checkbox]{width:18px;height:18px;accent-color:var(--a)} #side select{font:inherit;font-size:13px;padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);max-width:58%}
 #side h3{margin:0 0 4px;font-size:16px} #side .sub{margin-bottom:10px} #side h2{font-size:15px;margin:0 0 8px}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px} .kv b{font-weight:600;color:var(--muted)}
 .list{display:grid;gap:6px;margin-top:10px}
@@ -215,6 +217,16 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 <aside id="side">
   <button class="icon sideclose" id="sideToggle" title="Sakrij / prikaži"><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
   <div id="info"></div>
+  <div id="side3d" hidden>
+    <h2>Prikaz modela</h2>
+    <div class="chips" id="viewChips"><button data-preset="iso">Cijeli stan</button><button data-preset="top">Odozgo</button><button data-preset="jug">S lođe</button><button data-preset="sjever">S vrta</button><button data-preset="hodaj">S garniture</button></div>
+    <label class="tog"><span>Izometrija s presjekom</span><input type="checkbox" data-set="tIzo" checked></label>
+    <label class="tog"><span>Oznake s mjerama</span><input type="checkbox" data-set="tOznake" checked></label>
+    <label class="tog"><span>Strop</span><input type="checkbox" data-set="tStrop"></label>
+    <label class="tog"><span>Rasvjeta u modelu</span><input type="checkbox" data-set="tSvjetla" checked></label>
+    <label class="tog"><span>Noć</span><input type="checkbox" data-set="tNoc"></label>
+    <label class="tog"><span>Materijali</span><select data-set="palSel"><option value="izo">Izometrija (pastel)</option><option value="skyline">Skyline 90 (URSA)</option><option value="svijetlo">Svijetlo (bijelo + hrast)</option><option value="tamno">Tamno (grafit + orah)</option></select></label>
+  </div>
   <div id="sideLights" hidden>
     <div class="legend" style="margin:0 0 10px"><span><i style="background:var(--warm)"></i>LED traka u utoru</span><span><i style="background:var(--track)"></i>magnetska vodilica</span><span><i style="background:var(--lamp);width:10px;height:10px;border-radius:50%"></i>ugradna, točkasta</span><span id="count"></span></div>
     <h2>Scene</h2><div class="scenes"><button class="primary" data-scene="sve">Sve upali</button><button data-scene="vecer">Večer</button><button data-scene="film">Film</button><button data-scene="noc">Noćno</button><button data-scene="ugasi">Sve ugasi</button></div>
@@ -434,7 +446,7 @@ function drawBase(svg, withRooms){
     const sx=hx+d[2]*w, sy=hy+d[3]*w; const sweep = dir==='sw'?0:1;
     el('path',{d:`M${ex},${Y(ey)} A${w},${w} 0 0 ${sweep} ${sx},${Y(sy)}`,class:'doorarc'},gr);
   });
-  const gl=el('g',{},svg);
+  const gl=el('g',{class:'lblg'},svg); svg._lblg=gl;
   ROOMS.forEach(r=>{el('text',{x:r.lx,y:Y(r.ly),class:'lbl','text-anchor':'middle'},gl,r.name);el('text',{x:r.lx,y:Y(r.ly)+22,class:'lbl s','text-anchor':'middle'},gl,r.area);});
   el('text',{x:185,y:Y(95),class:'lbl s','text-anchor':'middle'},gl,'Kuhinja');
   return gr;
@@ -442,6 +454,7 @@ function drawBase(svg, withRooms){
 const plan=document.getElementById('planSvg');
 drawBase(plan);
 const gRm=el('g',{},plan), gFu=el('g',{class:'fu-layer'},plan), gDm=el('g',{class:'dm'},plan), gSg=el('g',{},plan), gLt=el('g',{},plan), gMs=el('g',{class:'ms'},plan);
+plan.appendChild(plan._lblg); // nazivi soba iznad namještaja
 const furnNodes=[];
 FURN.forEach((f,i)=>{
   const cls='fu '+(f.n.startsWith('A ')?'sofa':f.n.startsWith('E ')||f.n.startsWith('7 ')?'dark':f.n.startsWith('M ')?'tile':'');
@@ -599,7 +612,7 @@ function showElement(f,prods){
     <div class="sub">Položaj u tlocrtu: x ${a}–${c}, y ${b}–${d}</div>
     ${(prods&&prods.length)?`<div class="list">${prods.map(p=>`<div class="item" style="grid-template-columns:1fr;cursor:default"><span>${esc(p.name)}<small>${esc(p.price||'')}${p.bought?' · kupljeno':''}${p.source?` · <a href="${esc(p.source)}" target="_blank" rel="noopener">otvori</a>`:''}</small></span></div>`).join('')}</div>`:''}
     <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
-  document.getElementById('backRoom').addEventListener('click',()=>{selectRoom(f.r);if(mapMode==='sobe')info.hidden=true;});
+  document.getElementById('backRoom').addEventListener('click',()=>{selectRoom(f.r);if(mapMode==='sobe'||mapMode==='3d')info.hidden=true;});
 }
 /* ---- načini prikaza: jedan ekran, donja traka ---- */
 let mapMode='3d'; const MODE_SECTION={'3d':'m-3d',sobe:'m-3d',tlocrt:'m-tlocrt',pogledi:'m-pog',dok:'m-dok'};
@@ -609,10 +622,10 @@ function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   document.querySelectorAll('#modeBar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
   ['m-3d','m-tlocrt','m-pog','m-dok'].forEach(id=>document.getElementById(id).hidden=MODE_SECTION[m]!==id);
   const roomy=['sobe','pogledi'].includes(m); roomChips.hidden=!roomy; if(roomy)document.getElementById('side').prepend(roomChips); document.body.classList.toggle('compact',m==='sobe'); if(m==='sobe')info.hidden=true;
-  const hasSide=m!=='dok'&&m!=='3d'; document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
+  const hasSide=m!=='dok'; document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
   updateSideLights();
-  document.getElementById('btn3dPrikaz').hidden=!(m==='3d'||m==='sobe');
-  if(m==='3d'||m==='sobe'){if(!fr3d.src)fr3d.src='3d/index.html?lite='+(matchMedia('(pointer:coarse)').matches?1:0);
+  document.getElementById('btn3dPrikaz').hidden=true; document.getElementById('side3d').hidden=!(m==='3d'||m==='sobe'); if(m==='3d')info.hidden=true;
+  if(m==='3d'||m==='sobe'){if(!fr3d.src)fr3d.src='3d/index.html?v=4&lite='+(matchMedia('(pointer:coarse)').matches?1:0);
     const send=()=>m==='3d'?post3d({type:'preset',p:'iso'}):post3d({type:'room',k:curRoomK}); if(fr3d.dataset.ready)send();else fr3d.dataset.pending=m;}
   if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,Pogledi.firstWall(curRoomK),false);
   if(m==='sobe'||m==='pogledi'||m==='tlocrt')selectRoom(curRoomK);
@@ -620,10 +633,12 @@ function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   try{localStorage.setItem('stan.tab',m)}catch(e){}}
 document.querySelectorAll('#modeBar button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
 document.getElementById('sideToggle').addEventListener('click',()=>document.body.classList.add('noside'));document.getElementById('sideOpen').addEventListener('click',()=>document.body.classList.remove('noside'));
-document.getElementById('btn3dPrikaz').addEventListener('click',()=>post3d({type:'openPanel',which:'prikaz'}));
+document.querySelectorAll('#side3d [data-set]').forEach(el=>el.addEventListener('change',()=>post3d({type:'set',id:el.dataset.set,value:el.type==='checkbox'?el.checked:el.value})));
+document.querySelectorAll('#viewChips button').forEach(b=>b.addEventListener('click',()=>{post3d({type:'preset',p:b.dataset.preset});if(mapMode==='sobe')setMode('3d');}));
 function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}
-addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
-  if(d.type==='sel'){if(d.f){if(mapMode==='3d'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});post3d({type:'getState'});}
+  if(d.type==='state'){Object.entries(d.s).forEach(([k,v])=>{const el=document.querySelector(`#side3d [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.type==='checkbox')el.checked=!!v;else el.value=v;});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
+  if(d.type==='sel'){if(d.f){info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){info.hidden=true;}else selectRoom(curRoomK);}
   if(d.type==='room'&&d.k&&d.k!==curRoomK){selectRoom(d.k);}});
 addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);if(mapMode==='pogledi')syncMapRoom(curRoomK);});
 function selectFurn(i){
@@ -640,7 +655,7 @@ const nodes={}; LIGHTS.forEach(l=>nodes[l.id]=drawLight(l,gL,true));
 plan.appendChild(lsvg.querySelector('defs').cloneNode(true)); const planLights={}; LIGHTS.forEach(l=>planLights[l.id]=drawLight(l,gLt,true));
 function updateSideLights(){const on=mapMode==='tlocrt'&&document.querySelector('[data-layer="lt"]').getAttribute('aria-pressed')==='true';document.getElementById('sideLights').hidden=!on;info.hidden=on||mapMode==='sobe';
   // sloj svjetala: samo svjetla, bez namještaja, kota i oznaka zidova
-  [gFu,gDm,gSg].forEach(g=>g.style.visibility=on?'hidden':''); if(!on){['fu','dm'].forEach(k=>{const b=document.querySelector(`[data-layer="${k}"]`);layerEls[k].style.display=b.getAttribute('aria-pressed')==='true'?'':'none';});} document.querySelectorAll('[data-layer="fu"],[data-layer="dm"],#btnMeasure').forEach(b=>b.disabled=on);}
+  [gFu,gDm,gSg].forEach(g=>g.style.visibility=on?'hidden':''); plan.classList.toggle('night',on); if(!on){['fu','dm'].forEach(k=>{const b=document.querySelector(`[data-layer="${k}"]`);layerEls[k].style.display=b.getAttribute('aria-pressed')==='true'?'':'none';});} document.querySelectorAll('[data-layer="fu"],[data-layer="dm"],#btnMeasure').forEach(b=>b.disabled=on);}
 let state=Object.fromEntries(LIGHTS.map(l=>[l.id,{on:false,level:100}]));
 let savedLights=null;try{savedLights=JSON.parse(localStorage.getItem('stan.lights')||'null');}catch(e){}
 if(savedLights)Object.keys(state).forEach(k=>{if(savedLights[k])state[k]=savedLights[k]});else Object.entries(SCENES.vecer).forEach(([k,v])=>{state[k]={on:true,level:v}});
