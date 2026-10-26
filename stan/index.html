@@ -196,6 +196,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 
   <!-- RENDERI -->
   <section id="tab-renderi" hidden>
+    <div class="card" style="margin-bottom:12px"><h2>3D prikazi po prostorijama</h2><div class="sub" style="margin-bottom:12px">Izometrija iz koordinata tlocrta: stražnji zidovi puni, prednji izrezani, oznake s mjerama. Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal3d"></div></div>
     <div class="card"><h2>Pogledi po prostorijama i renderi (slike)</h2><div class="sub" style="margin-bottom:12px">Klik otvara sliku u punoj veličini.</div><div class="gal" id="gal"></div></div>
   </section>
 
@@ -365,12 +366,17 @@ const LIGHTS=[
   {id:'L3',room:'Hodnik',type:'lamp',g:[560,330],n:'Privjesna uz ogledalo'},{id:'L4',room:'Kupaona',type:'lamp',g:[725,401],n:'Svjetlo u tušu'},
 ];
 const SCENES={sve:Object.fromEntries(LIGHTS.map(l=>[l.id,100])),ugasi:{},vecer:{U1:60,U3:60,U4:40,U5:40,U7:50,L1:70,L2:60,L3:60},film:{U1:25,U3:35,U4:15},noc:{U4:10,U5:10,L4:30}};
+const GALLERY3D=[
+  ['izo_boravak.jpg','Dnevni boravak i kuhinja','pogled iz kuta vrta i hodnika'],['izo_hodnik.jpg','Hodnik i predsoblje','pogled iz kuta kupaone i ulaza'],
+  ['izo_kupaona.jpg','Kupaona s tušem','pogled iz kuta hodnika i sobe'],['izo_spavaca.jpg','Spavaća soba','pogled iz kuta dječje sobe i prozora'],
+  ['izo_djecja.jpg','Dječja soba','pogled iz kuta prozora i susjeda'],['izo_lodja.jpg','Lođa','pogled iz vrta'],
+];
 const GALLERY=[
   ['tlocrt_namjestaj.jpg','Tlocrt s namještajem','radna verzija v37, legenda sa strane'],['tlocrt_cisti.jpg','Tlocrt bez namještaja','zidovi, otvori, kote, vrt'],
   ['kuhinja.jpg','Kuhinja, pogledi K1 do K4','dogovoreno'],['boravak.jpg','Dnevni boravak, pogledi B1 do B3','dogovoreno'],['hodnik.jpg','Hodnik, pogledi H1 do H3','prijedlog'],
   ['kupaona.jpg','Kupaona, pogledi KP1 i KP2','prijedlog'],['spavaca.jpg','Spavaća soba, pogledi S1 do S3','prijedlog'],['djecja.jpg','Dječja soba, pogledi D1 do D4','prijedlog'],
   ['lodja.jpg','Lođa, pogledi L1 i L2','prijedlog'],['svjetla_sve.jpg','Spušteni strop, svi slojevi','utori, vodilice, lampe'],
-  ['akso_boravak.jpg','Aksonometrija boravka i kuhinje','3D maketa iz koordinata'],['blender_boravak_1.jpg','Render: iz hodnika prema kuhinji','Blender, bijela maketa'],['blender_boravak_2.jpg','Render: iz kuhinje prema vrtu','Blender, bijela maketa'],
+  ['blender_boravak_1.jpg','Render: iz hodnika prema kuhinji','Blender, bijela maketa'],['blender_boravak_2.jpg','Render: iz kuhinje prema vrtu','Blender, bijela maketa'],
 ];
 const BUILTIN_DOCS=[
   {name:'Stan_A1_cijeli_stan_final.pdf',title:'Cijeli stan, tlocrt i pogledi',size:4014078,url:'dok/Stan_A1_cijeli_stan_final.pdf',builtin:true},
@@ -586,9 +592,10 @@ document.querySelectorAll('[data-scene]').forEach(b=>b.addEventListener('click',
 LIGHTS.forEach(l=>render(l.id));
 
 /* ===================== pogledi ===================== */
-const gal=document.getElementById('gal');
-GALLERY.forEach(([f,t,s])=>{const a=document.createElement('a');a.href='slike/'+f;a.innerHTML=`<img loading="lazy" src="slike/${f}" alt="${esc(t)}"><b>${esc(t)}</b><small>${esc(s)}</small>`;
-  a.addEventListener('click',e=>{e.preventDefault();document.getElementById('viewImg').src='slike/'+f;document.getElementById('viewTitle').textContent=t;document.getElementById('viewDlg').showModal();});gal.appendChild(a);});
+function fillGal(id,list){const gal=document.getElementById(id);
+list.forEach(([f,t,s])=>{const a=document.createElement('a');a.href='slike/'+f;a.innerHTML=`<img loading="lazy" src="slike/${f}" alt="${esc(t)}"><b>${esc(t)}</b><small>${esc(s)}</small>`;
+  a.addEventListener('click',e=>{e.preventDefault();document.getElementById('viewImg').src='slike/'+f;document.getElementById('viewTitle').textContent=t;document.getElementById('viewDlg').showModal();});gal.appendChild(a);});}
+fillGal('gal3d',GALLERY3D); fillGal('gal',GALLERY);
 document.getElementById('viewDlg').addEventListener('click',e=>{if(e.target.id==='viewDlg')e.target.close()});
 
 /* ===================== dokumenti ===================== */
