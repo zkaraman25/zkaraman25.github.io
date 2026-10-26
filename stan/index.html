@@ -38,13 +38,14 @@ header.top h1{font-size:15px} header.top .logo{width:26px;height:26px;border-rad
 header.top .chips{margin:0;justify-content:center;flex:1;overflow-x:auto;scrollbar-width:none} header.top .chips button{box-shadow:var(--sh);white-space:nowrap}
 #stage{position:fixed;inset:0;padding:100px var(--sidew,380px) 72px 12px;transition:padding .2s} body.noside #stage{padding-right:12px}
 #stage>section{position:absolute;inset:100px var(--sidew,380px) 72px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0} body.noside #stage>section{right:12px}
-#stage>section[hidden]{display:none}
+#stage>section[hidden]{display:none} #stage>section{animation:fadein .28s ease} @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.chips button,.mapbar button,#tools .tg button{transition:background .2s,color .2s,border-color .2s} .nacrti img{animation:fadein .3s ease} #side{transition:transform .25s cubic-bezier(.2,.8,.2,1)} .item{transition:background .15s,border-color .15s}
 #frame3d{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent}
-body.compact{--sidew:250px} body.compact #side{padding:10px} body.compact #side .chips{flex-direction:column;align-items:stretch;padding-right:0;margin:30px 0 0} body.compact #side .chips button{justify-content:flex-start} body.compact #side #pogView{position:static;display:flex;flex-direction:column;gap:6px;margin:0 0 12px;z-index:auto} body.compact #side #pogView button{text-align:left} #side #pogView::before{content:'Pogled';display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:4px 0 2px}
+body.compact{--sidew:330px} body.compact #side{padding:12px} body.compact #side .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding-right:0;margin:30px 0 12px} body.compact #side .chips button{flex-direction:column;gap:3px;padding:8px 4px;font-size:11.5px;font-weight:600} body.compact #side .chips svg.i{width:18px;height:18px} body.compact #side #pogView{position:static;display:flex;flex-direction:column;gap:6px;margin:0 0 12px;z-index:auto} body.compact #side #pogView button{text-align:left} #side #pogView::before{content:'Pogled';display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:4px 0 2px}
 svg.plan{max-width:100%;max-height:calc(100% - 70px);width:auto;height:auto;flex:1 1 auto;min-height:0}
 .toggles.over{position:absolute;top:8px;left:0;z-index:2;margin:0} .hint{position:absolute;bottom:0;left:0;right:0;font-size:12px;color:var(--muted);text-align:center;pointer-events:none}
 .nacrti{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:4px} .nacrti div{max-width:100%;max-height:100%} .nacrti img{max-width:100%;max-height:calc(100vh - 230px);width:auto;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:zoom-in;display:block} .nacrti b{display:block;font-size:13px;margin:0 0 4px}
-.stitle{position:absolute;top:0;left:0;margin:0;font-size:14px;color:var(--muted);font-weight:600}
+.stitle{position:absolute;top:0;left:0;margin:0;font-size:14px;color:var(--muted);font-weight:600} #pogRoot{padding-top:30px}
 #pogRoot{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 0 26px}
 .planwrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:44px 0 30px}
 .scroll{width:100%;height:100%;overflow:auto;padding:4px} .scroll .card{max-width:1100px;margin:0 auto}
@@ -92,7 +93,7 @@ svg.plan{width:100%;height:auto;display:block;max-width:100%}
 .wl{fill:var(--wall);stroke:var(--wood-d);stroke-width:.8;stroke-opacity:.35} .fl{fill:var(--floor)} .tl{fill:var(--tile)} .gl{stroke:var(--glass);stroke-width:5;fill:none}
 svg.pog .pf{fill:var(--floor);stroke:var(--line)} svg.pog .pw{fill:var(--wall)} svg.pog .pg{fill:var(--glass)} svg.pog .po{fill:var(--floor)}
 svg.pog .pe{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.2;cursor:pointer} svg.pog .pe.hi{fill:none;stroke-dasharray:6 4} svg.pog .pe:hover{fill:var(--a-pale)}
-svg.pog .cl{stroke:var(--dim);stroke-width:1.2;fill:none} svg.pog .cd{fill:var(--dim)} svg.pog .ct{fill:var(--fg);font-family:var(--font);font-size:13px;font-weight:600} svg.pog .cs{fill:var(--muted);font-family:var(--font);font-size:11px} body.nopoglbl svg.pog .callouts{display:none}
+svg.pog .cl{stroke:var(--dim);stroke-width:1.2;fill:none;pointer-events:none} svg.pog .cd{fill:var(--dim);pointer-events:none} svg.pog .ct{fill:var(--fg);font-family:var(--font);font-size:13px;font-weight:600} svg.pog .cs{fill:var(--muted);font-family:var(--font);font-size:11px} body.nopoglbl svg.pog .callouts{display:none}
 svg.pog .pt,svg.pog .et{fill:var(--wood-d);font-family:var(--font);font-size:12px;font-weight:600;pointer-events:none}
 svg.pog .ew{fill:var(--card);stroke:var(--wall);stroke-width:2} svg.pog .eg{fill:var(--glass);opacity:.8} svg.pog .eo{fill:var(--card);stroke:var(--wall);stroke-width:1.5} svg.pog .ef{stroke:var(--wall);stroke-width:2} svg.pog .efl{stroke:var(--wall);stroke-width:4}
 svg.pog .ee{fill:var(--wood);stroke:var(--wood-d);stroke-width:1.2;cursor:pointer} svg.pog .ee.far{fill:var(--floor);opacity:.9} svg.pog .ee:hover{fill:var(--a-pale)}
@@ -239,7 +240,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 </aside>
 
 <div id="tools">
-  <div class="tg" data-for="3d sobe"><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tStrop" aria-pressed="false">Strop</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
+  <div class="tg" data-for="3d sobe"><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
     <select data-set="palSel" title="Materijali"><option value="izo">Pastel</option><option value="skyline">Skyline 90</option><option value="svijetlo">Bijelo + hrast</option><option value="tamno">Grafit + orah</option></select></div>
   <div class="tg" data-for="tlocrt"><button data-layer-set="fu" aria-pressed="false">Namještaj</button><button data-layer-set="dm" aria-pressed="true">Kote</button><button data-layer-set="lt" aria-pressed="false">Svjetla</button><button id="btnMeasure2" aria-pressed="false">Mjeri</button><button id="btnClear2" hidden>Obriši mjere</button></div>
   <div class="tg" data-for="pogledi"><button id="setPogLabels" aria-pressed="true">Oznake elemenata</button></div>
@@ -593,7 +594,8 @@ const ROOM_ICON={b:'<path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d=
   h:'<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M15 12h.01"/>',w:'<path d="M4 12h16"/><path d="M6 12V5a2 2 0 0 1 2-2h1"/><path d="M6 12a6 6 0 0 0 12 0"/>',
   s:'<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18M5 10V6h6v4M13 10V6h6v4"/>',d:'<circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M9 7l1 1M14 7l1 1"/>',
   l:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>'};
-ROOMS.forEach(r=>{const b=document.createElement('button');b.innerHTML=`<svg class="i" viewBox="0 0 24 24">${ROOM_ICON[r.k]||''}</svg>${esc(r.k==='b'?'Boravak i kuhinja':r.name)}`;b.dataset.k=r.k;b.addEventListener('click',()=>{selectRoom(r.k);syncMapRoom(r.k);});roomChips.appendChild(b);});
+const ROOM_SHORT={b:'Boravak',h:'Hodnik',w:'Kupaona',s:'Spavaća',d:'Dječja',l:'Lođa'};
+ROOMS.forEach(r=>{const b=document.createElement('button');b.innerHTML=`<svg class="i" viewBox="0 0 24 24">${ROOM_ICON[r.k]||''}</svg>${esc(ROOM_SHORT[r.k]||r.name)}`;b.title=r.name;b.dataset.k=r.k;b.addEventListener('click',()=>{selectRoom(r.k);syncMapRoom(r.k);});roomChips.appendChild(b);});
 function viewThumbs(k){ // male sličice pogleda sobe: tlocrt i svaki zid; klik otvara pogled na karti
   if(!window.Pogledi)return '';
   const r=ROOMS.find(x=>x.k===k); const views=[['plan','Tlocrt']].concat(Pogledi.wallsOf(r).filter(w=>w.len>=60).map(w=>['w'+w.i,w.name]));
@@ -620,7 +622,7 @@ function showElement(f,prods){
     <div class="sub">Položaj u tlocrtu: x ${a}–${c}, y ${b}–${d}</div>
     ${(prods&&prods.length)?`<div class="list">${prods.map(p=>`<div class="item" style="grid-template-columns:1fr;cursor:default"><span>${esc(p.name)}<small>${esc(p.price||'')}${p.bought?' · kupljeno':''}${p.source?` · <a href="${esc(p.source)}" target="_blank" rel="noopener">otvori</a>`:''}</small></span></div>`).join('')}</div>`:''}
     <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
-  document.getElementById('backRoom').addEventListener('click',()=>{if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');post3d({type:'sel',id:null});return;}selectRoom(f.r);if(mapMode==='sobe'){info.hidden=true;if(matchMedia('(max-width:900px)').matches)document.body.classList.add('noside');}});
+  document.getElementById('backRoom').addEventListener('click',()=>{post3d({type:'sel',id:null});if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');return;}selectRoom(f.r);if(mapMode==='sobe'){info.hidden=true;if(matchMedia('(max-width:900px)').matches)document.body.classList.add('noside');}});
 }
 /* ---- načini prikaza: jedan ekran, donja traka ---- */
 let mapMode='3d'; const MODE_SECTION={'3d':'m-3d',sobe:'m-3d',tlocrt:'m-tlocrt',pogledi:'m-pog',dok:'m-dok'};
