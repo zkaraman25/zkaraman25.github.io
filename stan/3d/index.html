@@ -35,10 +35,10 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
 .pn{font-size:13.5px;font-weight:600}
 .dims{display:flex;gap:8px;margin-top:8px}.dims div{flex:1;background:var(--soft);border-radius:10px;padding:6px 8px;text-align:center}.dims b{display:block;font-size:17px}.dims span{font-size:11px;color:var(--mut)}
 a{color:var(--a)}
-#lbl{position:fixed;inset:0;pointer-events:none;z-index:2}
+#lbl{position:fixed;inset:0;pointer-events:none;z-index:2;transition:opacity .35s}
 #lbl svg{position:absolute;inset:0;width:100%;height:100%}
 #lbl .l{position:absolute;font-size:13px;font-weight:600;color:var(--ink);background:var(--lblbg);padding:3px 8px;border-radius:8px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;transform:translateY(-50%)}
-#lbl .l small{display:block;font-weight:400;color:var(--mut);font-size:11.5px}
+#lbl .l small{display:block;font-weight:400;color:var(--mut);font-size:11.5px} #lbl .l.dim{opacity:.35} #lbl .l.sel{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)} #lbl .l.sel small{color:rgba(255,255,255,.8)} #lbl svg line.dim,#lbl svg circle.dim{opacity:.25} #lbl svg line.sel{stroke-width:2.5}
 #lbl .n{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}
 #lblList{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));display:flex;gap:6px;overflow-x:auto;padding:6px 10px;z-index:3;pointer-events:auto;scrollbar-width:none}
 #lblList span{flex:none;background:var(--lblbg);border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap}
@@ -4221,41 +4221,54 @@ function setIzo(on){
 }
 function fitOrtho(k){ // zumiraj ortografsku kameru na sobu ili na cijeli stan
   const w=canvas.clientWidth,h=canvas.clientHeight,asp=w/h; let half=7.2; if(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);half=0.5*((Math.max(...xs)-Math.min(...xs))+(Math.max(...ys)-Math.min(...ys)))/100*0.6+1.2;} if(asp<1)half*=1.25/asp;
-  ortho.left=-half*asp;ortho.right=half*asp;ortho.top=half;ortho.bottom=-half;ortho.zoom=1;ortho.updateProjectionMatrix();
+  orthoTarget=half; if(!camAnim)applyHalf(half);
 }
+let orthoTarget=null; function applyHalf(half){const asp=canvas.clientWidth/canvas.clientHeight;ortho.left=-half*asp;ortho.right=half*asp;ortho.top=half;ortho.bottom=-half;ortho.zoom=1;ortho.updateProjectionMatrix();}
 /* ---------- oznake s linijama na rubu (kao na nacrtima) ---------- */
 let curRoom=null, lastAz=null;
 const lblSvg=$('lbl').querySelector('svg');
 function labelItems(){
-  if(curRoom)return FURN.filter(f=>f.r===curRoom&&!/^(st\d|sp\d|kava|B1b|H2)$/.test(f.id)).map(f=>({t:f.n,s:`${f.b[2]-f.b[0]} × ${f.b[3]-f.b[1]}${f.z[1]-f.z[0]>0?' × '+(f.z[1]-f.z[0]):''}`,p:[(f.b[0]+f.b[2])/2,(f.b[1]+f.b[3])/2,f.z[1]]}));
+  if(curRoom)return FURN.filter(f=>f.r===curRoom&&!/^(st\d|sp\d|kava|B1b|H2)$/.test(f.id)).map(f=>({id:f.id,t:f.n,s:`${f.b[2]-f.b[0]} × ${f.b[3]-f.b[1]}${f.z[1]-f.z[0]>0?' × '+(f.z[1]-f.z[0]):''}`,p:[(f.b[0]+f.b[2])/2,(f.b[1]+f.b[3])/2,f.z[1]]}));
   return ROOMS.map(r=>({t:r.name,s:r.area,p:[ROOM_C[r.k][0],ROOM_C[r.k][1],0]}));
 }
+const LBL=new Map(); // id -> {el, l1, l2, dot}; elementi se ponovno koriste da klik radi i da nema treperenja
 function drawLabels(){
-  const on=$('tIzo').checked&&$('tOznake').checked; lblSvg.innerHTML=''; [...$('lbl').querySelectorAll('.l,.n')].forEach(e=>e.remove()); $('lblList').hidden=true;
-  if(!on)return;
+  const on=$('tIzo').checked&&$('tOznake').checked; const root=$('lbl');
+  if(!on){root.style.display='none';$('lblList').hidden=true;return;} root.style.display='';
   const w=canvas.clientWidth,h=canvas.clientHeight,narrow=w<760;
-  const items=labelItems().map(it=>{const v=new THREE.Vector3(it.p[0]*S,it.p[2]*S,-it.p[1]*S).project(camera);return {...it,x:(v.x+1)/2*w,y:(1-v.y)/2*h};}).filter(it=>it.x>-50&&it.x<w+50&&it.y>-50&&it.y<h+50);
-  const NS='http://www.w3.org/2000/svg'; const ln=(a,b,c,d)=>{const l=document.createElementNS(NS,'line');l.setAttribute('x1',a);l.setAttribute('y1',b);l.setAttribute('x2',c);l.setAttribute('y2',d);l.setAttribute('stroke',getComputedStyle(document.documentElement).getPropertyValue('--leader').trim()||'#46505c');l.setAttribute('stroke-width','1.5');lblSvg.appendChild(l);};
-  const dot=(x,y)=>{const c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',4);c.setAttribute('fill',getComputedStyle(document.documentElement).getPropertyValue('--leader').trim()||'#46505c');lblSvg.appendChild(c);};
-  if(narrow){ // uski ekran: brojevi na elementima, popis dolje
-    items.forEach((it,i)=>{const n=document.createElement('div');n.className='n';n.textContent=i+1;n.style.left=it.x+'px';n.style.top=it.y+'px';$('lbl').appendChild(n);});
-    $('lblList').innerHTML=items.map((it,i)=>`<span><b>${i+1}</b>${esc(it.t)} · ${esc(it.s)}</span>`).join(''); $('lblList').hidden=false; return; }
-  const top=70, bottom=h-80, step=44, margin=16, colW=Math.min(270,w*0.26);
-  for(const side of ['L','R']){
-    const ls=items.filter(it=>side==='L'?it.x<w/2:it.x>=w/2).sort((a,b)=>a.y-b.y); if(!ls.length)continue;
-    const ys=[]; ls.forEach(it=>ys.push(Math.max(it.y,ys.length?ys[ys.length-1]+step:top)));
-    const over=ys[ys.length-1]-bottom; if(over>0)for(let i=0;i<ys.length;i++)ys[i]-=over;
-    ls.forEach((it,i)=>{const ty=ys[i]; const el=document.createElement('div');el.className='l';el.innerHTML=`${esc(it.t)}<small>${esc(it.s)}</small>`;el.style.top=ty+'px';el.style.maxWidth=colW+'px';
-      if(side==='L'){el.style.left=margin+'px';$('lbl').appendChild(el);const ex=margin+el.offsetWidth+6;ln(ex,ty,Math.max(ex+14,it.x-18),ty);ln(Math.max(ex+14,it.x-18),ty,it.x,it.y);}
-      else{el.style.right=margin+'px';$('lbl').appendChild(el);const ex=w-margin-el.offsetWidth-6;ln(ex,ty,Math.min(ex-14,it.x+18),ty);ln(Math.min(ex-14,it.x+18),ty,it.x,it.y);}
-      dot(it.x,it.y);});
+  const items=labelItems().map(it=>{const v=new THREE.Vector3(it.p[0]*S,it.p[2]*S,-it.p[1]*S).project(camera);return {...it,key:it.id||it.t,x:(v.x+1)/2*w,y:(1-v.y)/2*h};}).filter(it=>it.x>-50&&it.x<w+50&&it.y>-50&&it.y<h+50);
+  const NS='http://www.w3.org/2000/svg'; const leader=getComputedStyle(document.documentElement).getPropertyValue('--leader').trim()||'#46505c';
+  const seen=new Set();
+  const get=it=>{let r=LBL.get(it.key);if(!r){const el=document.createElement('div');el.className='l';root.appendChild(el);
+      const l1=document.createElementNS(NS,'line'),l2=document.createElementNS(NS,'line'),d=document.createElementNS(NS,'circle');d.setAttribute('r',4);[l1,l2].forEach(l=>{l.setAttribute('stroke-width','1.5')});lblSvg.append(l1,l2,d);
+      const n=document.createElement('div');n.className='n';root.appendChild(n);
+      r={el,l1,l2,d,n,html:''};LBL.set(it.key,r);
+      if(it.id){el.style.pointerEvents='auto';el.style.cursor='pointer';el.addEventListener('click',()=>{const o=OBJS.find(o=>o.f.id===it.id);select(o||null);});}}
+    const html=`${esc(it.t)}<small>${esc(it.s)}</small>`; if(r.html!==html){r.el.innerHTML=html;r.html=html;} return r;};
+  if(narrow){
+    items.forEach((it,i)=>{const r=get(it);seen.add(it.key);r.el.style.display='none';[r.l1,r.l2,r.d].forEach(x=>x.style.display='none');r.n.style.display='';r.n.textContent=i+1;r.n.style.left=it.x+'px';r.n.style.top=it.y+'px';});
+    $('lblList').innerHTML=items.map((it,i)=>`<span><b>${i+1}</b>${esc(it.t)} · ${esc(it.s)}</span>`).join(''); $('lblList').hidden=false;
+  } else {
+    $('lblList').hidden=true;
+    const top=70, bottom=h-80, step=44, margin=16, colW=Math.min(270,w*0.26);
+    for(const side of ['L','R']){
+      const ls=items.filter(it=>side==='L'?it.x<w/2:it.x>=w/2).sort((a,b)=>a.y-b.y); if(!ls.length)continue;
+      const ys=[]; ls.forEach(it=>ys.push(Math.max(it.y,ys.length?ys[ys.length-1]+step:top)));
+      const over=ys[ys.length-1]-bottom; if(over>0)for(let i=0;i<ys.length;i++)ys[i]-=over;
+      ls.forEach((it,i)=>{const ty=ys[i]; const r=get(it); seen.add(it.key); const cls=selected?(selected.f.id===it.id?'sel':'dim'):'';
+        r.el.className='l '+cls; r.el.style.display=''; r.n.style.display='none'; r.el.style.top=ty+'px'; r.el.style.maxWidth=colW+'px';
+        let ex,bx; if(side==='L'){r.el.style.left=margin+'px';r.el.style.right='';ex=margin+r.el.offsetWidth+6;bx=Math.max(ex+14,it.x-18);} else {r.el.style.right=margin+'px';r.el.style.left='';ex=w-margin-r.el.offsetWidth-6;bx=Math.min(ex-14,it.x+18);}
+        [[r.l1,ex,ty,bx,ty],[r.l2,bx,ty,it.x,it.y]].forEach(([l,a,b,c,d])=>{l.style.display='';l.setAttribute('x1',a);l.setAttribute('y1',b);l.setAttribute('x2',c);l.setAttribute('y2',d);l.setAttribute('stroke',leader);l.setAttribute('class',cls);});
+        r.d.style.display='';r.d.setAttribute('cx',it.x);r.d.setAttribute('cy',it.y);r.d.setAttribute('fill',leader);r.d.setAttribute('class',cls);});
+    }
   }
+  for(const [k,r] of LBL){if(!seen.has(k)){r.el.remove();r.l1.remove();r.l2.remove();r.d.remove();r.n.remove();LBL.delete(k);}}
 }
 function setPalette(k){PAL=PALETTES[k];buildMats();buildAll();localStorage.setItem('stan3d.pal',k);refreshImages();}
 
 /* ---------- kamera ---------- */
 let camAnim=null;
-function flyTo(pos,tgt){camAnim={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now()};}
+function flyTo(pos,tgt){camAnim={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now(),h0:(ortho.top-ortho.bottom)/2,h1:orthoTarget||(ortho.top-ortho.bottom)/2};$('lbl').style.opacity=0;}
 function roomCenter(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);return [(Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2];}
 const IZO_DIR={b:[1,1],h:[1,1],w:[-1,-1],s:[1,-1],d:[1,-1],l:[-1,-1]}; // iz kojeg kuta se gleda soba (x, y): stražnji zidovi su nasuprot
 function viewRoom(k){if(selected&&selected.f.r!==k)select(null);curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,$('tIzo').checked?1.15:0.3,-cy*S);
@@ -4282,7 +4295,7 @@ function select(entry){
   if(selBox){scene.remove(selBox);selBox=null;} selected=entry;
   if(EMB){parent.postMessage({type:'sel',f:entry?entry.f:null,prods:entry?matchProducts(entry.f).map(p=>({name:p.name,price:fmtPrice(p),source:p.source,bought:!!p.bought})):[]},'*');}
   if(!entry){$('card').hidden=true;return;}
-  const bb=new THREE.Box3().setFromObject(entry.g);selBox=new THREE.Box3Helper(bb,0xd6455d);scene.add(selBox);
+  const bb=new THREE.Box3().setFromObject(entry.g);selBox=new THREE.Box3Helper(bb,0x1f4e79);scene.add(selBox);
   if(!EMB)showCard(entry);
 }
 function applyTheme3d(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.body.style.background=EMB?'transparent':(dark?'#0e1319':'#f3f5f8');}
@@ -4368,7 +4381,7 @@ const savedPal=localStorage.getItem('stan3d.pal');if(savedPal&&PALETTES[savedPal
 
 /* ---------- petlja ---------- */
 function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){renderer.setSize(w,h,false);persp.aspect=w/h;persp.updateProjectionMatrix();const half=(ortho.top-ortho.bottom)/2;ortho.left=-half*w/h;ortho.right=half*w/h;ortho.updateProjectionMatrix();}}
-function loop(){resize();if(camAnim){const k=Math.min(1,(performance.now()-camAnim.s)/900);const e=k<0.5?2*k*k:-1+(4-2*k)*k;camera.position.lerpVectors(camAnim.p0,camAnim.p1,e);controls.target.lerpVectors(camAnim.t0,camAnim.t1,e);if(k>=1)camAnim=null;}
+function loop(){resize();if(camAnim){const k=Math.min(1,(performance.now()-camAnim.s)/1100);const e=k<0.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;camera.position.lerpVectors(camAnim.p0,camAnim.p1,e);controls.target.lerpVectors(camAnim.t0,camAnim.t1,e);if(camera===ortho)applyHalf(camAnim.h0+(camAnim.h1-camAnim.h0)*e);if(k>=1){camAnim=null;$('lbl').style.opacity=1;}}
   controls.update();
   if($('tIzo').checked){const az=Math.round(Math.atan2(camera.position.z-controls.target.z,camera.position.x-controls.target.x)*12);if(az!==lastAz){lastAz=az;applyWallMode();}drawLabels();}
   renderer.render(scene,camera);requestAnimationFrame(loop);}

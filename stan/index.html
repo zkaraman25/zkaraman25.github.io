@@ -43,9 +43,9 @@ header.top .chips{margin:0;justify-content:center;flex:1;overflow-x:auto;scrollb
 body.compact{--sidew:250px} body.compact #side{padding:10px} body.compact #side .chips{flex-direction:column;align-items:stretch;padding-right:0;margin:30px 0 0} body.compact #side .chips button{justify-content:flex-start} body.compact #side #pogView{position:static;display:flex;flex-direction:column;gap:6px;margin:0 0 12px;z-index:auto} body.compact #side #pogView button{text-align:left} #side #pogView::before{content:'Pogled';display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:4px 0 2px}
 svg.plan{max-width:100%;max-height:calc(100% - 70px);width:auto;height:auto;flex:1 1 auto;min-height:0}
 .toggles.over{position:absolute;top:8px;left:0;z-index:2;margin:0} .hint{position:absolute;bottom:0;left:0;right:0;font-size:12px;color:var(--muted);text-align:center;pointer-events:none}
-.nacrti{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:4px} .nacrti div{max-width:100%;max-height:100%} .nacrti img{max-width:100%;max-height:calc(100vh - 220px);width:auto;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:zoom-in;display:block} .nacrti b{display:block;font-size:13px;margin:0 0 4px}
-.stitle{position:absolute;top:52px;left:0;margin:0;font-size:14px;color:var(--muted);font-weight:600}
-#pogRoot{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 0 30px}
+.nacrti{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:4px} .nacrti div{max-width:100%;max-height:100%} .nacrti img{max-width:100%;max-height:calc(100vh - 230px);width:auto;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:zoom-in;display:block} .nacrti b{display:block;font-size:13px;margin:0 0 4px}
+.stitle{position:absolute;top:0;left:0;margin:0;font-size:14px;color:var(--muted);font-weight:600}
+#pogRoot{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 0 26px}
 .planwrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:44px 0 30px}
 .scroll{width:100%;height:100%;overflow:auto;padding:4px} .scroll .card{max-width:1100px;margin:0 auto}
 #side{position:fixed;top:100px;right:12px;bottom:72px;width:calc(var(--sidew,380px) - 24px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:14px;z-index:5;transition:transform .2s}
@@ -56,7 +56,9 @@ body.noside #side{transform:translateX(calc(100% + 16px))} #sideToggle{position:
 @media (max-width:900px){:root{--sidew:12px} #stage>section{right:12px}
   #side{top:auto;left:8px;right:8px;bottom:64px;width:auto;max-height:44vh;border-radius:14px} body.noside #side{transform:translateY(calc(100% + 80px))} #sideOpen{top:auto;bottom:70px;right:12px}
   .stitle{display:none} header.top h1{display:none} header.top .brand{padding:5px 6px} #tools{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none} #stage>section{top:100px}}
-#roomChipsMobile{display:none}
+#mrows{position:fixed;top:92px;left:0;right:0;z-index:6;display:flex;flex-direction:column;gap:6px;padding:0 8px} #mrows[hidden]{display:none}
+#mrows .chips,#mrows #pogView{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:6px;margin:0;position:static} #mrows .chips button,#mrows #pogView button{flex:none;white-space:nowrap;box-shadow:var(--sh)} #mrows #pogView::before{display:none}
+body.mrows1 #stage>section{top:138px} body.mrows2 #stage>section{top:184px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
 .logo{width:38px;height:38px;border-radius:10px;background:var(--a);color:var(--on-a);display:grid;place-items:center;flex:none}
@@ -181,6 +183,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   </div>
 </header>
 
+<div id="mrows" hidden></div>
 <main id="stage">
   <!-- 3D: cijeli stan i po sobama -->
   <section id="m-3d"><iframe id="frame3d" title="3D model stana" allow="fullscreen"></iframe></section>
@@ -617,7 +620,7 @@ function showElement(f,prods){
     <div class="sub">Položaj u tlocrtu: x ${a}–${c}, y ${b}–${d}</div>
     ${(prods&&prods.length)?`<div class="list">${prods.map(p=>`<div class="item" style="grid-template-columns:1fr;cursor:default"><span>${esc(p.name)}<small>${esc(p.price||'')}${p.bought?' · kupljeno':''}${p.source?` · <a href="${esc(p.source)}" target="_blank" rel="noopener">otvori</a>`:''}</small></span></div>`).join('')}</div>`:''}
     <button style="margin-top:10px" id="backRoom">Natrag na prostoriju</button></div>`;
-  document.getElementById('backRoom').addEventListener('click',()=>{if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');post3d({type:'sel',id:null});return;}selectRoom(f.r);if(mapMode==='sobe')info.hidden=true;});
+  document.getElementById('backRoom').addEventListener('click',()=>{if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');post3d({type:'sel',id:null});return;}selectRoom(f.r);if(mapMode==='sobe'){info.hidden=true;if(matchMedia('(max-width:900px)').matches)document.body.classList.add('noside');}});
 }
 /* ---- načini prikaza: jedan ekran, donja traka ---- */
 let mapMode='3d'; const MODE_SECTION={'3d':'m-3d',sobe:'m-3d',tlocrt:'m-tlocrt',pogledi:'m-pog',dok:'m-dok'};
@@ -626,7 +629,8 @@ function post3d(m){if(fr3d.contentWindow)fr3d.contentWindow.postMessage(m,'*');}
 function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   document.querySelectorAll('#modeBar button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
   ['m-3d','m-tlocrt','m-pog','m-dok'].forEach(id=>document.getElementById(id).hidden=MODE_SECTION[m]!==id);
-  const roomy=['sobe','pogledi'].includes(m); roomChips.hidden=!roomy; if(roomy)document.getElementById('side').prepend(roomChips); document.body.classList.toggle('compact',m==='sobe'); if(m==='sobe')info.hidden=true;
+  const roomy=['sobe','pogledi'].includes(m); roomChips.hidden=!roomy; const narrow=matchMedia('(max-width:900px)').matches; const mrows=document.getElementById('mrows'); mrows.hidden=!(narrow&&roomy); document.body.classList.remove('mrows1','mrows2');
+  if(roomy){if(narrow){mrows.appendChild(roomChips);document.body.classList.add(m==='pogledi'?'mrows2':'mrows1');}else document.getElementById('side').prepend(roomChips);} document.body.classList.toggle('compact',m==='sobe'); if(m==='sobe')info.hidden=true;
   const hasSide=m!=='dok'&&m!=='3d'&&m!=='tlocrt'; document.getElementById('side').hidden=!hasSide; document.getElementById('sideOpen').hidden=!hasSide; document.body.classList.toggle('noside',!hasSide);
   if(m==='tlocrt')info.hidden=true;
   updateSideLights();
@@ -638,6 +642,7 @@ function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   if(hasSide&&matchMedia('(max-width:900px)').matches&&(m==='sobe'||m==='pogledi'))document.body.classList.add('noside');
   try{localStorage.setItem('stan.tab',m)}catch(e){}}
 document.querySelectorAll('#modeBar button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+let _rz;addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(()=>setMode(mapMode),200);});
 document.getElementById('sideToggle').addEventListener('click',()=>document.body.classList.add('noside'));document.getElementById('sideOpen').addEventListener('click',()=>document.body.classList.remove('noside'));
 document.querySelectorAll('#tools [data-set]').forEach(el=>{if(el.tagName==='SELECT'){el.addEventListener('change',()=>post3d({type:'set',id:'palSel',value:el.value}));return;}
   el.addEventListener('click',()=>{const on=el.getAttribute('aria-pressed')!=='true';el.setAttribute('aria-pressed',on);post3d({type:'set',id:el.dataset.set,value:on});});});
@@ -649,7 +654,7 @@ document.getElementById('setPogLabels').addEventListener('click',e=>{const on=e.
 function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='pogledi'&&window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}
 addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});post3d({type:'getState'});}
   if(d.type==='state'){Object.entries(d.s).forEach(([k,v])=>{const el=document.querySelector(`#tools [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.tagName==='SELECT')el.value=v;else el.setAttribute('aria-pressed',!!v);});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe')post3d({type:'room',k:curRoomK});}
-  if(d.type==='sel'){if(d.f){if(mapMode==='3d'){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
+  if(d.type==='sel'){if(d.f){if(mapMode==='3d'||matchMedia('(max-width:900px)').matches){document.getElementById('side').hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){document.getElementById('side').hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else selectRoom(curRoomK);}
   if(d.type==='room'&&d.k&&d.k!==curRoomK){selectRoom(d.k);}});
 addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);if(mapMode==='pogledi')syncMapRoom(curRoomK);});
 function selectFurn(i){
