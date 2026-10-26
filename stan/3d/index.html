@@ -38,7 +38,7 @@ a{color:var(--a)}
 #lbl{position:fixed;inset:0;pointer-events:none;z-index:2;transition:opacity .35s}
 #lbl svg{position:absolute;inset:0;width:100%;height:100%}
 #lbl .l{position:absolute;font-size:13px;font-weight:600;color:var(--ink);background:var(--lblbg);padding:3px 8px;border-radius:8px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;transform:translateY(-50%)}
-#lbl .l small{display:block;font-weight:400;color:var(--mut);font-size:11.5px} #lbl .l.dim{opacity:.28} #lbl .l{transition:opacity .25s,background .25s,color .25s} #lbl .l.sel{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)} #lbl .l.sel small{color:rgba(255,255,255,.8)} #lbl svg line.dim,#lbl svg circle.dim{opacity:.25} #lbl svg line.sel{stroke-width:2.5}
+#lbl .l small{display:block;font-weight:400;color:var(--mut);font-size:11.5px} #lbl .l.dim{opacity:.28} #lbl .l{transition:opacity .25s,background .25s,color .25s} #lbl .l.sel{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)} #lbl .l.sel small{color:rgba(255,255,255,.8)} #lbl svg line.dim,#lbl svg circle.dim{opacity:.18} #lbl svg line.sel{stroke-width:2.5;stroke:var(--a) !important} #lbl svg circle.sel{fill:var(--a) !important;r:5}
 #lbl .n{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%)}
 #lblList{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));display:flex;gap:6px;overflow-x:auto;padding:6px 10px;z-index:3;pointer-events:auto;scrollbar-width:none}
 #lblList span{flex:none;background:var(--lblbg);border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap}
@@ -4229,7 +4229,7 @@ let curRoom=null, lastAz=null;
 const lblSvg=$('lbl').querySelector('svg');
 function labelItems(){
   if(curRoom)return FURN.filter(f=>f.r===curRoom&&!/^(st\d|sp\d|kava|B1b|H2)$/.test(f.id)).map(f=>({id:f.id,t:f.n,s:`${f.b[2]-f.b[0]} × ${f.b[3]-f.b[1]}${f.z[1]-f.z[0]>0?' × '+(f.z[1]-f.z[0]):''}`,p:[(f.b[0]+f.b[2])/2,(f.b[1]+f.b[3])/2,f.z[1]]}));
-  return ROOMS.map(r=>({t:r.name,s:r.area,p:[ROOM_C[r.k][0],ROOM_C[r.k][1],0]}));
+  return ROOMS.map(r=>({room:r.k,t:r.name,s:r.area,p:[ROOM_C[r.k][0],ROOM_C[r.k][1],0]}));
 }
 const LBL=new Map(); // id -> {el, l1, l2, dot}; elementi se ponovno koriste da klik radi i da nema treperenja
 function drawLabels(){
@@ -4243,7 +4243,8 @@ function drawLabels(){
       const l1=document.createElementNS(NS,'line'),l2=document.createElementNS(NS,'line'),d=document.createElementNS(NS,'circle');d.setAttribute('r',4);[l1,l2].forEach(l=>{l.setAttribute('stroke-width','1.5')});lblSvg.append(l1,l2,d);
       const n=document.createElement('div');n.className='n';root.appendChild(n);
       r={el,l1,l2,d,n,html:''};LBL.set(it.key,r);
-      if(it.id){el.style.pointerEvents='auto';el.style.cursor='pointer';el.addEventListener('click',()=>{const o=OBJS.find(o=>o.f.id===it.id);select(o||null);});}}
+      if(it.id){el.style.pointerEvents='auto';el.style.cursor='pointer';el.addEventListener('click',()=>{const o=OBJS.find(o=>o.f.id===it.id);select(o||null);});}
+      else if(it.room){el.style.pointerEvents='auto';el.style.cursor='pointer';el.addEventListener('click',()=>{viewRoom(it.room);});}}
     const html=`${esc(it.t)}<small>${esc(it.s)}</small>`; if(r.html!==html){r.el.innerHTML=html;r.html=html;} return r;};
   if(narrow){
     items.forEach((it,i)=>{const r=get(it);seen.add(it.key);r.el.style.display='none';[r.l1,r.l2,r.d].forEach(x=>x.style.display='none');r.n.style.display='';r.n.textContent=i+1;r.n.style.left=it.x+'px';r.n.style.top=it.y+'px';});
