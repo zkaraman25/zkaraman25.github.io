@@ -117,10 +117,14 @@ function init(){
   function buildViews(){viewSel.innerHTML='';const r=ROOMS.find(r=>r.k===cur.k);
     const add=(id,label)=>{const b=document.createElement('button');b.textContent=label;b.dataset.v=id;b.setAttribute('aria-pressed',id===cur.view);b.addEventListener('click',()=>{cur.view=id;draw();});viewSel.appendChild(b);};
     if(planOnly){add('plan','Tlocrt');return;}
+    add('plan','Tlocrt sobe');
     wallsOf(r).forEach(w=>{const has=FURN3.some(f=>f.r===r.k)||EDGE_OPEN.some(o=>o[0]===r.k&&o[1]===w.i);if(w.len>=60)add('w'+w.i,w.name+(countSame(r,w)>1?' ('+Math.round(w.len)+')':''));});
+    add('nacrti','Nacrti i renderi');
   }
   function countSame(r,w){return wallsOf(r).filter(x=>x.dir===w.dir&&x.len>=60).length;}
   function draw(){const r=ROOMS.find(r=>r.k===cur.k);roomSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur.k));viewSel.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===cur.view));
+    const nac=document.getElementById('nacrti'); const isN=cur.view==='nacrti'; if(nac){nac.hidden=!isN;svg.style.display=isN?'none':'';const h=document.getElementById('pogHint');if(h)h.hidden=isN;}
+    if(isN){title.textContent=r.name+', nacrti i renderi';if(window.showNacrti)showNacrti(cur.k);return;}
     if(cur.view==='plan'){title.textContent=r.name+', tlocrt';const ctx=drawRoomPlan(svg,r,(f)=>{planDims(svg,ctx,r,f);showInfo(f,null);});}
     else{const w=wallsOf(r)[+cur.view.slice(1)];title.textContent=r.name+', '+w.name.toLowerCase()+' (pogled iznutra)';const ctx=drawElevation(svg,r,w,(f,_,w2,it)=>{elevDims(svg,ctx,w2,it);showInfo(f,it);});}
   }
