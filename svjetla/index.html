@@ -89,7 +89,7 @@ table.map{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px} tab
   <div id="panel">
     <div class="tabs"><button data-tab="modes" aria-pressed="true">Modovi</button><button data-tab="room" aria-pressed="false">Soba</button><button data-tab="rol" aria-pressed="false">Rolete</button></div>
     <div class="pane" id="tab-modes"><div class="ptop"><small id="modeNote">Dodirni svjetlo na tlocrtu za pojedinačno, sobu za popis</small></div><div class="modes" id="modes"></div></div>
-    <div class="pane" id="tab-room" hidden><div class="chips" id="roomChips"></div><div id="rooms"></div></div>
+    <div class="pane" id="tab-room" hidden><div class="chips" id="roomChips"></div><div class="row" id="roomAll" style="border-top:0;padding:4px 2px 8px;margin-bottom:4px;border-bottom:2px solid var(--line)"><span class="id" style="background:var(--a-soft);color:var(--a)">sve</span><div><div class="nm" id="roomAllName"></div><div class="sub" id="roomAllSub"></div></div><button class="sw" role="switch" aria-checked="false" id="roomSw" aria-label="Cijela soba"></button></div><div id="rooms"></div></div>
     <div class="pane" id="tab-rol" hidden><div class="ptop"><small>Dodir na roletu na tlocrtu: gore ili dolje</small><span><button class="btn sm" data-all="open">Sve gore</button> <button class="btn sm" data-all="close">Sve dolje</button></span></div><div id="rolete"></div></div>
   </div>
 </main>
@@ -208,7 +208,9 @@ chipsEl.innerHTML=ROOMS.map(r=>`<button data-room="${r.k}" aria-pressed="false">
 chipsEl.addEventListener('click',e=>{const b=e.target.closest('[data-room]');if(b)selectRoom(b.dataset.room);});
 function selectRoom(k,keepTab){curRoom=k;chipsEl.querySelectorAll('[data-room]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.room===k));roomPolys.forEach(p=>p.classList.toggle('sel',p.dataset.k===k));
   const ls=LIGHTS.filter(l=>l.r===k);roomsEl.innerHTML=ls.map(l=>`<div class="row ${l.type}" data-id="${l.id}"><span class="id">${l.id}</span><div><div class="nm">${esc(l.n)}${l.prop?' <span class="sub">(prijedlog)</span>':''}</div>${l.dim?`<input type="range" min="1" max="100" value="${state[l.id].level}" data-dim="${l.id}" aria-label="Jačina ${l.id}">`:`<div class="sub">${l.type==='track'?'magnetska vodilica':'lampa'}</div>`}</div><button class="sw" role="switch" aria-checked="${state[l.id].on}" data-sw="${l.id}" aria-label="${esc(l.n)}"></button></div>`).join('');
-  ls.forEach(l=>render(l.id));if(!keepTab)showTab('room');}
+  document.getElementById('roomAllName').textContent='Cijela soba: '+ROOMS.find(r=>r.k===k).name;ls.forEach(l=>render(l.id));if(!keepTab)showTab('room');}
+function setRoom(k,on){LIGHTS.filter(l=>l.r===k).forEach(l=>{if(state[l.id].on!==on){state[l.id].on=on;render(l.id);send(on?'level':'off',l.id);}});activeMode=null;markMode();toast(SHORT[k]+(on?' upaljeno':' ugašeno'));}
+document.getElementById('roomSw').addEventListener('click',()=>setRoom(curRoom,document.getElementById('roomSw').getAttribute('aria-checked')!=='true'));
 roomsEl.addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(b)toggle(b.dataset.sw);});
 roomsEl.addEventListener('input',e=>{const s=e.target.closest('[data-dim]');if(s)setLevel(s.dataset.dim,+s.value,true);});
 roomsEl.addEventListener('change',e=>{const s=e.target.closest('[data-dim]');if(s)setLevel(s.dataset.dim,+s.value);});
@@ -226,7 +228,7 @@ function render(id){const s=state[id];const l=LIGHTS.find(l=>l.id===id);if(l){co
     const row=roomsEl.querySelector(`.row[data-id="${id}"]`);if(row){row.classList.toggle('on',s.on);row.querySelector('.sw').setAttribute('aria-checked',s.on);const sl=row.querySelector('[data-dim]');if(sl&&document.activeElement!==sl)sl.value=s.level;}}
   const r=rnodes[id];if(r){const p=state[id].pos,t=1-p/100;const vert=r.x0===r.x1;r.f.setAttribute('x2',vert?r.x0:r.x0+(r.x1-r.x0)*t);r.f.setAttribute('y2',vert?Y(r.y0)+(Y(r.y1)-Y(r.y0))*t:Y(r.y0));r.f.style.opacity=t>0?1:0;
     const sl=rolEl.querySelector(`[data-rpos="${id}"]`);if(document.activeElement!==sl)sl.value=p;rolEl.querySelector(`[data-rtxt="${id}"]`).textContent=p===100?'· gore':p===0?'· dolje':'· '+p+' %';}
-  ROOMS.forEach(rm=>{const c=chipsEl.querySelector(`[data-cnt="${rm.k}"]`);if(c){const n=LIGHTS.filter(l=>l.r===rm.k&&state[l.id].on).length;c.textContent=n?n:'';}});save();}
+  ROOMS.forEach(rm=>{const c=chipsEl.querySelector(`[data-cnt="${rm.k}"]`);if(c){const n=LIGHTS.filter(l=>l.r===rm.k&&state[l.id].on).length;c.textContent=n?n:'';}});const rl=LIGHTS.filter(l=>l.r===curRoom),ron=rl.filter(l=>state[l.id].on).length;document.getElementById('roomSw').setAttribute('aria-checked',ron>0);document.getElementById('roomAllSub').textContent=ron?`${ron} od ${rl.length} upaljeno`:'sve ugašeno';save();}
 function toggle(id){const s=state[id];s.on=!s.on;activeMode=null;markMode();render(id);send(s.on?'on':'off',id);}
 function setLevel(id,v,live){const s=state[id];s.level=v;if(!s.on&&!live){s.on=true;}render(id);if(!live)send('level',id);}
 function setRol(id,p){state[id].pos=p;render(id);send('cover',id);}
