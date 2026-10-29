@@ -16,18 +16,24 @@
   --wall:#4a5363;--floor:#1b222b;--tile:#1f2731;--glass:#3b6a8c;--off:#3a434f;--sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.5);color-scheme:dark}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--font);-webkit-tap-highlight-color:transparent}
 button,select,input{font:inherit;color:inherit}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-header h1{font-size:17px;margin:0 auto 0 4px;font-weight:700}
-.icon{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh);text-decoration:none;color:inherit}
-.icon svg,.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+html,body{height:100%;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:8px;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));border-bottom:1px solid var(--line);flex:none}
+header h1{font-size:16px;margin:0 auto 0 2px;font-weight:700}
+.icon{width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh);text-decoration:none;color:inherit}
+.icon svg,.i{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .icon.prim{background:var(--a);color:var(--on-a);border-color:var(--a)}
-.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer}
-.status i{width:9px;height:9px;border-radius:50%;background:var(--muted)} .status.ok i{background:var(--ok)} .status.bad i{background:var(--bad)} .status.demo i{background:var(--warm)}
-main>*{min-width:0} main{max-width:1100px;margin:0 auto;padding:10px 12px 40px;display:grid;gap:12px}
-@media (min-width:900px){main{grid-template-columns:1.25fr 1fr;align-items:start} #planCard{position:sticky;top:66px}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:12px}
-#plan{width:100%;height:auto;display:block;touch-action:manipulation;user-select:none}
-.rm{fill:var(--floor);stroke:none} .rm.tile{fill:var(--tile)} .wall{fill:var(--wall)} .glass{stroke:var(--glass);stroke-width:6;stroke-linecap:butt} .rmname{fill:var(--muted);font-size:15px;font-weight:600;pointer-events:none}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--muted)} .status.ok i{background:var(--ok)} .status.bad i{background:var(--bad)} .status.demo i{background:var(--warm)}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+#planWrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:6px 8px 2px}
+#plan{max-width:100%;max-height:100%;width:auto;height:auto;display:block;touch-action:manipulation;user-select:none}
+#panel{flex:none;height:min(46%,400px);display:flex;flex-direction:column;background:var(--card);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -8px 24px -16px rgba(0,0,0,.25);padding-bottom:env(safe-area-inset-bottom)}
+@media (min-width:900px){main{flex-direction:row} #planWrap{padding:14px} #panel{height:auto;width:400px;border-top:0;border-left:1px solid var(--line);border-radius:0}}
+.tabs{display:flex;gap:4px;padding:8px 10px 4px;flex:none} .tabs button{flex:1;padding:8px 6px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.tabs button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)}
+.pane{flex:1;min-height:0;overflow:auto;padding:6px 10px 10px} .pane[hidden]{display:none}
+.rm{fill:var(--floor);stroke:none;cursor:pointer;transition:fill .2s} .rm.tile{fill:var(--tile)} .rm.sel{fill:var(--a-soft)} .wall{fill:var(--wall)} .glass{stroke:var(--glass);stroke-width:6;stroke-linecap:butt} .rmname{fill:var(--muted);font-size:15px;font-weight:600;pointer-events:none}
 .lt{cursor:pointer} .lt .core{transition:all .25s} .lt .glow{opacity:0;transition:opacity .35s} .lt.on .glow{opacity:1}
 .lt.led .core{stroke:var(--off);stroke-width:8;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm);filter:drop-shadow(0 0 6px var(--warm))} .lt.led .glow{stroke:var(--warm);stroke-width:60;stroke-linecap:round;filter:url(#blur)}
 .lt.track .core{stroke:var(--off);stroke-width:10;stroke-linecap:round} .lt.track.on .core{stroke:var(--track);filter:drop-shadow(0 0 6px var(--track))} .lt.track .glow{stroke:var(--track);stroke-width:48;stroke-linecap:round;filter:url(#blur)}
@@ -36,22 +42,24 @@ main>*{min-width:0} main{max-width:1100px;margin:0 auto;padding:10px 12px 40px;d
 .lt.prop .core{stroke-dasharray:6 6} .lt .hit{fill:transparent;stroke:transparent;stroke-width:44}
 .lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none;font-weight:600} .lt.on .tag{fill:var(--fg)}
 .rl{cursor:pointer} .rl .bar{stroke:var(--off);stroke-width:14;stroke-linecap:butt} .rl .fill{stroke:var(--a);stroke-width:14;stroke-linecap:butt;transition:all .4s} .rl .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:14px;font-weight:600;pointer-events:none}
-.hsec{display:flex;align-items:center;justify-content:space-between;margin:2px 0 8px} .hsec h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0;font-weight:700}
-.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 6px;margin:0 -2px}
-.chips button{flex:none;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:13.5px;transition:background .2s,color .2s}
-.chips button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)}
-.chips button .i{width:17px;height:17px}
-.room{margin-top:10px} .room h3{font-size:14px;margin:8px 0 6px;display:flex;align-items:center;gap:8px} .room h3 small{color:var(--muted);font-weight:500;margin-left:auto}
-.row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:9px 6px;border-top:1px solid var(--line)} .row:first-of-type{border-top:0}
-.row .id{width:40px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-size:12.5px;font-weight:700;background:var(--hover);color:var(--muted)}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:6px} .modes button{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-weight:600;font-size:13.5px;text-align:left;transition:background .2s,color .2s}
+.modes button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)} .modes .i{width:18px;height:18px;flex:none}
+@media (min-width:900px){.modes{grid-template-columns:1fr 1fr}}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 8px}
+.chips button{flex:none;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-weight:600;font-size:12.5px;transition:background .2s,color .2s} .chips button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)}
+.chips button b{font-weight:500;opacity:.7;margin-left:4px}
+.row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:7px 2px;border-top:1px solid var(--line)} .row:first-child{border-top:0}
+.row .id{width:38px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-size:12px;font-weight:700;background:var(--hover);color:var(--muted)}
 .row.on .id{color:#fff} .row.on.led .id{background:var(--warm)} .row.on.track .id{background:var(--track)} .row.on.lamp .id{background:#d9a81c}
-.row .nm{font-weight:600;font-size:14px} .row .sub{font-size:12px;color:var(--muted)}
-.row input[type=range]{width:100%;margin:6px 0 0;accent-color:var(--a);height:22px}
-.sw{position:relative;width:46px;height:28px;border-radius:999px;background:var(--off);border:0;cursor:pointer;transition:background .2s;flex:none} .sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.row .nm{font-weight:600;font-size:13.5px;line-height:1.25} .row .sub{font-size:11.5px;color:var(--muted)}
+.row input[type=range]{width:100%;margin:4px 0 0;accent-color:var(--a);height:20px}
+.sw{position:relative;width:44px;height:26px;border-radius:999px;background:var(--off);border:0;cursor:pointer;transition:background .2s;flex:none} .sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .sw[aria-checked="true"]{background:var(--a)} .sw[aria-checked="true"]::after{left:21px}
-.rol{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px 6px;border-top:1px solid var(--line)} .rol:first-of-type{border-top:0}
-.rol .btns{display:flex;gap:4px} .rol .btns button{width:38px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-.rol input[type=range]{width:100%;accent-color:var(--a)} .rol .pos{font-size:12px;color:var(--muted)}
+.rol{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:7px 2px;border-top:1px solid var(--line)} .rol:first-child{border-top:0}
+.rol .btns{display:flex;gap:4px} .rol .btns button{width:36px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--bg);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.rol input[type=range]{width:100%;accent-color:var(--a);margin:2px 0 0;height:18px} .rol .pos{font-size:11.5px;color:var(--muted)}
+.rol .nm{font-weight:600;font-size:13.5px}
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 6px} .ptop small{color:var(--muted);font-size:12px} .btn.sm{padding:5px 9px;font-size:12px}
 dialog{border:none;border-radius:16px;padding:0;max-width:520px;width:94vw;background:var(--card);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.3)} dialog::backdrop{background:rgba(0,0,0,.45)}
 dialog .in{padding:16px 18px 18px} dialog h2{margin:0 0 6px;font-size:17px} dialog p{margin:6px 0;color:var(--muted);font-size:13.5px}
 .f{display:grid;gap:4px;margin:10px 0} .f label{font-size:12px;font-weight:600;color:var(--muted)} .f input,.f select{padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
@@ -63,7 +71,7 @@ table.map{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px} tab
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px} .legend span{display:inline-flex;align-items:center;gap:6px} .legend b{width:18px;height:6px;border-radius:3px;display:inline-block}
 </style>
 </head>
-<body>
+<body><div id="app">
 <header>
   <a class="icon prim" href="/" title="Hub"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg></a>
   <h1>Svjetla</h1>
@@ -72,29 +80,20 @@ table.map{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px} tab
   <button class="icon" id="btnTheme" title="Tema"><svg viewBox="0 0 24 24"></svg></button>
 </header>
 <main>
-  <section class="card" id="planCard">
+  <div id="planWrap">
     <svg id="plan" viewBox="-45 -40 1095 840" aria-label="Tlocrt sa svjetlima">
       <defs><filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter><filter id="blur2" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="10"/></filter></defs>
       <g id="gBase"></g><g id="gRol"></g><g id="gLt"></g>
     </svg>
-    <div class="legend"><span><b style="background:var(--warm)"></b>LED u utoru</span><span><b style="background:var(--track)"></b>magnetska vodilica</span><span><b style="background:var(--lamp)"></b>lampa</span><span><b style="background:var(--a)"></b>roleta (spuštena)</span><span>crtkano: prijedlog, nije u dokumentu za strop</span></div>
-  </section>
-  <section>
-    <div class="card">
-      <div class="hsec"><h2>Modovi</h2><small id="modeNote" style="color:var(--muted);font-size:12px"></small></div>
-      <div class="chips" id="modes"></div>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <div class="hsec"><h2>Svjetla</h2><button class="btn" id="btnAllOff" style="padding:6px 10px;font-size:12.5px">Ugasi sve</button></div>
-      <div id="rooms"></div>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <div class="hsec"><h2>Rolete</h2><div><button class="btn" data-all="open" style="padding:6px 10px;font-size:12.5px">Sve gore</button> <button class="btn" data-all="close" style="padding:6px 10px;font-size:12.5px">Sve dolje</button></div></div>
-      <div id="rolete"></div>
-    </div>
-  </section>
+  </div>
+  <div id="panel">
+    <div class="tabs"><button data-tab="modes" aria-pressed="true">Modovi</button><button data-tab="room" aria-pressed="false">Soba</button><button data-tab="rol" aria-pressed="false">Rolete</button></div>
+    <div class="pane" id="tab-modes"><div class="ptop"><small id="modeNote">Dodirni svjetlo na tlocrtu za pojedinačno, sobu za popis</small></div><div class="modes" id="modes"></div></div>
+    <div class="pane" id="tab-room" hidden><div class="chips" id="roomChips"></div><div id="rooms"></div></div>
+    <div class="pane" id="tab-rol" hidden><div class="ptop"><small>Dodir na roletu na tlocrtu: gore ili dolje</small><span><button class="btn sm" data-all="open">Sve gore</button> <button class="btn sm" data-all="close">Sve dolje</button></span></div><div id="rolete"></div></div>
+  </div>
 </main>
-
+</div>
 <dialog id="dlg"><div class="in">
   <h2>Veza s uređajima</h2>
   <div class="seg" id="segMode"><button data-m="demo" aria-pressed="true">Demo</button><button data-m="shelly">Shelly lokalno</button><button data-m="ha">Home Assistant</button></div>
@@ -178,7 +177,7 @@ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
 /* ---------- tlocrt ---------- */
 const gBase=document.getElementById('gBase'),gLt=document.getElementById('gLt'),gRol=document.getElementById('gRol');
 WALLS.forEach(([x0,y0,x1,y1])=>el('rect',{x:x0,y:Y(y1),width:x1-x0,height:y1-y0,class:'wall'},gBase));
-ROOMS.forEach(r=>{el('polygon',{points:r.poly.map(p=>p[0]+','+Y(p[1])).join(' '),class:'rm'+(r.tile?' tile':'')},gBase);});
+const roomPolys=ROOMS.map(r=>{const p=el('polygon',{points:r.poly.map(p=>p[0]+','+Y(p[1])).join(' '),class:'rm'+(r.tile?' tile':''),'data-k':r.k},gBase);p.addEventListener('click',()=>selectRoom(r.k));return p;});
 OPEN.forEach(([x0,y0,x1,y1])=>el('rect',{x:x0,y:Y(y1),width:x1-x0,height:y1-y0,class:'rm'},gBase));
 GLASS.forEach(([x0,y0,x1,y1])=>el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'glass'},gBase));
 DOORS.forEach(([x,y,w,d])=>{const D={s:[[1,0],[0,-1]],sw:[[-1,0],[0,-1]],se:[[1,0],[0,-1]],e:[[0,1],[1,0]],n:[[1,0],[0,1]]}[d];const ex=x+D[0][0]*w,ey=y+D[0][1]*w,sx=x+D[1][0]*w,sy=y+D[1][1]*w;
@@ -192,39 +191,46 @@ function drawLight(l){
   else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}if(l.id==='L8'){ax-=4;bx-=4;}
     el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'glow'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'core'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'hit'},g);
     const vert=x0===x1;el('text',{x:vert?(x0>900?ax-44:ax+14):(ax+bx)/2-12,y:vert?Y((ay+by)/2)+6:Y(ay)-14,class:'tag'},g,l.id);}
-  g.addEventListener('click',()=>toggle(l.id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});el('title',{},g,l.id+' '+l.n);nodes[l.id]=g;}
+  g.addEventListener('click',()=>{toggle(l.id);if(curRoom!==l.r)selectRoom(l.r,true);});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});el('title',{},g,l.id+' '+l.n);nodes[l.id]=g;}
 LIGHTS.forEach(drawLight);
 const rnodes={};
 ROLETE.forEach(r=>{const g=el('g',{class:'rl','data-id':r.id},gRol);const [x0,y0,x1,y1]=r.g;el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'bar'},g);const f=el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'fill'},g);
   const vert=x0===x1;el('text',{x:vert?x0+12:(x0+x1)/2-12,y:vert?Y((y0+y1)/2)+5:Y(y0)+(y0>300?-16:26),class:'tag'},g,r.id);el('title',{},g,r.id+' '+r.n);
-  g.addEventListener('click',()=>setRol(r.id,state[r.id].pos<50?100:0));rnodes[r.id]={g,f,x0,y0,x1,y1};});
+  g.addEventListener('click',()=>{setRol(r.id,state[r.id].pos<50?100:0);showTab('rol');});rnodes[r.id]={g,f,x0,y0,x1,y1};});
 
-/* ---------- popis ---------- */
-const roomsEl=document.getElementById('rooms');
-ROOMS.forEach(r=>{const ls=LIGHTS.filter(l=>l.r===r.k);if(!ls.length)return;const d=document.createElement('div');d.className='room';d.innerHTML=`<h3>${esc(r.name)}<small data-cnt="${r.k}"></small></h3>`+ls.map(l=>`<div class="row ${l.type}" data-id="${l.id}"><span class="id">${l.id}</span><div><div class="nm">${esc(l.n)}${l.prop?' <span class="sub">(prijedlog)</span>':''}</div><div class="sub">${l.type==='track'?'magnetska vodilica':l.type==='led'?'LED traka u utoru':'lampa'}${l.dim?' · dimabilno':''}</div>${l.dim?`<input type="range" min="1" max="100" value="${state[l.id].level}" data-dim="${l.id}" aria-label="Jačina ${l.id}">`:''}</div><button class="sw" role="switch" aria-checked="${state[l.id].on}" data-sw="${l.id}" aria-label="${esc(l.n)}"></button></div>`).join('');roomsEl.appendChild(d);});
+/* ---------- popis: kartice dolje, soba po izboru ---------- */
+const SHORT={b:'Boravak',h:'Hodnik',w:'Kupaona',s:'Spavaća',d:'Dječja',l:'Lođa'};
+let curRoom='b';
+function showTab(t){document.querySelectorAll('.tabs [data-tab]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tab===t));['modes','room','rol'].forEach(x=>document.getElementById('tab-'+x).hidden=x!==t);}
+document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)showTab(b.dataset.tab);});
+const roomsEl=document.getElementById('rooms'),chipsEl=document.getElementById('roomChips');
+chipsEl.innerHTML=ROOMS.map(r=>`<button data-room="${r.k}" aria-pressed="false">${SHORT[r.k]}<b data-cnt="${r.k}"></b></button>`).join('');
+chipsEl.addEventListener('click',e=>{const b=e.target.closest('[data-room]');if(b)selectRoom(b.dataset.room);});
+function selectRoom(k,keepTab){curRoom=k;chipsEl.querySelectorAll('[data-room]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.room===k));roomPolys.forEach(p=>p.classList.toggle('sel',p.dataset.k===k));
+  const ls=LIGHTS.filter(l=>l.r===k);roomsEl.innerHTML=ls.map(l=>`<div class="row ${l.type}" data-id="${l.id}"><span class="id">${l.id}</span><div><div class="nm">${esc(l.n)}${l.prop?' <span class="sub">(prijedlog)</span>':''}</div>${l.dim?`<input type="range" min="1" max="100" value="${state[l.id].level}" data-dim="${l.id}" aria-label="Jačina ${l.id}">`:`<div class="sub">${l.type==='track'?'magnetska vodilica':'lampa'}</div>`}</div><button class="sw" role="switch" aria-checked="${state[l.id].on}" data-sw="${l.id}" aria-label="${esc(l.n)}"></button></div>`).join('');
+  ls.forEach(l=>render(l.id));if(!keepTab)showTab('room');}
 roomsEl.addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(b)toggle(b.dataset.sw);});
 roomsEl.addEventListener('input',e=>{const s=e.target.closest('[data-dim]');if(s)setLevel(s.dataset.dim,+s.value,true);});
 roomsEl.addEventListener('change',e=>{const s=e.target.closest('[data-dim]');if(s)setLevel(s.dataset.dim,+s.value);});
 const rolEl=document.getElementById('rolete');
-rolEl.innerHTML=ROLETE.map(r=>`<div class="rol" data-id="${r.id}"><div><div class="nm" style="font-weight:600;font-size:14px">${r.id} · ${esc(r.n)}</div><input type="range" min="0" max="100" value="${state[r.id].pos}" data-rpos="${r.id}" aria-label="Položaj ${r.id}"><div class="pos" data-rtxt="${r.id}"></div></div><div class="btns"><button data-r="${r.id}" data-a="open" title="Gore">${ico('up')}</button><button data-r="${r.id}" data-a="stop" title="Stani">${ico('stop')}</button><button data-r="${r.id}" data-a="close" title="Dolje">${ico('down')}</button></div></div>`).join('');
+rolEl.innerHTML=ROLETE.map(r=>`<div class="rol" data-id="${r.id}"><div><div class="nm">${r.id} · ${esc(r.n)} <span class="pos" data-rtxt="${r.id}"></span></div><input type="range" min="0" max="100" value="${state[r.id].pos}" data-rpos="${r.id}" aria-label="Položaj ${r.id}"></div><div class="btns"><button data-r="${r.id}" data-a="open" title="Gore">${ico('up')}</button><button data-r="${r.id}" data-a="stop" title="Stani">${ico('stop')}</button><button data-r="${r.id}" data-a="close" title="Dolje">${ico('down')}</button></div></div>`).join('');
 rolEl.addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(!b)return;const id=b.dataset.r,a=b.dataset.a;if(a==='open')setRol(id,100);else if(a==='close')setRol(id,0);else{send('coverStop',id);toast(id+' stani');}});
 rolEl.addEventListener('change',e=>{const s=e.target.closest('[data-rpos]');if(s)setRol(s.dataset.rpos,+s.value);});
 document.querySelectorAll('[data-all]').forEach(b=>b.addEventListener('click',()=>ROLETE.forEach(r=>setRol(r.id,b.dataset.all==='open'?100:0))));
-document.getElementById('btnAllOff').addEventListener('click',()=>applyMode('ugasi'));
 const modesEl=document.getElementById('modes');
 modesEl.innerHTML=MODES.map(m=>`<button data-mode="${m.id}" aria-pressed="false">${ico(m.ic)}${esc(m.n)}</button>`).join('');
 modesEl.addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)applyMode(b.dataset.mode);});
 
 /* ---------- akcije ---------- */
 function render(id){const s=state[id];const l=LIGHTS.find(l=>l.id===id);if(l){const g=nodes[id];g.classList.toggle('on',s.on);g.querySelector('.glow').style.opacity=s.on?(0.25+0.75*s.level/100):0;
-    const row=roomsEl.querySelector(`.row[data-id="${id}"]`);row.classList.toggle('on',s.on);row.querySelector('.sw').setAttribute('aria-checked',s.on);const sl=row.querySelector('[data-dim]');if(sl&&document.activeElement!==sl)sl.value=s.level;}
+    const row=roomsEl.querySelector(`.row[data-id="${id}"]`);if(row){row.classList.toggle('on',s.on);row.querySelector('.sw').setAttribute('aria-checked',s.on);const sl=row.querySelector('[data-dim]');if(sl&&document.activeElement!==sl)sl.value=s.level;}}
   const r=rnodes[id];if(r){const p=state[id].pos,t=1-p/100;const vert=r.x0===r.x1;r.f.setAttribute('x2',vert?r.x0:r.x0+(r.x1-r.x0)*t);r.f.setAttribute('y2',vert?Y(r.y0)+(Y(r.y1)-Y(r.y0))*t:Y(r.y0));r.f.style.opacity=t>0?1:0;
-    const sl=rolEl.querySelector(`[data-rpos="${id}"]`);if(document.activeElement!==sl)sl.value=p;rolEl.querySelector(`[data-rtxt="${id}"]`).textContent=p===100?'gore':p===0?'dolje':p+' % otvoreno';}
-  ROOMS.forEach(rm=>{const c=roomsEl.querySelector(`[data-cnt="${rm.k}"]`);if(c){const n=LIGHTS.filter(l=>l.r===rm.k&&state[l.id].on).length;c.textContent=n?n+' upaljeno':'';}});save();}
+    const sl=rolEl.querySelector(`[data-rpos="${id}"]`);if(document.activeElement!==sl)sl.value=p;rolEl.querySelector(`[data-rtxt="${id}"]`).textContent=p===100?'· gore':p===0?'· dolje':'· '+p+' %';}
+  ROOMS.forEach(rm=>{const c=chipsEl.querySelector(`[data-cnt="${rm.k}"]`);if(c){const n=LIGHTS.filter(l=>l.r===rm.k&&state[l.id].on).length;c.textContent=n?n:'';}});save();}
 function toggle(id){const s=state[id];s.on=!s.on;activeMode=null;markMode();render(id);send(s.on?'on':'off',id);}
 function setLevel(id,v,live){const s=state[id];s.level=v;if(!s.on&&!live){s.on=true;}render(id);if(!live)send('level',id);}
 function setRol(id,p){state[id].pos=p;render(id);send('cover',id);}
-function markMode(){modesEl.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===activeMode));document.getElementById('modeNote').textContent=activeMode?'aktivno: '+MODES.find(m=>m.id===activeMode).n:'';}
+function markMode(){modesEl.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===activeMode));document.getElementById('modeNote').textContent=activeMode?'Aktivno: '+MODES.find(m=>m.id===activeMode).n:'Dodirni svjetlo na tlocrtu za pojedinačno, sobu za popis';}
 function applyMode(mid){const m=MODES.find(x=>x.id===mid);if(!m)return;activeMode=mid;markMode();
   LIGHTS.forEach(l=>{const v=m.l[l.id];if(v!=null){const was=state[l.id].on&&state[l.id].level===v;state[l.id].on=true;state[l.id].level=l.dim?v:100;render(l.id);if(!was)send('level',l.id);}else if(!m.keep){if(state[l.id].on){state[l.id].on=false;render(l.id);send('off',l.id);}}});
   if(m.r)Object.entries(m.r).forEach(([id,p])=>{if(state[id]&&state[id].pos!==p)setRol(id,p);});toast(m.n);}
@@ -285,7 +291,7 @@ applyTheme();mq.addEventListener('change',applyTheme);
 document.getElementById('btnTheme').addEventListener('click',()=>{theme=theme===''?'light':theme==='light'?'dark':'';try{if(theme)localStorage.setItem('kb-theme',theme);else localStorage.removeItem('kb-theme')}catch(e){}applyTheme();toast(theme===''?'Prati uređaj':theme==='light'?'Svijetlo':'Tamno');});
 addEventListener('storage',e=>{if(e.key==='kb-theme'){theme=e.newValue==='light'||e.newValue==='dark'?e.newValue:'';applyTheme();}});
 
-[...LIGHTS,...ROLETE].forEach(x=>render(x.id));markMode();applyCfg();poll();
+selectRoom('b',true);[...LIGHTS,...ROLETE].forEach(x=>render(x.id));markMode();applyCfg();poll();
 </script>
 </body>
 </html>
