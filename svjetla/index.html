@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1f4e79">
-<title>Svjetla</title>
+<title>Light Management</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 :root{--bg:#f3f5f8;--card:#fff;--fg:#111a24;--muted:#68717d;--line:#e2e7ee;--hover:#eef2f7;--a:#1f4e79;--a-soft:#e1ebf4;--a-pale:#bfd3e6;--on-a:#fff;
@@ -26,7 +26,7 @@ header h1{font-size:16px;margin:0 auto 0 2px;font-weight:700}
 .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer}
 .status i{width:8px;height:8px;border-radius:50%;background:var(--muted)} .status.ok i{background:var(--ok)} .status.bad i{background:var(--bad)} .status.demo i{background:var(--warm)}
 main{flex:1;min-height:0;display:flex;flex-direction:column}
-#planWrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:6px 8px 2px}
+#planWrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:6px 8px 2px;background:#0f141a;--floor:#1b222b;--wall:#4a5363;--tile:#1f2731;--glass:#3b6a8c;--off:#3a434f;--muted:#95a0ad;--fg:#e8edf3;--a-soft:#1d3047}
 #plan{max-width:100%;max-height:100%;width:auto;height:auto;display:block;touch-action:manipulation;user-select:none}
 #panel{flex:none;height:min(46%,400px);display:flex;flex-direction:column;background:var(--card);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -8px 24px -16px rgba(0,0,0,.25);padding-bottom:env(safe-area-inset-bottom)}
 @media (min-width:900px){main{flex-direction:row} #planWrap{padding:14px} #panel{height:auto;width:400px;border-top:0;border-left:1px solid var(--line);border-radius:0}}
@@ -38,7 +38,7 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .lt.led .core{stroke:var(--off);stroke-width:8;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm);filter:drop-shadow(0 0 6px var(--warm))} .lt.led .glow{stroke:var(--warm);stroke-width:60;stroke-linecap:round;filter:url(#blur)}
 .lt.track .core{stroke:var(--off);stroke-width:10;stroke-linecap:round} .lt.track.on .core{stroke:var(--track);filter:drop-shadow(0 0 6px var(--track))} .lt.track .glow{stroke:var(--track);stroke-width:48;stroke-linecap:round;filter:url(#blur)}
 .lt.lamp .core{fill:var(--off)} .lt.lamp.on .core{fill:var(--lamp);filter:drop-shadow(0 0 8px var(--lamp))} .lt.lamp .glow{fill:var(--lamp);filter:url(#blur2)}
-.lt.lamp.line .core{fill:none;stroke:var(--off);stroke-width:9;stroke-linecap:round} .lt.lamp.line.on .core{stroke:var(--lamp);filter:drop-shadow(0 0 8px var(--lamp))} .lt.lamp.line .glow{fill:none;stroke:var(--lamp);stroke-width:34;stroke-linecap:round}
+.lt.lamp.line .core{fill:none;stroke:var(--off);stroke-width:4;stroke-linecap:round} .lt.lamp.line.on .core{stroke:var(--lamp);filter:drop-shadow(0 0 6px var(--lamp))} .lt.lamp.line .glow{fill:none;stroke:var(--lamp);stroke-width:18;stroke-linecap:round;filter:url(#blur2)} .lt.lamp.line .pt{fill:var(--off)} .lt.lamp.line.on .pt{fill:var(--lamp)}
 .lt.prop .core{stroke-dasharray:6 6} .lt .hit{fill:transparent;stroke:transparent;stroke-width:44}
 .lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none;font-weight:600} .lt.on .tag{fill:var(--fg)}
 .rl{cursor:pointer} .rl .bar{stroke:var(--off);stroke-width:14;stroke-linecap:butt} .rl .fill{stroke:var(--a);stroke-width:14;stroke-linecap:butt;transition:all .4s} .rl .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:14px;font-weight:600;pointer-events:none}
@@ -73,8 +73,8 @@ table.map{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px} tab
 </head>
 <body><div id="app">
 <header>
-  <a class="icon prim" href="/" title="Hub"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg></a>
-  <h1>Svjetla</h1>
+  <a class="icon" href="/" title="Natrag na hub"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></a>
+  <h1><svg class="i" viewBox="0 0 24 24" style="vertical-align:-4px;margin-right:4px"><path d="M9 18h6M10 21h4"/><path d="M8.5 15a6 6 0 1 1 7 0c-.8.6-1.2 1.3-1.2 2H9.7c0-.7-.4-1.4-1.2-2z"/></svg>Light Management</h1>
   <button class="status demo" id="status" title="Veza"><i></i><span>Demo</span></button>
   <button class="icon" id="btnSet" title="Postavke veze"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   <button class="icon" id="btnTheme" title="Tema"><svg viewBox="0 0 24 24"></svg></button>
@@ -131,33 +131,33 @@ const GLASS=[[139,-12,305,-12],[-12,160,-12,456],[54,622,310,622],[498,-162,638,
 const DOORS=[[510,466,100,'s'],[705,205,80,'sw'],[722,205,80,'se'],[820,225,80,'e'],[97,-25,85,'n']];
 /* type: led (dimabilno, RGBW PM), track (vodilica, pali/gasi preko drivera), lamp (230 V). dim:true = ima dimanje. prop:true = prijedlog, nije u knauf dokumentu */
 const LIGHTS=[
-  {id:'V1',r:'b',type:'track',g:[120,275,120,560],n:'Vodilica uz TV zid'},{id:'V2',r:'b',type:'track',g:[330,275,330,560],n:'Vodilica uz garnituru'},
-  {id:'U1',r:'b',type:'led',dim:true,g:[0,456,0,610],n:'LED iznad TV-a'},{id:'U3',r:'b',type:'led',dim:true,g:[470,335,470,610],n:'LED iza garniture'},
-  {id:'V3',r:'b',type:'track',g:[100,100,270,100],n:'Vodilica nad radnom zonom'},{id:'L1',r:'b',type:'lamp',dim:true,g:[150,172,310,172],n:'Linijska lampa nad šankom'},
-  {id:'V4',r:'h',type:'track',g:[400,276,780,276],n:'Vodilica kroz hodnik'},{id:'U4',r:'h',type:'led',dim:true,g:[370,216,805,216],n:'LED uz ogledalo i obloge'},
-  {id:'U5',r:'h',type:'led',dim:true,g:[485,336,485,466],n:'LED uz ploču s kukicama'},{id:'L2',r:'h',type:'lamp',g:[560,401],n:'Privjesna uz ulaz'},{id:'L3',r:'h',type:'lamp',g:[560,330],n:'Privjesna uz ogledalo'},
-  {id:'V8',r:'w',type:'track',g:[900,250,900,420],n:'Vodilica, mat siva'},{id:'L4',r:'w',type:'lamp',g:[725,401],n:'Svjetlo u tušu'},{id:'L8',r:'w',type:'lamp',prop:true,g:[988,300,988,360],n:'Svjetlo uz ogledalo nad komodicom'},
-  {id:'V5',r:'s',type:'track',g:[470,-120,470,120],n:'Vodilica uz ormar'},{id:'V6',r:'s',type:'track',g:[600,-120,600,120],n:'Vodilica nad krevetom'},
-  {id:'U7',r:'s',type:'led',dim:true,g:[710,-150,710,205],n:'LED uz uzglavlje'},{id:'L5',r:'s',type:'lamp',prop:true,dim:true,g:[685,-125],n:'Noćna lampa, ormarić uz prozor'},
-  {id:'L7',r:'d',type:'lamp',prop:true,g:[860,30],n:'Stropno svjetlo'},{id:'L6',r:'d',type:'lamp',prop:true,dim:true,g:[745,-110],n:'Noćna lampa uz krevet'},
-  {id:'L9',r:'l',type:'lamp',prop:true,g:[180,-32],n:'Zidno svjetlo na lođi'},
+  {id:'M1',r:'b',type:'track',g:[120,275,120,560],n:'Vodilica uz TV zid'},{id:'M2',r:'b',type:'track',g:[330,275,330,560],n:'Vodilica uz garnituru'},
+  {id:'L1',r:'b',type:'led',dim:true,g:[0,456,0,610],n:'LED iznad TV-a'},{id:'L3',r:'b',type:'led',dim:true,g:[470,335,470,610],n:'LED iza garniture'},
+  {id:'M3',r:'b',type:'track',g:[100,100,270,100],n:'Vodilica nad radnom zonom'},{id:'L9',r:'b',type:'led',dim:true,g:[333,4,333,211],n:'LED ispod visećih elemenata'},{id:'U1',r:'b',type:'lamp',dim:true,g:[150,172,310,172],n:'Linijska lampa nad šankom'},
+  {id:'M4',r:'h',type:'track',g:[400,276,780,276],n:'Vodilica kroz hodnik'},{id:'L4',r:'h',type:'led',dim:true,g:[370,216,805,216],n:'LED uz ogledalo i obloge'},
+  {id:'L5',r:'h',type:'led',dim:true,g:[485,336,485,466],n:'LED uz ploču s kukicama'},{id:'U2',r:'h',type:'lamp',g:[560,401],n:'Privjesna uz ulaz'},{id:'U3',r:'h',type:'lamp',g:[560,330],n:'Privjesna uz ogledalo'},
+  {id:'M8',r:'w',type:'track',g:[900,250,900,420],n:'Vodilica, mat siva'},{id:'U4',r:'w',type:'lamp',g:[725,401],n:'Svjetlo u tušu'},{id:'U8',r:'w',type:'lamp',prop:true,g:[988,228,988,318],n:'Svjetlo uz ogledalo nad komodicom'},
+  {id:'M5',r:'s',type:'track',g:[470,-120,470,120],n:'Vodilica uz ormar'},{id:'M6',r:'s',type:'track',g:[600,-120,600,120],n:'Vodilica nad krevetom'},
+  {id:'L7',r:'s',type:'led',dim:true,g:[710,-150,710,205],n:'LED uz uzglavlje'},{id:'U5',r:'s',type:'lamp',prop:true,dim:true,g:[685,-128],n:'Noćna lampa uz prozor'},{id:'U6',r:'s',type:'lamp',prop:true,dim:true,g:[685,72],n:'Noćna lampa uz vrata'},
+  {id:'U7',r:'d',type:'lamp',prop:true,g:[860,30],n:'Stropno svjetlo'},
+  {id:'U9',r:'l',type:'lamp',prop:true,g:[180,-32],n:'Zidno svjetlo na lođi'},
 ];
 const ROLETE=[
-  {id:'R1',r:'b',n:'Klizna vrata u vrt',g:[54,622,310,622]},{id:'R2',r:'b',n:'Prozor boravka',g:[-12,160,-12,456]},{id:'R3',r:'b',n:'Prozor kuhinje',g:[139,-12,305,-12]},
+  {id:'R1',r:'b',n:'Klizna vrata u vrt',g:[54,622,310,622]},{id:'R2',r:'b',n:'Prozor boravka',g:[-12,160,-12,456]},{id:'R3',r:'b',n:'Prozor kuhinje, lijevi',g:[139,-12,219,-12]},{id:'R6',r:'b',n:'Prozor kuhinje, desni',g:[225,-12,305,-12]},
   {id:'R4',r:'s',n:'Prozor spavaće',g:[498,-162,638,-162]},{id:'R5',r:'d',n:'Prozor dječje',g:[760,-162,900,-162]},
 ];
 /* modovi: svjetla kao id:razina (0 do 100), rolete kao id:položaj (0 dolje, 100 gore); što nije navedeno gasi se ili ostaje (keep:true) */
 const MODES=[
   {id:'sve',n:'Sve upali',ic:'sun',l:Object.fromEntries(LIGHTS.map(l=>[l.id,100]))},
   {id:'ugasi',n:'Ugasi sve',ic:'off',l:{}},
-  {id:'jutro',n:'Jutro',ic:'coffee',l:{U4:40,V3:100,L1:60},r:{R1:100,R2:100,R3:100,R4:100,R5:100}},
-  {id:'kuhanje',n:'Kuhanje',ic:'pot',l:{V3:100,L1:100,V1:70,U4:40},keep:true},
-  {id:'vecer',n:'Večer',ic:'moon',l:{U1:60,U3:60,U4:40,U5:40,U7:50,L1:70,L2:60,L3:60,L5:40,L8:60}},
-  {id:'film',n:'Film',ic:'film',l:{U1:25,U3:35,U4:15},r:{R1:0,R2:0}},
-  {id:'citanje',n:'Čitanje',ic:'book',l:{V6:100,L5:70,U7:30},keep:true},
-  {id:'gosti',n:'Gosti',ic:'users',l:{V1:100,V2:100,U1:70,U3:70,V3:80,L1:80,U4:60,U5:60,L2:80,L3:80}},
-  {id:'noc',n:'Noć',ic:'star',l:{U4:10,U5:10,L4:30},r:{R1:0,R2:0,R3:0,R4:0,R5:0}},
-  {id:'odlazak',n:'Odlazak',ic:'door',l:{},r:{R1:0,R2:0,R3:0,R4:0,R5:0}},
+  {id:'jutro',n:'Jutro',ic:'coffee',l:{L4:40,M3:100,L9:100,U1:60},r:{R1:100,R2:100,R3:100,R6:100,R4:100,R5:100}},
+  {id:'kuhanje',n:'Kuhanje',ic:'pot',l:{M3:100,L9:100,U1:100,M1:70,L4:40},keep:true},
+  {id:'vecer',n:'Večer',ic:'moon',l:{L1:60,L3:60,L4:40,L5:40,L7:50,L9:50,U1:70,U2:60,U3:60,U5:40,U6:40,U8:60}},
+  {id:'film',n:'Film',ic:'film',l:{L1:25,L3:35,L4:15},r:{R1:0,R2:0}},
+  {id:'citanje',n:'Čitanje',ic:'book',l:{M6:100,U5:70,U6:70,L7:30},keep:true},
+  {id:'gosti',n:'Gosti',ic:'users',l:{M1:100,M2:100,L1:70,L3:70,M3:80,U1:80,L4:60,L5:60,U2:80,U3:80}},
+  {id:'noc',n:'Noć',ic:'star',l:{L4:10,L5:10,L9:20,U4:30},r:{R1:0,R2:0,R3:0,R6:0,R4:0,R5:0}},
+  {id:'odlazak',n:'Odlazak',ic:'door',l:{},r:{R1:0,R2:0,R3:0,R6:0,R4:0,R5:0}},
 ];
 const IC={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>',off:'<path d="M12 3v9"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/>',coffee:'<path d="M4 8h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2M7 4v2m3-2v2m3-2v2"/>',pot:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 6a3 3 0 0 1 6 0"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',film:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 10h4M3 14h4M17 10h4M17 14h4"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M22 19a5 5 0 0 0-5-5"/>',star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',door:'<path d="M4 21h16M5 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v17"/><path d="M15 7h4v14M11 12h.01"/>',sw:'<path d="M3 12h18M3 6h18M3 18h18"/>',up:'<path d="m6 15 6-6 6 6"/>',down:'<path d="m6 9 6 6 6-6"/>',stop:'<rect x="7" y="7" width="10" height="10" rx="1.5"/>'};
 const svgNS='http://www.w3.org/2000/svg';
@@ -167,7 +167,7 @@ const toast=m=>{const t=document.getElementById('toast');t.textContent=m;t.class
 const ico=k=>`<svg class="i" viewBox="0 0 24 24">${IC[k]||''}</svg>`;
 
 /* ---------- stanje ---------- */
-const KEY='svjetla.state.v1', CFGKEY='svjetla.cfg.v1';
+const KEY='svjetla.state.v2', CFGKEY='svjetla.cfg.v1';
 let state={}; try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 LIGHTS.forEach(l=>{if(!state[l.id])state[l.id]={on:false,level:100}}); ROLETE.forEach(r=>{if(!state[r.id])state[r.id]={pos:100}});
 let cfg={mode:'demo',ha:{url:'',token:''},map:{}}; try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFGKEY)||'{}'))}catch(e){}
@@ -188,8 +188,8 @@ const nodes={};
 function drawLight(l){
   const g=el('g',{class:'lt '+l.type+(l.prop?' prop':'')+(l.g.length===4&&l.type==='lamp'?' line':''),'data-id':l.id,tabindex:0,role:'button'},gLt);const [x0,y0,x1,y1]=l.g;
   if(l.g.length===2){el('circle',{cx:x0,cy:Y(y0),r:26,class:'glow'},g);el('circle',{cx:x0,cy:Y(y0),r:11,class:'core'},g);el('circle',{cx:x0,cy:Y(y0),r:26,class:'hit'},g);el('text',{x:x0+16,y:Y(y0)-14,class:'tag'},g,l.id);}
-  else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}if(l.id==='L8'){ax-=4;bx-=4;}
-    el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'glow'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'core'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'hit'},g);
+  else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}if(l.id==='U8'){ax-=4;bx-=4;}
+    el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'glow'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'core'},g);if(l.type==='lamp'){[0.2,0.8].forEach(t=>el('circle',{cx:ax+(bx-ax)*t,cy:Y(ay+(by-ay)*t),r:5,class:'pt'},g));}el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'hit'},g);
     const vert=x0===x1;el('text',{x:vert?(x0>900?ax-44:ax+14):(ax+bx)/2-12,y:vert?Y((ay+by)/2)+6:Y(ay)-14,class:'tag'},g,l.id);}
   g.addEventListener('click',()=>{toggle(l.id);if(curRoom!==l.r)selectRoom(l.r,true);});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});el('title',{},g,l.id+' '+l.n);nodes[l.id]=g;}
 LIGHTS.forEach(drawLight);
