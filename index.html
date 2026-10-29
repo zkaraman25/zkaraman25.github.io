@@ -163,6 +163,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 
 <script>
 const ICONS={
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>',
   wallet:'<path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm0 0V5a2 2 0 0 1 2-2h11"/><circle cx="16" cy="14" r="1.2"/>',
   washer:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4.5"/><circle cx="8" cy="6.5" r=".8"/><circle cx="11" cy="6.5" r=".8"/>',
   home:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
@@ -186,6 +187,7 @@ const DEFAULT=[
   {id:2,name:"Aparati za stan",desc:"Popis aparata i namještaja za stan, cijene, kupljeno, ušteda",url:"/aparati/",icon:"washer",color:"c5"},
   {id:3,name:"Kile",desc:"Jutarnje vaganje, cilj, grafovi i treninzi",url:"/kile/",icon:"heart",color:"c3"},
   {id:4,name:"Stan Škalinova",desc:"Tlocrt s mjerama, svjetla, pogledi i dokumenti za stan A1",url:"/stan/",icon:"home",color:"c2"},
+  {id:5,name:"Svjetla",desc:"Pametna rasvjeta i rolete na tlocrtu, modovi, Shelly ili Home Assistant",url:"/svjetla/",icon:"sun",color:"c7"},
 ];
 const KEY="hub-apps-v1";
 let S=load(),editId=null,pickIcon="wallet",pickColor="c1";

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f4e79">
+<title>Svjetla</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--fg:#111a24;--muted:#68717d;--line:#e2e7ee;--hover:#eef2f7;--a:#1f4e79;--a-soft:#e1ebf4;--a-pale:#bfd3e6;--on-a:#fff;
+  --wall:#bdb5a9;--floor:#f0ebe2;--tile:#e4e6e6;--glass:#9bbfd8;--off:#b9b3a8;--warm:#e8b53d;--track:#e4792c;--lamp:#f3cf5a;--ok:#2e8b5a;--bad:#c44;
+  --sh:0 1px 2px rgba(17,26,21,.04),0 8px 24px -16px rgba(17,26,21,.18);--font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141a;--card:#161c24;--fg:#e8edf3;--muted:#95a0ad;--line:#243040;--hover:#1c242e;--a:#6ea4d8;--a-soft:#1d3047;--a-pale:#2d4a6b;--on-a:#0f141a;
+  --wall:#4a5363;--floor:#1b222b;--tile:#1f2731;--glass:#3b6a8c;--off:#3a434f;--sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f141a;--card:#161c24;--fg:#e8edf3;--muted:#95a0ad;--line:#243040;--hover:#1c242e;--a:#6ea4d8;--a-soft:#1d3047;--a-pale:#2d4a6b;--on-a:#0f141a;
+  --wall:#4a5363;--floor:#1b222b;--tile:#1f2731;--glass:#3b6a8c;--off:#3a434f;--sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -16px rgba(0,0,0,.5);color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--font);-webkit-tap-highlight-color:transparent}
+button,select,input{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header h1{font-size:17px;margin:0 auto 0 4px;font-weight:700}
+.icon{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh);text-decoration:none;color:inherit}
+.icon svg,.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.icon.prim{background:var(--a);color:var(--on-a);border-color:var(--a)}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer}
+.status i{width:9px;height:9px;border-radius:50%;background:var(--muted)} .status.ok i{background:var(--ok)} .status.bad i{background:var(--bad)} .status.demo i{background:var(--warm)}
+main>*{min-width:0} main{max-width:1100px;margin:0 auto;padding:10px 12px 40px;display:grid;gap:12px}
+@media (min-width:900px){main{grid-template-columns:1.25fr 1fr;align-items:start} #planCard{position:sticky;top:66px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:12px}
+#plan{width:100%;height:auto;display:block;touch-action:manipulation;user-select:none}
+.rm{fill:var(--floor);stroke:none} .rm.tile{fill:var(--tile)} .wall{fill:var(--wall)} .glass{stroke:var(--glass);stroke-width:6;stroke-linecap:butt} .rmname{fill:var(--muted);font-size:15px;font-weight:600;pointer-events:none}
+.lt{cursor:pointer} .lt .core{transition:all .25s} .lt .glow{opacity:0;transition:opacity .35s} .lt.on .glow{opacity:1}
+.lt.led .core{stroke:var(--off);stroke-width:8;stroke-linecap:round} .lt.led.on .core{stroke:var(--warm);filter:drop-shadow(0 0 6px var(--warm))} .lt.led .glow{stroke:var(--warm);stroke-width:60;stroke-linecap:round;filter:url(#blur)}
+.lt.track .core{stroke:var(--off);stroke-width:10;stroke-linecap:round} .lt.track.on .core{stroke:var(--track);filter:drop-shadow(0 0 6px var(--track))} .lt.track .glow{stroke:var(--track);stroke-width:48;stroke-linecap:round;filter:url(#blur)}
+.lt.lamp .core{fill:var(--off)} .lt.lamp.on .core{fill:var(--lamp);filter:drop-shadow(0 0 8px var(--lamp))} .lt.lamp .glow{fill:var(--lamp);filter:url(#blur2)}
+.lt.lamp.line .core{fill:none;stroke:var(--off);stroke-width:9;stroke-linecap:round} .lt.lamp.line.on .core{stroke:var(--lamp);filter:drop-shadow(0 0 8px var(--lamp))} .lt.lamp.line .glow{fill:none;stroke:var(--lamp);stroke-width:34;stroke-linecap:round}
+.lt.prop .core{stroke-dasharray:6 6} .lt .hit{fill:transparent;stroke:transparent;stroke-width:44}
+.lt .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:15px;pointer-events:none;font-weight:600} .lt.on .tag{fill:var(--fg)}
+.rl{cursor:pointer} .rl .bar{stroke:var(--off);stroke-width:14;stroke-linecap:butt} .rl .fill{stroke:var(--a);stroke-width:14;stroke-linecap:butt;transition:all .4s} .rl .tag{fill:var(--muted);font-family:ui-monospace,monospace;font-size:14px;font-weight:600;pointer-events:none}
+.hsec{display:flex;align-items:center;justify-content:space-between;margin:2px 0 8px} .hsec h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0;font-weight:700}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 6px;margin:0 -2px}
+.chips button{flex:none;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:13.5px;transition:background .2s,color .2s}
+.chips button[aria-pressed="true"]{background:var(--a);color:var(--on-a);border-color:var(--a)}
+.chips button .i{width:17px;height:17px}
+.room{margin-top:10px} .room h3{font-size:14px;margin:8px 0 6px;display:flex;align-items:center;gap:8px} .room h3 small{color:var(--muted);font-weight:500;margin-left:auto}
+.row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:9px 6px;border-top:1px solid var(--line)} .row:first-of-type{border-top:0}
+.row .id{width:40px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-size:12.5px;font-weight:700;background:var(--hover);color:var(--muted)}
+.row.on .id{color:#fff} .row.on.led .id{background:var(--warm)} .row.on.track .id{background:var(--track)} .row.on.lamp .id{background:#d9a81c}
+.row .nm{font-weight:600;font-size:14px} .row .sub{font-size:12px;color:var(--muted)}
+.row input[type=range]{width:100%;margin:6px 0 0;accent-color:var(--a);height:22px}
+.sw{position:relative;width:46px;height:28px;border-radius:999px;background:var(--off);border:0;cursor:pointer;transition:background .2s;flex:none} .sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw[aria-checked="true"]{background:var(--a)} .sw[aria-checked="true"]::after{left:21px}
+.rol{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px 6px;border-top:1px solid var(--line)} .rol:first-of-type{border-top:0}
+.rol .btns{display:flex;gap:4px} .rol .btns button{width:38px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.rol input[type=range]{width:100%;accent-color:var(--a)} .rol .pos{font-size:12px;color:var(--muted)}
+dialog{border:none;border-radius:16px;padding:0;max-width:520px;width:94vw;background:var(--card);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.3)} dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog .in{padding:16px 18px 18px} dialog h2{margin:0 0 6px;font-size:17px} dialog p{margin:6px 0;color:var(--muted);font-size:13.5px}
+.f{display:grid;gap:4px;margin:10px 0} .f label{font-size:12px;font-weight:600;color:var(--muted)} .f input,.f select{padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden} .seg button{flex:1;padding:9px;border:0;background:var(--card);cursor:pointer;font-weight:600;font-size:13.5px} .seg button[aria-pressed="true"]{background:var(--a);color:var(--on-a)}
+table.map{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px} table.map td{padding:5px 4px;border-top:1px solid var(--line)} table.map input{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:13px} table.map td:first-child{font-family:ui-monospace,monospace;font-weight:700;width:38px}
+.btnrow{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap} .btn{padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600} .btn.prim{background:var(--a);color:var(--on-a);border-color:var(--a)}
+.note{font-size:12.5px;color:var(--muted);background:var(--hover);border-radius:10px;padding:8px 10px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:50} .toast.show{opacity:1;transform:translate(-50%,0)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px} .legend span{display:inline-flex;align-items:center;gap:6px} .legend b{width:18px;height:6px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+  <a class="icon prim" href="/" title="Hub"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg></a>
+  <h1>Svjetla</h1>
+  <button class="status demo" id="status" title="Veza"><i></i><span>Demo</span></button>
+  <button class="icon" id="btnSet" title="Postavke veze"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  <button class="icon" id="btnTheme" title="Tema"><svg viewBox="0 0 24 24"></svg></button>
+</header>
+<main>
+  <section class="card" id="planCard">
+    <svg id="plan" viewBox="-45 -40 1095 840" aria-label="Tlocrt sa svjetlima">
+      <defs><filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter><filter id="blur2" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="10"/></filter></defs>
+      <g id="gBase"></g><g id="gRol"></g><g id="gLt"></g>
+    </svg>
+    <div class="legend"><span><b style="background:var(--warm)"></b>LED u utoru</span><span><b style="background:var(--track)"></b>magnetska vodilica</span><span><b style="background:var(--lamp)"></b>lampa</span><span><b style="background:var(--a)"></b>roleta (spuštena)</span><span>crtkano: prijedlog, nije u dokumentu za strop</span></div>
+  </section>
+  <section>
+    <div class="card">
+      <div class="hsec"><h2>Modovi</h2><small id="modeNote" style="color:var(--muted);font-size:12px"></small></div>
+      <div class="chips" id="modes"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="hsec"><h2>Svjetla</h2><button class="btn" id="btnAllOff" style="padding:6px 10px;font-size:12.5px">Ugasi sve</button></div>
+      <div id="rooms"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="hsec"><h2>Rolete</h2><div><button class="btn" data-all="open" style="padding:6px 10px;font-size:12.5px">Sve gore</button> <button class="btn" data-all="close" style="padding:6px 10px;font-size:12.5px">Sve dolje</button></div></div>
+      <div id="rolete"></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg"><div class="in">
+  <h2>Veza s uređajima</h2>
+  <div class="seg" id="segMode"><button data-m="demo" aria-pressed="true">Demo</button><button data-m="shelly">Shelly lokalno</button><button data-m="ha">Home Assistant</button></div>
+  <div id="pDemo"><p>Bez uređaja, sve se samo simulira. Stanje se pamti u pregledniku.</p></div>
+  <div id="pShelly" hidden>
+    <p>Aplikacija zove svaki Shelly direktno na kućnoj mreži (<code>http://adresa/rpc/...</code>). Radi samo kad si na kućnom WiFi-ju ili VPN-u.</p>
+    <div class="note">Preglednik ne dopušta pozive na <code>http://</code> s ove <code>https://</code> stranice. Za Shelly lokalno spremi ovu stranicu (Preuzmi) i otvori je s računala/Pi-ja na kućnoj mreži preko http, ili je dodaj u Home Assistant <code>www</code> mapu.</div>
+    <table class="map" id="mapShelly"></table>
+  </div>
+  <div id="pHa" hidden>
+    <p>Aplikacija zove Home Assistant REST API. Radi i izvana ako je HA dostupan (Nabu Casa, Tailscale, vlastiti https).</p>
+    <div class="f"><label>Adresa HA (npr. https://xxx.ui.nabu.casa)</label><input id="haUrl" placeholder="https://..."></div>
+    <div class="f"><label>Long-lived access token</label><input id="haTok" type="password" placeholder="eyJ..."></div>
+    <div class="note">U HA <code>configuration.yaml</code> dodaj: <code>http: cors_allowed_origins: ["https://zkaraman25.github.io"]</code>, inače preglednik blokira pozive.</div>
+    <table class="map" id="mapHa"></table>
+  </div>
+  <div class="btnrow"><button class="btn" id="btnExport">Izvoz postavki</button><button class="btn" id="btnImport">Uvoz</button><button class="btn" id="btnDl">Preuzmi stranicu</button><button class="btn prim" id="btnSave">Spremi</button></div>
+</div></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- podaci: tlocrt (isti koordinatni sustav kao stan/), svjetla, rolete ---------- */
+const Y=y=>610-y;
+const ROOMS=[
+  {k:'b',name:'Dnevni boravak i kuhinja',poly:[[0,0],[370,0],[370,215],[470,215],[470,610],[0,610]],lx:235,ly:592},
+  {k:'h',name:'Hodnik',poly:[[480,216],[805,216],[805,336],[650,336],[650,466],[485,466],[485,336],[480,336]],lx:640,ly:306},
+  {k:'w',name:'Kupaona',poly:[[660,346],[820,346],[820,216],[1000,216],[1000,456],[660,456]],lx:905,ly:232,tile:true},
+  {k:'s',name:'Spavaća soba',poly:[[380,-150],[710,-150],[710,205],[380,205]],lx:545,ly:168},
+  {k:'d',name:'Dječja soba',poly:[[720,-150],[1000,-150],[1000,205],[720,205]],lx:860,ly:168},
+  {k:'l',name:'Lođa',poly:[[0,-165],[360,-165],[360,-25],[0,-25]],lx:180,ly:-95,tile:true},
+];
+const WALLS=[[-25,-175,1030,496],[-25,496,480,640]];
+const OPEN=[[470,215,480,335],[510,466,610,496],[625,205,705,216],[722,205,802,216],[805,225,820,305],[55,-25,140,0]];
+const GLASS=[[139,-12,305,-12],[-12,160,-12,456],[54,622,310,622],[498,-162,638,-162],[760,-162,900,-162]];
+const DOORS=[[510,466,100,'s'],[705,205,80,'sw'],[722,205,80,'se'],[820,225,80,'e'],[97,-25,85,'n']];
+/* type: led (dimabilno, RGBW PM), track (vodilica, pali/gasi preko drivera), lamp (230 V). dim:true = ima dimanje. prop:true = prijedlog, nije u knauf dokumentu */
+const LIGHTS=[
+  {id:'V1',r:'b',type:'track',g:[120,275,120,560],n:'Vodilica uz TV zid'},{id:'V2',r:'b',type:'track',g:[330,275,330,560],n:'Vodilica uz garnituru'},
+  {id:'U1',r:'b',type:'led',dim:true,g:[0,456,0,610],n:'LED iznad TV-a'},{id:'U3',r:'b',type:'led',dim:true,g:[470,335,470,610],n:'LED iza garniture'},
+  {id:'V3',r:'b',type:'track',g:[100,100,270,100],n:'Vodilica nad radnom zonom'},{id:'L1',r:'b',type:'lamp',dim:true,g:[150,172,310,172],n:'Linijska lampa nad šankom'},
+  {id:'V4',r:'h',type:'track',g:[400,276,780,276],n:'Vodilica kroz hodnik'},{id:'U4',r:'h',type:'led',dim:true,g:[370,216,805,216],n:'LED uz ogledalo i obloge'},
+  {id:'U5',r:'h',type:'led',dim:true,g:[485,336,485,466],n:'LED uz ploču s kukicama'},{id:'L2',r:'h',type:'lamp',g:[560,401],n:'Privjesna uz ulaz'},{id:'L3',r:'h',type:'lamp',g:[560,330],n:'Privjesna uz ogledalo'},
+  {id:'V8',r:'w',type:'track',g:[900,250,900,420],n:'Vodilica, mat siva'},{id:'L4',r:'w',type:'lamp',g:[725,401],n:'Svjetlo u tušu'},{id:'L8',r:'w',type:'lamp',prop:true,g:[988,300,988,360],n:'Svjetlo uz ogledalo nad komodicom'},
+  {id:'V5',r:'s',type:'track',g:[470,-120,470,120],n:'Vodilica uz ormar'},{id:'V6',r:'s',type:'track',g:[600,-120,600,120],n:'Vodilica nad krevetom'},
+  {id:'U7',r:'s',type:'led',dim:true,g:[710,-150,710,205],n:'LED uz uzglavlje'},{id:'L5',r:'s',type:'lamp',prop:true,dim:true,g:[685,-125],n:'Noćna lampa, ormarić uz prozor'},
+  {id:'L7',r:'d',type:'lamp',prop:true,g:[860,30],n:'Stropno svjetlo'},{id:'L6',r:'d',type:'lamp',prop:true,dim:true,g:[745,-110],n:'Noćna lampa uz krevet'},
+  {id:'L9',r:'l',type:'lamp',prop:true,g:[180,-32],n:'Zidno svjetlo na lođi'},
+];
+const ROLETE=[
+  {id:'R1',r:'b',n:'Klizna vrata u vrt',g:[54,622,310,622]},{id:'R2',r:'b',n:'Prozor boravka',g:[-12,160,-12,456]},{id:'R3',r:'b',n:'Prozor kuhinje',g:[139,-12,305,-12]},
+  {id:'R4',r:'s',n:'Prozor spavaće',g:[498,-162,638,-162]},{id:'R5',r:'d',n:'Prozor dječje',g:[760,-162,900,-162]},
+];
+/* modovi: svjetla kao id:razina (0 do 100), rolete kao id:položaj (0 dolje, 100 gore); što nije navedeno gasi se ili ostaje (keep:true) */
+const MODES=[
+  {id:'sve',n:'Sve upali',ic:'sun',l:Object.fromEntries(LIGHTS.map(l=>[l.id,100]))},
+  {id:'ugasi',n:'Ugasi sve',ic:'off',l:{}},
+  {id:'jutro',n:'Jutro',ic:'coffee',l:{U4:40,V3:100,L1:60},r:{R1:100,R2:100,R3:100,R4:100,R5:100}},
+  {id:'kuhanje',n:'Kuhanje',ic:'pot',l:{V3:100,L1:100,V1:70,U4:40},keep:true},
+  {id:'vecer',n:'Večer',ic:'moon',l:{U1:60,U3:60,U4:40,U5:40,U7:50,L1:70,L2:60,L3:60,L5:40,L8:60}},
+  {id:'film',n:'Film',ic:'film',l:{U1:25,U3:35,U4:15},r:{R1:0,R2:0}},
+  {id:'citanje',n:'Čitanje',ic:'book',l:{V6:100,L5:70,U7:30},keep:true},
+  {id:'gosti',n:'Gosti',ic:'users',l:{V1:100,V2:100,U1:70,U3:70,V3:80,L1:80,U4:60,U5:60,L2:80,L3:80}},
+  {id:'noc',n:'Noć',ic:'star',l:{U4:10,U5:10,L4:30},r:{R1:0,R2:0,R3:0,R4:0,R5:0}},
+  {id:'odlazak',n:'Odlazak',ic:'door',l:{},r:{R1:0,R2:0,R3:0,R4:0,R5:0}},
+];
+const IC={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/>',off:'<path d="M12 3v9"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/>',coffee:'<path d="M4 8h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2M7 4v2m3-2v2m3-2v2"/>',pot:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 6a3 3 0 0 1 6 0"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',film:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 10h4M3 14h4M17 10h4M17 14h4"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M22 19a5 5 0 0 0-5-5"/>',star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',door:'<path d="M4 21h16M5 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v17"/><path d="M15 7h4v14M11 12h.01"/>',sw:'<path d="M3 12h18M3 6h18M3 18h18"/>',up:'<path d="m6 15 6-6 6 6"/>',down:'<path d="m6 9 6 6 6-6"/>',stop:'<rect x="7" y="7" width="10" height="10" rx="1.5"/>'};
+const svgNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent,text){const e=document.createElementNS(svgNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;parent.appendChild(e);return e;}
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const toast=m=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800)};
+const ico=k=>`<svg class="i" viewBox="0 0 24 24">${IC[k]||''}</svg>`;
+
+/* ---------- stanje ---------- */
+const KEY='svjetla.state.v1', CFGKEY='svjetla.cfg.v1';
+let state={}; try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+LIGHTS.forEach(l=>{if(!state[l.id])state[l.id]={on:false,level:100}}); ROLETE.forEach(r=>{if(!state[r.id])state[r.id]={pos:100}});
+let cfg={mode:'demo',ha:{url:'',token:''},map:{}}; try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFGKEY)||'{}'))}catch(e){}
+let activeMode=null;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+
+/* ---------- tlocrt ---------- */
+const gBase=document.getElementById('gBase'),gLt=document.getElementById('gLt'),gRol=document.getElementById('gRol');
+WALLS.forEach(([x0,y0,x1,y1])=>el('rect',{x:x0,y:Y(y1),width:x1-x0,height:y1-y0,class:'wall'},gBase));
+ROOMS.forEach(r=>{el('polygon',{points:r.poly.map(p=>p[0]+','+Y(p[1])).join(' '),class:'rm'+(r.tile?' tile':'')},gBase);});
+OPEN.forEach(([x0,y0,x1,y1])=>el('rect',{x:x0,y:Y(y1),width:x1-x0,height:y1-y0,class:'rm'},gBase));
+GLASS.forEach(([x0,y0,x1,y1])=>el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'glass'},gBase));
+DOORS.forEach(([x,y,w,d])=>{const D={s:[[1,0],[0,-1]],sw:[[-1,0],[0,-1]],se:[[1,0],[0,-1]],e:[[0,1],[1,0]],n:[[1,0],[0,1]]}[d];const ex=x+D[0][0]*w,ey=y+D[0][1]*w,sx=x+D[1][0]*w,sy=y+D[1][1]*w;
+  el('line',{x1:x,y1:Y(y),x2:sx,y2:Y(sy),stroke:'var(--muted)','stroke-width':3,opacity:.5},gBase);
+  el('path',{d:`M${sx},${Y(sy)} A${w},${w} 0 0 ${(D[0][0]*D[1][1]-D[0][1]*D[1][0])>0?1:0} ${ex},${Y(ey)}`,fill:'none',stroke:'var(--muted)','stroke-width':1.5,opacity:.5},gBase);});
+ROOMS.forEach(r=>el('text',{x:r.lx,y:Y(r.ly),'text-anchor':'middle',class:'rmname'},gBase,r.name));
+const nodes={};
+function drawLight(l){
+  const g=el('g',{class:'lt '+l.type+(l.prop?' prop':'')+(l.g.length===4&&l.type==='lamp'?' line':''),'data-id':l.id,tabindex:0,role:'button'},gLt);const [x0,y0,x1,y1]=l.g;
+  if(l.g.length===2){el('circle',{cx:x0,cy:Y(y0),r:26,class:'glow'},g);el('circle',{cx:x0,cy:Y(y0),r:11,class:'core'},g);el('circle',{cx:x0,cy:Y(y0),r:26,class:'hit'},g);el('text',{x:x0+16,y:Y(y0)-14,class:'tag'},g,l.id);}
+  else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}if(l.id==='L8'){ax-=4;bx-=4;}
+    el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'glow'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'core'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'hit'},g);
+    const vert=x0===x1;el('text',{x:vert?(x0>900?ax-44:ax+14):(ax+bx)/2-12,y:vert?Y((ay+by)/2)+6:Y(ay)-14,class:'tag'},g,l.id);}
+  g.addEventListener('click',()=>toggle(l.id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});el('title',{},g,l.id+' '+l.n);nodes[l.id]=g;}
+LIGHTS.forEach(drawLight);
+const rnodes={};
+ROLETE.forEach(r=>{const g=el('g',{class:'rl','data-id':r.id},gRol);const [x0,y0,x1,y1]=r.g;el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'bar'},g);const f=el('line',{x1:x0,y1:Y(y0),x2:x1,y2:Y(y1),class:'fill'},g);
+  const vert=x0===x1;el('text',{x:vert?x0+12:(x0+x1)/2-12,y:vert?Y((y0+y1)/2)+5:Y(y0)+(y0>300?-16:26),class:'tag'},g,r.id);el('title',{},g,r.id+' '+r.n);
+  g.addEventListener('click',()=>setRol(r.id,state[r.id].pos<50?100:0));rnodes[r.id]={g,f,x0,y0,x1,y1};});
+
+/* ---------- popis ---------- */
+const roomsEl=document.getElementById('rooms');
+ROOMS.forEach(r=>{const ls=LIGHTS.filter(l=>l.r===r.k);if(!ls.length)return;const d=document.createElement('div');d.className='room';d.innerHTML=`<h3>${esc(r.name)}<small data-cnt="${r.k}"></small></h3>`+ls.map(l=>`<div class="row ${l.type}" data-id="${l.id}"><span class="id">${l.id}</span><div><div class="nm">${esc(l.n)}${l.prop?' <span class="sub">(prijedlog)</span>':''}</div><div class="sub">${l.type==='track'?'magnetska vodilica':l.type==='led'?'LED traka u utoru':'lampa'}${l.dim?' · dimabilno':''}</div>${l.dim?`<input type="range" min="1" max="100" value="${state[l.id].level}" data-dim="${l.id}" aria-label="Jačina ${l.id}">`:''}</div><button class="sw" role="switch" aria-checked="${state[l.id].on}" data-sw="${l.id}" aria-label="${esc(l.n)}"></button></div>`).join('');roomsEl.appendChild(d);});
+roomsEl.addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(b)toggle(b.dataset.sw);});
+roomsEl.addEventListener('input',e=>{const s=e.target.closest('[data-dim]');if(s)setLevel(s.dataset.dim,+s.value,true);});
+roomsEl.addEventListener('change',e=>{const s=e.target.closest('[data-dim]');if(s)setLevel(s.dataset.dim,+s.value);});
+const rolEl=document.getElementById('rolete');
+rolEl.innerHTML=ROLETE.map(r=>`<div class="rol" data-id="${r.id}"><div><div class="nm" style="font-weight:600;font-size:14px">${r.id} · ${esc(r.n)}</div><input type="range" min="0" max="100" value="${state[r.id].pos}" data-rpos="${r.id}" aria-label="Položaj ${r.id}"><div class="pos" data-rtxt="${r.id}"></div></div><div class="btns"><button data-r="${r.id}" data-a="open" title="Gore">${ico('up')}</button><button data-r="${r.id}" data-a="stop" title="Stani">${ico('stop')}</button><button data-r="${r.id}" data-a="close" title="Dolje">${ico('down')}</button></div></div>`).join('');
+rolEl.addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(!b)return;const id=b.dataset.r,a=b.dataset.a;if(a==='open')setRol(id,100);else if(a==='close')setRol(id,0);else{send('coverStop',id);toast(id+' stani');}});
+rolEl.addEventListener('change',e=>{const s=e.target.closest('[data-rpos]');if(s)setRol(s.dataset.rpos,+s.value);});
+document.querySelectorAll('[data-all]').forEach(b=>b.addEventListener('click',()=>ROLETE.forEach(r=>setRol(r.id,b.dataset.all==='open'?100:0))));
+document.getElementById('btnAllOff').addEventListener('click',()=>applyMode('ugasi'));
+const modesEl=document.getElementById('modes');
+modesEl.innerHTML=MODES.map(m=>`<button data-mode="${m.id}" aria-pressed="false">${ico(m.ic)}${esc(m.n)}</button>`).join('');
+modesEl.addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)applyMode(b.dataset.mode);});
+
+/* ---------- akcije ---------- */
+function render(id){const s=state[id];const l=LIGHTS.find(l=>l.id===id);if(l){const g=nodes[id];g.classList.toggle('on',s.on);g.querySelector('.glow').style.opacity=s.on?(0.25+0.75*s.level/100):0;
+    const row=roomsEl.querySelector(`.row[data-id="${id}"]`);row.classList.toggle('on',s.on);row.querySelector('.sw').setAttribute('aria-checked',s.on);const sl=row.querySelector('[data-dim]');if(sl&&document.activeElement!==sl)sl.value=s.level;}
+  const r=rnodes[id];if(r){const p=state[id].pos,t=1-p/100;const vert=r.x0===r.x1;r.f.setAttribute('x2',vert?r.x0:r.x0+(r.x1-r.x0)*t);r.f.setAttribute('y2',vert?Y(r.y0)+(Y(r.y1)-Y(r.y0))*t:Y(r.y0));r.f.style.opacity=t>0?1:0;
+    const sl=rolEl.querySelector(`[data-rpos="${id}"]`);if(document.activeElement!==sl)sl.value=p;rolEl.querySelector(`[data-rtxt="${id}"]`).textContent=p===100?'gore':p===0?'dolje':p+' % otvoreno';}
+  ROOMS.forEach(rm=>{const c=roomsEl.querySelector(`[data-cnt="${rm.k}"]`);if(c){const n=LIGHTS.filter(l=>l.r===rm.k&&state[l.id].on).length;c.textContent=n?n+' upaljeno':'';}});save();}
+function toggle(id){const s=state[id];s.on=!s.on;activeMode=null;markMode();render(id);send(s.on?'on':'off',id);}
+function setLevel(id,v,live){const s=state[id];s.level=v;if(!s.on&&!live){s.on=true;}render(id);if(!live)send('level',id);}
+function setRol(id,p){state[id].pos=p;render(id);send('cover',id);}
+function markMode(){modesEl.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===activeMode));document.getElementById('modeNote').textContent=activeMode?'aktivno: '+MODES.find(m=>m.id===activeMode).n:'';}
+function applyMode(mid){const m=MODES.find(x=>x.id===mid);if(!m)return;activeMode=mid;markMode();
+  LIGHTS.forEach(l=>{const v=m.l[l.id];if(v!=null){const was=state[l.id].on&&state[l.id].level===v;state[l.id].on=true;state[l.id].level=l.dim?v:100;render(l.id);if(!was)send('level',l.id);}else if(!m.keep){if(state[l.id].on){state[l.id].on=false;render(l.id);send('off',l.id);}}});
+  if(m.r)Object.entries(m.r).forEach(([id,p])=>{if(state[id]&&state[id].pos!==p)setRol(id,p);});toast(m.n);}
+
+/* ---------- veza: demo / shelly / home assistant ---------- */
+const statusEl=document.getElementById('status');
+function setStatus(cls,txt){statusEl.className='status '+cls;statusEl.querySelector('span').textContent=txt;}
+function dev(id){return cfg.map[id]||{};}
+async function send(action,id){if(cfg.mode==='demo')return;const d=dev(id);const s=state[id];
+  try{
+    if(cfg.mode==='shelly'){if(!d.ip)return;const base='http://'+d.ip.replace(/^https?:\/\//,'')+'/rpc/';const ch=d.ch||0;let u;
+      const l=LIGHTS.find(l=>l.id===id);
+      if(action==='cover')u=base+(s.pos===100?'Cover.Open':s.pos===0?'Cover.Close':'Cover.GoToPosition')+`?id=${ch}`+(s.pos>0&&s.pos<100?`&pos=${s.pos}`:'');
+      else if(action==='coverStop')u=base+`Cover.Stop?id=${ch}`;
+      else if(l&&l.dim&&d.kind!=='switch')u=base+`Light.Set?id=${ch}&on=${s.on}&brightness=${s.level}`;
+      else u=base+`Switch.Set?id=${ch}&on=${s.on}`;
+      await fetch(u,{mode:'no-cors'});setStatus('ok','Shelly');}
+    else if(cfg.mode==='ha'){if(!cfg.ha.url||!d.ent)return;const H={'Authorization':'Bearer '+cfg.ha.token,'Content-Type':'application/json'};const dom=d.ent.split('.')[0];let svc,body={entity_id:d.ent};
+      if(action==='cover'){svc=s.pos===100?'cover/open_cover':s.pos===0?'cover/close_cover':'cover/set_cover_position';if(svc.endsWith('position'))body.position=s.pos;}
+      else if(action==='coverStop')svc='cover/stop_cover';
+      else{svc=(dom==='light'?'light':'switch')+'/'+(s.on?'turn_on':'turn_off');if(dom==='light'&&s.on)body.brightness_pct=s.level;}
+      const r=await fetch(cfg.ha.url.replace(/\/$/,'')+'/api/services/'+svc,{method:'POST',headers:H,body:JSON.stringify(body)});setStatus(r.ok?'ok':'bad',r.ok?'Home Assistant':'HA greška '+r.status);}
+  }catch(e){setStatus('bad',cfg.mode==='shelly'?'Shelly nedostupan':'HA nedostupan');}}
+async function poll(){if(cfg.mode==='demo')return;
+  try{
+    if(cfg.mode==='ha'&&cfg.ha.url){const H={'Authorization':'Bearer '+cfg.ha.token};const r=await fetch(cfg.ha.url.replace(/\/$/,'')+'/api/states',{headers:H});if(!r.ok){setStatus('bad','HA greška '+r.status);return;}const all=await r.json();const by={};all.forEach(x=>by[x.entity_id]=x);let ch=false;
+      [...LIGHTS,...ROLETE].forEach(x=>{const e=by[dev(x.id).ent];if(!e)return;if(LIGHTS.includes(x)){const on=e.state==='on';const lv=e.attributes.brightness?Math.round(e.attributes.brightness/2.55):state[x.id].level;if(state[x.id].on!==on||state[x.id].level!==lv){state[x.id].on=on;state[x.id].level=lv;render(x.id);}}
+        else{const p=e.attributes.current_position;if(p!=null&&state[x.id].pos!==p){state[x.id].pos=p;render(x.id);}}});setStatus('ok','Home Assistant');}
+    else if(cfg.mode==='shelly'){let okc=0,n=0;for(const x of [...LIGHTS,...ROLETE]){const d=dev(x.id);if(!d.ip)continue;n++;const base='http://'+d.ip+'/rpc/',ch=d.ch||0;
+        try{const isRol=!!rnodes[x.id];const l=LIGHTS.find(l=>l.id===x.id);const comp=isRol?'Cover':(l.dim&&d.kind!=='switch')?'Light':'Switch';const r=await fetch(base+comp+'.GetStatus?id='+ch);if(!r.ok)continue;const j=await r.json();okc++;
+          if(isRol){if(j.current_pos!=null&&state[x.id].pos!==j.current_pos){state[x.id].pos=j.current_pos;render(x.id);}}else{const on=!!j.output;const lv=j.brightness??state[x.id].level;if(state[x.id].on!==on||state[x.id].level!==lv){state[x.id].on=on;state[x.id].level=lv;render(x.id);}}}catch(e){}}
+      setStatus(okc?'ok':'bad',n?`Shelly ${okc}/${n}`:'Shelly: nema adresa');}
+  }catch(e){setStatus('bad','nema veze');}}
+setInterval(poll,6000);
+
+/* ---------- postavke ---------- */
+const dlg=document.getElementById('dlg');
+function fillMaps(){document.getElementById('mapShelly').innerHTML='<tr><td></td><td>IP adresa</td><td style="width:52px">kanal</td><td style="width:92px">vrsta</td></tr>'+[...LIGHTS,...ROLETE].map(x=>{const d=dev(x.id);return `<tr><td>${x.id}</td><td><input data-k="ip" data-id="${x.id}" value="${esc(d.ip||'')}" placeholder="192.168.1.xx"></td><td><input data-k="ch" data-id="${x.id}" value="${d.ch??0}" style="width:48px"></td><td>${rnodes[x.id]?'<small>2PM, cover</small>':`<select data-k="kind" data-id="${x.id}"><option value="switch" ${d.kind!=='light'?'selected':''}>Mini / relej</option><option value="light" ${d.kind==='light'?'selected':''}>RGBW PM / dimmer</option></select>`}</td></tr>`}).join('');
+  document.getElementById('mapHa').innerHTML='<tr><td></td><td>entity_id</td></tr>'+[...LIGHTS,...ROLETE].map(x=>`<tr><td>${x.id}</td><td><input data-k="ent" data-id="${x.id}" value="${esc(dev(x.id).ent||'')}" placeholder="${rnodes[x.id]?'cover.':LIGHTS.find(l=>l.id===x.id).dim?'light.':'switch.'}${x.id.toLowerCase()}"></td></tr>`).join('');
+  document.getElementById('haUrl').value=cfg.ha.url||'';document.getElementById('haTok').value=cfg.ha.token||'';}
+function showMode(m){document.querySelectorAll('#segMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m));document.getElementById('pDemo').hidden=m!=='demo';document.getElementById('pShelly').hidden=m!=='shelly';document.getElementById('pHa').hidden=m!=='ha';}
+document.getElementById('segMode').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b)showMode(b.dataset.m);});
+document.getElementById('btnSet').addEventListener('click',()=>{fillMaps();showMode(cfg.mode);dlg.showModal();});
+statusEl.addEventListener('click',()=>document.getElementById('btnSet').click());
+document.getElementById('btnSave').addEventListener('click',()=>{cfg.mode=document.querySelector('#segMode [aria-pressed="true"]').dataset.m;cfg.ha={url:document.getElementById('haUrl').value.trim(),token:document.getElementById('haTok').value.trim()};
+  dlg.querySelectorAll('[data-k]').forEach(i=>{const m=cfg.map[i.dataset.id]||(cfg.map[i.dataset.id]={});m[i.dataset.k]=i.dataset.k==='ch'?(+i.value||0):i.value.trim();});
+  try{localStorage.setItem(CFGKEY,JSON.stringify(cfg))}catch(e){}dlg.close();applyCfg();poll();toast('Spremljeno');});
+document.getElementById('btnExport').addEventListener('click',()=>{const c=JSON.parse(JSON.stringify(cfg));const b=new Blob([JSON.stringify(c,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='svjetla-postavke.json';a.click();});
+document.getElementById('btnImport').addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=()=>{const f=i.files[0];if(!f)return;f.text().then(t=>{try{Object.assign(cfg,JSON.parse(t));fillMaps();showMode(cfg.mode);toast('Učitano, klikni Spremi');}catch(e){toast('Neispravna datoteka')}});};i.click();});
+document.getElementById('btnDl').addEventListener('click',()=>{const a=document.createElement('a');a.href=location.href.split('#')[0];a.download='svjetla.html';a.click();});
+function applyCfg(){if(cfg.mode==='demo')setStatus('demo','Demo');else setStatus('','povezujem…');}
+
+/* ---------- tema: tri stanja, ključ kb-theme dijele sve stranice huba ---------- */
+const mq=matchMedia('(prefers-color-scheme:dark)');let theme='';try{theme=localStorage.getItem('kb-theme')||''}catch(e){}if(theme!=='light'&&theme!=='dark')theme='';
+const TICONS={sun:IC.sun,moon:IC.moon,auto:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'};
+function applyTheme(){const r=document.documentElement;if(theme)r.setAttribute('data-theme',theme);else r.removeAttribute('data-theme');const b=document.getElementById('btnTheme');b.querySelector('svg').innerHTML=theme?TICONS[theme==='dark'?'moon':'sun']:TICONS.auto;}
+applyTheme();mq.addEventListener('change',applyTheme);
+document.getElementById('btnTheme').addEventListener('click',()=>{theme=theme===''?'light':theme==='light'?'dark':'';try{if(theme)localStorage.setItem('kb-theme',theme);else localStorage.removeItem('kb-theme')}catch(e){}applyTheme();toast(theme===''?'Prati uređaj':theme==='light'?'Svijetlo':'Tamno');});
+addEventListener('storage',e=>{if(e.key==='kb-theme'){theme=e.newValue==='light'||e.newValue==='dark'?e.newValue:'';applyTheme();}});
+
+[...LIGHTS,...ROLETE].forEach(x=>render(x.id));markMode();applyCfg();poll();
+</script>
+</body>
+</html>
