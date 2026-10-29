@@ -133,7 +133,7 @@ const DOORS=[[510,466,100,'s'],[705,205,80,'sw'],[722,205,80,'se'],[820,225,80,'
 const LIGHTS=[
   {id:'M1',r:'b',type:'track',g:[120,275,120,560],n:'Vodilica uz TV zid'},{id:'M2',r:'b',type:'track',g:[330,275,330,560],n:'Vodilica uz garnituru'},
   {id:'L1',r:'b',type:'led',dim:true,g:[0,456,0,610],n:'LED iznad TV-a'},{id:'L3',r:'b',type:'led',dim:true,g:[470,335,470,610],n:'LED iza garniture'},
-  {id:'M3',r:'b',type:'track',g:[100,100,270,100],n:'Vodilica nad radnom zonom'},{id:'L9',r:'b',type:'led',dim:true,g:[333,4,333,211],n:'LED ispod visećih elemenata'},{id:'U1',r:'b',type:'lamp',dim:true,g:[150,172,310,172],n:'Linijska lampa nad šankom'},
+  {id:'M3',r:'b',type:'track',g:[100,100,270,100],n:'Vodilica nad radnom zonom'},{id:'L9',r:'b',type:'led',dim:true,g:[366,4,366,211],n:'LED ispod visećih elemenata'},{id:'U1',r:'b',type:'lamp',dim:true,g:[150,172,310,172],n:'Linijska lampa nad šankom'},
   {id:'M4',r:'h',type:'track',g:[400,276,780,276],n:'Vodilica kroz hodnik'},{id:'L4',r:'h',type:'led',dim:true,g:[370,216,805,216],n:'LED uz ogledalo i obloge'},
   {id:'L5',r:'h',type:'led',dim:true,g:[485,336,485,466],n:'LED uz ploču s kukicama'},{id:'U2',r:'h',type:'lamp',g:[560,401],n:'Privjesna uz ulaz'},{id:'U3',r:'h',type:'lamp',g:[560,330],n:'Privjesna uz ogledalo'},
   {id:'M8',r:'w',type:'track',g:[900,250,900,420],n:'Vodilica, mat siva'},{id:'U4',r:'w',type:'lamp',g:[725,401],n:'Svjetlo u tušu'},{id:'U8',r:'w',type:'lamp',prop:true,g:[988,228,988,318],n:'Svjetlo uz ogledalo nad komodicom'},
@@ -188,9 +188,9 @@ const nodes={};
 function drawLight(l){
   const g=el('g',{class:'lt '+l.type+(l.prop?' prop':'')+(l.g.length===4&&l.type==='lamp'?' line':''),'data-id':l.id,tabindex:0,role:'button'},gLt);const [x0,y0,x1,y1]=l.g;
   if(l.g.length===2){el('circle',{cx:x0,cy:Y(y0),r:26,class:'glow'},g);el('circle',{cx:x0,cy:Y(y0),r:11,class:'core'},g);el('circle',{cx:x0,cy:Y(y0),r:26,class:'hit'},g);el('text',{x:x0+16,y:Y(y0)-14,class:'tag'},g,l.id);}
-  else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}if(l.id==='U8'){ax-=4;bx-=4;}
+  else{let ax=x0,bx=x1,ay=y0,by=y1;if(l.type==='led'&&l.id!=='L9'){if(x0===x1){const d=x0<300?8:-8;ax+=d;bx+=d;}else{ay-=8;by-=8;}}if(l.id==='U8'){ax-=4;bx-=4;}
     el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'glow'},g);el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'core'},g);if(l.type==='lamp'){[0.2,0.8].forEach(t=>el('circle',{cx:ax+(bx-ax)*t,cy:Y(ay+(by-ay)*t),r:5,class:'pt'},g));}el('line',{x1:ax,y1:Y(ay),x2:bx,y2:Y(by),class:'hit'},g);
-    const vert=x0===x1;el('text',{x:vert?(x0>900?ax-44:ax+14):(ax+bx)/2-12,y:vert?Y((ay+by)/2)+6:Y(ay)-14,class:'tag'},g,l.id);}
+    const vert=x0===x1;el('text',{x:vert?(x0>900||l.id==='L9'?ax-44:ax+14):(ax+bx)/2-12,y:vert?Y((ay+by)/2)+6:Y(ay)-14,class:'tag'},g,l.id);}
   g.addEventListener('click',()=>{toggle(l.id);if(curRoom!==l.r)selectRoom(l.r,true);});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(l.id);}});el('title',{},g,l.id+' '+l.n);nodes[l.id]=g;}
 LIGHTS.forEach(drawLight);
 const rnodes={};
