@@ -248,7 +248,7 @@ dialog.acct .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 </aside>
 
 <div id="tools">
-  <div class="tg" data-for="3d sobe"><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
+  <div class="tg" data-for="3d sobe"><button id="btnWalk" aria-pressed="false" title="Prolazak kroz stan iz visine očiju">Šetnja</button><button data-set="tOznake" aria-pressed="true">Oznake</button><button data-set="tSvjetla" aria-pressed="true">Rasvjeta</button><button data-set="tNoc" aria-pressed="false">Noć</button>
     <select data-set="palSel" title="Materijali"><option value="izo">Pastel</option><option value="skyline">Skyline 90</option><option value="svijetlo">Bijelo + hrast</option><option value="tamno">Grafit + orah</option></select></div>
   <div class="tg" data-for="tlocrt"><button data-layer-set="fu" aria-pressed="false">Namještaj</button><button data-layer-set="dm" aria-pressed="true">Kote</button><button data-layer-set="lt" aria-pressed="false">Svjetla</button><button id="btnMeasure2" aria-pressed="false">Mjeri</button><button id="btnClear2" hidden>Obriši mjere</button></div>
 </div>
@@ -658,7 +658,7 @@ function setMode(m){if(!TABS.includes(m))m='3d'; mapMode=m;
   if(m==='tlocrt')info.hidden=true;
   updateSideLights();
   if(m==='3d')info.hidden=true; document.querySelectorAll('#tools .tg[data-for]').forEach(x=>x.hidden=!x.dataset.for.split(' ').includes(m)); if(m==='pogledi'){document.body.classList.add('compact');roomChips.after(document.getElementById('pogView'));document.getElementById('pogView').hidden=true;if(stripRoom!==curRoomK||!thumbsEl.isConnected)buildStrip(curRoomK);else document.getElementById('pogView').after(thumbsEl);}else if(thumbsEl.isConnected)thumbsEl.remove();else{const pv=document.getElementById('pogView');if(pv.parentElement!==document.getElementById('pogRoot'))document.getElementById('pogRoot').prepend(pv);}
-  if(m==='3d'||m==='sobe'||m==='pogledi'){if(!fr3d.src)fr3d.src='3d/index.html?v=6&lite='+(matchMedia('(pointer:coarse)').matches?1:0);
+  if(m==='3d'||m==='sobe'||m==='pogledi'){if(!fr3d.src)fr3d.src='3d/index.html?v=7&lite='+(matchMedia('(pointer:coarse)').matches?1:0);
     const send=()=>m==='3d'?post3d({type:'preset',p:'iso'}):post3d({type:'room',k:curRoomK}); if(fr3d.dataset.ready){send();setTimeout(send,380);}else fr3d.dataset.pending=m;}
   if(m==='pogledi'&&window.Pogledi)Pogledi.show(curRoomK,Pogledi.firstWall(curRoomK),false);
   if(m==='sobe'||m==='pogledi')selectRoom(curRoomK);
@@ -672,14 +672,16 @@ document.getElementById('sideToggle').addEventListener('click',()=>{document.bod
 document.querySelectorAll('#tools [data-set]').forEach(el=>{if(el.tagName==='SELECT'){el.addEventListener('change',()=>post3d({type:'set',id:'palSel',value:el.value}));return;}
   el.addEventListener('click',()=>{const on=el.getAttribute('aria-pressed')!=='true';el.setAttribute('aria-pressed',on);post3d({type:'set',id:el.dataset.set,value:on});});});
 document.querySelectorAll('#tools [data-layer-set]').forEach(el=>{const b=document.querySelector(`[data-layer="${el.dataset.layerSet}"]`);el.setAttribute('aria-pressed',b.getAttribute('aria-pressed'));el.addEventListener('click',()=>b.click());});
+document.getElementById('btnWalk').addEventListener('click',()=>{const on=document.getElementById('btnWalk').getAttribute('aria-pressed')!=='true';post3d({type:'walk',on});});
 document.getElementById('btnMeasure2').addEventListener('click',()=>document.getElementById('btnMeasure').click());
 document.getElementById('btnClear2').addEventListener('click',()=>document.getElementById('btnClearMeasure').click());
 
 
 function syncMapRoom(k){if(mapMode==='sobe')post3d({type:'room',k});else if(mapMode==='pogledi'){post3d({type:'room',k});if(window.Pogledi)Pogledi.show(k,Pogledi.firstWall(k),false);}}
 addEventListener('message',e=>{const d=e.data||{};if(d.type==='ready'){fr3d.dataset.ready='1';post3d({type:'theme',dark:isDark()});post3d({type:'getState'});}
-  if(d.type==='state'){Object.entries(d.s).forEach(([k,v])=>{const el=document.querySelector(`#tools [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.tagName==='SELECT')el.value=v;else el.setAttribute('aria-pressed',!!v);});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe'||pm==='pogledi')post3d({type:'room',k:curRoomK});}
+  if(d.type==='state'){if('walk' in d.s)document.getElementById('btnWalk').setAttribute('aria-pressed',!!d.s.walk);Object.entries(d.s).forEach(([k,v])=>{if(k==='walk')return;const el=document.querySelector(`#tools [data-set="${k==='pal'?'palSel':k}"]`);if(!el)return;if(el.tagName==='SELECT')el.value=v;else el.setAttribute('aria-pressed',!!v);});const pm=fr3d.dataset.pending;if(pm==='3d')post3d({type:'preset',p:'iso'});else if(pm==='sobe'||pm==='pogledi')post3d({type:'room',k:curRoomK});}
   if(d.type==='sel'){const side=document.getElementById('side');if(d.f){const was=side.hidden||document.body.classList.contains('noside');if(mapMode==='3d'||matchMedia('(max-width:900px)').matches){side.hidden=false;document.getElementById('sideOpen').hidden=false;document.body.classList.remove('noside');}if(was){side.classList.remove('pop');void side.offsetWidth;side.classList.add('pop');}info.hidden=false;showElement(d.f,d.prods);}else if(mapMode==='3d'){side.hidden=true;document.getElementById('sideOpen').hidden=true;document.body.classList.add('noside');}else if(mapMode==='sobe'){info.hidden=true;if(matchMedia('(max-width:900px)').matches)document.body.classList.add('noside');}else selectRoom(curRoomK);}
+  if(d.type==='walk'){document.getElementById('btnWalk').setAttribute('aria-pressed',!!d.on);}
   if(d.type==='room'&&d.k&&d.k!==curRoomK){selectRoom(d.k);}});
 addEventListener('pogledi-ready',()=>{selectRoom(curRoomK);if(mapMode==='pogledi')syncMapRoom(curRoomK);});
 function selectFurn(i){

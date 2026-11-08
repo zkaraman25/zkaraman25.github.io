@@ -52,6 +52,21 @@ dialog{border:0;border-radius:14px;padding:16px;width:min(420px,calc(100% - 24px
 dialog::backdrop{background:rgba(0,0,0,.35)}
 dialog label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 dialog input[type=url]{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px}
+/* šetnja (prvo lice) */
+#walkUI{display:none}
+body.walk #walkUI{display:block}
+body.walk .bar,body.walk #panel,body.walk #lbl,body.walk #lblList{display:none !important}
+#joy{position:fixed;left:calc(18px + env(safe-area-inset-left));bottom:calc(22px + env(safe-area-inset-bottom));width:124px;height:124px;border-radius:50%;background:rgba(30,36,48,.18);border:1.5px solid rgba(255,255,255,.55);backdrop-filter:blur(6px);touch-action:none;z-index:6;user-select:none}
+#joy .knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#joy .knob::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 42%,rgba(0,0,0,.08),transparent 60%)}
+#walkBar{position:fixed;right:calc(12px + env(safe-area-inset-right));bottom:calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:6;max-width:calc(100% - 166px)}
+#walkBar .rooms{display:flex;flex-wrap:nowrap;gap:5px;max-width:100%;overflow-x:auto;scrollbar-width:none;padding:4px 2px;direction:rtl} #walkBar .rooms button{direction:ltr;flex:none}
+#walkBar .rooms button,#walkExit{border:0;font:inherit;font-size:12.5px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.14);backdrop-filter:blur(6px)}
+#walkExit{background:var(--a2);color:#fff;font-weight:600;padding:9px 14px}
+:root[data-theme="dark"] #walkBar .rooms button{background:rgba(22,28,36,.9)}
+#walkHint{position:fixed;left:50%;transform:translateX(-50%);top:calc(56px + env(safe-area-inset-top));background:rgba(30,36,48,.85);color:#fff;font-size:13px;padding:8px 14px;border-radius:999px;transition:opacity .6s;pointer-events:none;z-index:6;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+#walkHint.hide{opacity:0}
+body.walk #hint{display:none}
 </style>
 </head>
 <body>
@@ -67,7 +82,7 @@ dialog input[type=url]{width:100%;font:inherit;padding:8px;border:1px solid var(
     <h3>Prostorije</h3>
     <div class="chips"><button data-room="b">Boravak i kuhinja</button><button data-room="h">Hodnik</button><button data-room="w">Kupaona</button><button data-room="s">Spavaća</button><button data-room="d">Dječja</button><button data-room="l">Lođa</button></div>
     <h3>Pogled</h3>
-    <div class="chips"><button data-view="iso">Cijeli stan</button><button data-view="top">Odozgo</button><button data-view="jug">S juga (lođa)</button><button data-view="sjever">S vrta</button><button data-view="hodaj">S garniture prema TV-u</button></div>
+    <div class="chips"><button data-view="iso">Cijeli stan</button><button data-view="top">Odozgo</button><button data-view="jug">S juga (lođa)</button><button data-view="sjever">S vrta</button><button data-view="hodaj">S garniture prema TV-u</button><button data-view="setnja">Šetnja kroz stan</button></div>
   </div>
   <div id="pan-prikaz" hidden>
     <h3>Prikaz</h3>
@@ -91,6 +106,16 @@ dialog input[type=url]{width:100%;font:inherit;padding:8px;border:1px solid var(
   <button id="b-sobe">Sobe</button>
   <button id="b-prikaz">Prikaz</button>
   <button id="b-proizvodi">Proizvodi</button>
+  <button id="b-setnja">Šetnja</button>
+</div>
+
+<div id="walkUI">
+  <div id="walkHint">Joystick za hodanje, povuci po ekranu za pogled, dodirni pod da odeš tamo.</div>
+  <div id="joy"><div class="knob"></div></div>
+  <div id="walkBar">
+    <div class="rooms"><button data-tp="b">Boravak</button><button data-tp="h">Hodnik</button><button data-tp="w">Kupaona</button><button data-tp="s">Spavaća</button><button data-tp="d">Dječja</button><button data-tp="l">Lođa</button><button data-tp="v">Vrt</button></div>
+    <button id="walkExit">Izađi iz šetnje</button>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -4284,10 +4309,12 @@ let camAnim=null;
 function flyTo(pos,tgt,half,dur){camAnim={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now(),d:dur||1100,h0:(ortho.top-ortho.bottom)/2,h1:half||orthoTarget||(ortho.top-ortho.bottom)/2};if(!dur)$('lbl').style.opacity=0;}
 function roomCenter(k){const r=ROOMS.find(r=>r.k===k);const xs=r.poly.map(p=>p[0]),ys=r.poly.map(p=>p[1]);return [(Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2];}
 const IZO_DIR={b:[1,1],h:[1,1],w:[-1,-1],s:[1,-1],d:[1,-1],l:[-1,-1]}; // iz kojeg kuta se gleda soba (x, y): stražnji zidovi su nasuprot
-function viewRoom(k){homeView=null;if(selected&&selected.f.r!==k){selected=null;clearGlow();if(selBox){scene.remove(selBox);selBox=null;}if(EMB)parent.postMessage({type:'sel',f:null,prods:[]},'*');}curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,$('tIzo').checked?1.15:0.3,-cy*S);
+function viewRoom(k){if(WALK.on)exitWalk(false);homeView=null;if(selected&&selected.f.r!==k){selected=null;clearGlow();if(selBox){scene.remove(selBox);selBox=null;}if(EMB)parent.postMessage({type:'sel',f:null,prods:[]},'*');}curRoom=k;lastAz=null;if(EMB)parent.postMessage({type:'room',k},'*');const [cx,cy]=roomCenter(k);const t=new THREE.Vector3(cx*S,$('tIzo').checked?1.15:0.3,-cy*S);
   if($('tIzo').checked){const d=IZO_DIR[k]||[1,1];const p=new THREE.Vector3(cx*S+d[0]*20,20*0.82,-cy*S-d[1]*20);fitOrtho(k,p,t);flyTo(p,t);return;}
   const port=innerHeight>innerWidth;flyTo(new THREE.Vector3(cx*S-1.4,port?6.2:5.0,-cy*S+(port?3.2:3.0)),t);if(!$('tNiski').checked){$('tNiski').checked=true;applyWallMode();toast('Zidovi spušteni radi pogleda; isključi u Prikazu');}}
 function viewPreset(p){
+  if(p==='setnja'){enterWalk(200,470,Math.atan2(0.3,-1));return;}
+  if(WALK.on)exitWalk(false);
   const c=new THREE.Vector3(4.9,$('tIzo').checked?1.0:0.4,-2.2); curRoom=null; lastAz=null; homeView=null;
   if($('tIzo').checked){if(p==='iso'){const q=new THREE.Vector3(4.9+20,16.5+0.6,-2.2+20);fitOrtho(null,q,c);flyTo(q,c);return;}fitOrtho(null);if(p==='top'){flyTo(new THREE.Vector3(4.9,40,-2.1),c.clone().setY(0));return;}if(p==='jug'){flyTo(new THREE.Vector3(4.9+16,16,-2.2+24),c);return;}if(p==='sjever'){flyTo(new THREE.Vector3(4.9-16,16,-2.2-24),c);return;}}
   if(p==='iso')flyTo(new THREE.Vector3(-3,9,7.5),c.clone().setY(0.6));
@@ -4310,12 +4337,13 @@ function select(entry){
   if(selBox){scene.remove(selBox);selBox=null;} clearGlow();
   const prev=selected; selected=entry;
   if(EMB){parent.postMessage({type:'sel',f:entry?entry.f:null,prods:entry?matchProducts(entry.f).map(p=>({name:p.name,price:fmtPrice(p),source:p.source,bought:!!p.bought})):[]},'*');}
-  if(!entry){$('card').hidden=true;if(homeView){flyTo(homeView.p,homeView.t,homeView.h,650);homeView=null;}return;}
+  if(!entry){$('card').hidden=true;if(homeView&&!WALK.on){flyTo(homeView.p,homeView.t,homeView.h,650);}homeView=null;return;}
   // sjaj na odabranom elementu (pulsira), ostali ostaju
   entry.g.traverse(o=>{if(!o.isMesh||!o.material||!o.material.emissive)return;const m=o.material;const c=m.clone();c.emissive=new THREE.Color(0x3a7bd5);c.emissiveIntensity=0;o.material=c;glowMats.push({o,m,c});});
   selT0=performance.now();
   // blagi pomak kamere prema elementu i malo zuma; povratak na zapamćeni pogled kad se odabir makne
   const bb=new THREE.Box3().setFromObject(entry.g); const c=bb.getCenter(new THREE.Vector3());
+  if(WALK.on){if(!EMB)showCard(entry);return;} // u šetnji kamera ostaje gdje jest
   if(!prev)homeView={p:camera.position.clone(),t:controls.target.clone(),h:(ortho.top-ortho.bottom)/2};
   const base=homeView||{p:camera.position.clone(),t:controls.target.clone(),h:(ortho.top-ortho.bottom)/2};
   const dir=base.p.clone().sub(base.t); const nt=base.t.clone().lerp(c,0.45); nt.y=Math.max(nt.y,0.6);
@@ -4324,7 +4352,7 @@ function select(entry){
 }
 function applyTheme3d(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.body.style.background=EMB?'transparent':(dark?'#0e1319':'#f3f5f8');}
 if(!EMB){const mq=matchMedia('(prefers-color-scheme:dark)');applyTheme3d(mq.matches);mq.addEventListener('change',e=>applyTheme3d(e.matches));}
-addEventListener('message',e=>{const d=e.data||{};if(d.type==='theme')applyTheme3d(!!d.dark);if(d.type==='set'){const el=$(d.id);if(!el)return;if(el.type==='checkbox')el.checked=!!d.value;else el.value=d.value;el.dispatchEvent(new Event('change'));}if(d.type==='getState'){parent.postMessage({type:'state',s:{tIzo:$('tIzo').checked,tOznake:$('tOznake').checked,tStrop:$('tStrop').checked,tSvjetla:$('tSvjetla').checked,tNoc:$('tNoc').checked,pal:$('palSel').value}},'*');}if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='openPanel')openPanel(d.which||'prikaz');if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);select(o||null);}});
+addEventListener('message',e=>{const d=e.data||{};if(d.type==='theme')applyTheme3d(!!d.dark);if(d.type==='set'){const el=$(d.id);if(!el)return;if(el.type==='checkbox')el.checked=!!d.value;else el.value=d.value;el.dispatchEvent(new Event('change'));}if(d.type==='getState'){parent.postMessage({type:'state',s:{tIzo:$('tIzo').checked,tOznake:$('tOznake').checked,tStrop:$('tStrop').checked,tSvjetla:$('tSvjetla').checked,tNoc:$('tNoc').checked,pal:$('palSel').value,walk:WALK.on}},'*');}if(d.type==='room'&&d.k){viewRoom(d.k);}if(d.type==='preset')viewPreset(d.p);if(d.type==='walk'){if(d.on&&!WALK.on)viewPreset('setnja');else if(!d.on&&WALK.on)exitWalk(true);}if(d.type==='openPanel')openPanel(d.which||'prikaz');if(d.type==='sel'){const o=OBJS.find(o=>o.f.id===d.id);select(o||null);}});
 function showCard(entry){
   const f=entry.f;const [x0,y0,x1,y1]=f.b;  const room=ROOMS.find(r=>r.k===f.r);
   const prods=matchProducts(f);
@@ -4342,8 +4370,12 @@ function showCard(entry){
   $('card').querySelectorAll('[data-auto]').forEach(b=>b.onclick=()=>autoImage(b.dataset.auto,b));
 }
 let pdown=null;
-canvas.addEventListener('pointerdown',ev=>{pdown={x:ev.clientX,y:ev.clientY,t:performance.now()};});
-canvas.addEventListener('pointerup',ev=>{if(!pdown)return;const moved=Math.hypot(ev.clientX-pdown.x,ev.clientY-pdown.y);if(moved>6||performance.now()-pdown.t>600)return;
+canvas.addEventListener('pointerdown',ev=>{pdown={x:ev.clientX,y:ev.clientY,lx:ev.clientX,ly:ev.clientY,t:performance.now(),id:ev.pointerId};if(WALK.on&&WALK.lookId===null){WALK.lookId=ev.pointerId;try{canvas.setPointerCapture(ev.pointerId);}catch(e){}}});
+canvas.addEventListener('pointermove',ev=>{if(!WALK.on||ev.pointerId!==WALK.lookId||!pdown)return;const k=0.0042;WALK.yaw-=(ev.clientX-pdown.lx)*k;WALK.pitch=Math.max(-1.1,Math.min(1.1,WALK.pitch-(ev.clientY-pdown.ly)*k));pdown.lx=ev.clientX;pdown.ly=ev.clientY;});
+const endLook=ev=>{if(WALK.lookId===ev.pointerId)WALK.lookId=null;};
+canvas.addEventListener('pointercancel',endLook);
+canvas.addEventListener('pointerup',ev=>{endLook(ev);if(!pdown||ev.pointerId!==pdown.id)return;const moved=Math.hypot(ev.clientX-pdown.x,ev.clientY-pdown.y),dt=performance.now()-pdown.t;pdown=null;if(moved>6||dt>600)return;
+  if(WALK.on){walkTap(ev);return;}
   const h=pick(ev);if(h){const f=h.object.userData.obj;select(OBJS.find(o=>o.f.id===f.id));}else select(null);});
 
 /* ---------- proizvodi ---------- */
@@ -4403,9 +4435,96 @@ $('palSel').onchange=e=>setPalette(e.target.value);
 Object.entries(PALETTES).forEach(([k,p])=>{const o=document.createElement('option');o.value=k;o.textContent=p.name;$('palSel').appendChild(o);});
 const savedPal=localStorage.getItem('stan3d.pal');if(savedPal&&PALETTES[savedPal]){$('palSel').value=savedPal;PAL=PALETTES[savedPal];buildMats();}else{$('palSel').value='izo';}
 
+/* ---------- šetnja: prvo lice, kolizija po mreži 5 cm ---------- */
+const WALK={on:false,x:200,y:470,yaw:Math.PI,pitch:0,eye:160,joy:[0,0],keys:{},lookId:null,tgt:null,saved:null,enter:null,last:0,speed:170};
+const WG={res:5,x0:-60,y0:-230,x1:1060,y1:1100,w:0,h:0,ok:null};
+const WALK_SPOTS={b:[200,470,Math.atan2(0.25,-1)],h:[560,276,0],w:[850,300,0],s:[550,125,-Math.PI/2],d:[860,90,-Math.PI/2],l:[200,-95,-Math.PI/2],v:[230,800,Math.PI/2]};
+function buildWalkGrid(){
+  WG.w=Math.ceil((WG.x1-WG.x0)/WG.res);WG.h=Math.ceil((WG.y1-WG.y0)/WG.res);const N=WG.w*WG.h;const base=new Uint8Array(N);
+  const idx=(x,y)=>{const i=Math.floor((x-WG.x0)/WG.res),j=Math.floor((y-WG.y0)/WG.res);return (i<0||j<0||i>=WG.w||j>=WG.h)?-1:j*WG.w+i;};
+  const inPoly=(x,y,poly)=>{let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const [xi,yi]=poly[i],[xj,yj]=poly[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c;}return c;};
+  const rects=[[-25,635,485,1055]]; // vrt (trava i terasa)
+  EDGE_OPEN.forEach(([rk,ei,a,b,t])=>{if(!['door','pass','slide'].includes(t))return;const r=ROOMS.find(r=>r.k===rk);const n=r.poly.length;const p0=r.poly[ei],p1=r.poly[(ei+1)%n];
+    let area=0;for(let i=0;i<n;i++){const [x1,y1]=r.poly[i],[x2,y2]=r.poly[(i+1)%n];area+=x1*y2-x2*y1;} const ccw=area>0;
+    const dx=p1[0]-p0[0],dy=p1[1]-p0[1];let nx=dy,ny=-dx;if(!ccw){nx=-nx;ny=-ny;}const L=Math.hypot(nx,ny)||1;nx/=L;ny/=L;const D=34; // most preko debljine zida
+    if(dx!==0){const y=p0[1];rects.push([Math.min(a,b),Math.min(y,y+ny*D),Math.max(a,b),Math.max(y,y+ny*D)]);}else{const x=p0[0];rects.push([Math.min(x,x+nx*D),Math.min(a,b),Math.max(x,x+nx*D),Math.max(a,b)]);}});
+  for(let j=0;j<WG.h;j++)for(let i=0;i<WG.w;i++){const x=WG.x0+(i+0.5)*WG.res,y=WG.y0+(j+0.5)*WG.res;let ok=rects.some(r=>x>=r[0]&&x<=r[2]&&y>=r[1]&&y<=r[3]);if(!ok)ok=ROOMS.some(r=>inPoly(x,y,r.poly));base[j*WG.w+i]=ok?1:0;}
+  // erozija za radijus tijela (18 cm): zidovi se ne mogu dodirnuti glavom
+  const R=Math.ceil(18/WG.res);const ok=new Uint8Array(N);
+  for(let j=0;j<WG.h;j++)for(let i=0;i<WG.w;i++){let v=base[j*WG.w+i];if(v){outer:for(let dj=-R;dj<=R;dj++)for(let di=-R;di<=R;di++){if(di*di+dj*dj>R*R)continue;const ii=i+di,jj=j+dj;if(ii<0||jj<0||ii>=WG.w||jj>=WG.h||!base[jj*WG.w+ii]){v=0;break outer;}}}ok[j*WG.w+i]=v;}
+  // namještaj kao prepreka (prošireno za radijus), osim tankih zidnih obloga
+  FURN.forEach(f=>{if(['panel','photo','mirror'].includes(f.t))return;if(f.z[0]>=120||f.z[1]<=15)return;const [x0,y0,x1,y1]=f.b;const m=18;
+    for(let y=y0-m;y<=y1+m;y+=WG.res)for(let x=x0-m;x<=x1+m;x+=WG.res){const k=idx(x,y);if(k>=0)ok[k]=0;}});
+  WG.ok=ok;WG.idx=idx;
+}
+function walkable(x,y){if(!WG.ok)buildWalkGrid();const k=WG.idx(x,y);return k>=0&&WG.ok[k]===1;}
+function nearestWalkable(x,y){if(walkable(x,y))return [x,y];for(let r=WG.res;r<400;r+=WG.res){for(let a=0;a<Math.PI*2;a+=Math.PI/16){const px=x+Math.cos(a)*r,py=y+Math.sin(a)*r;if(walkable(px,py))return [px,py];}}return [x,y];}
+function tryMove(dx,dy){let nx=WALK.x+dx,ny=WALK.y+dy;if(walkable(nx,ny)){WALK.x=nx;WALK.y=ny;return true;}
+  if(walkable(WALK.x+dx,WALK.y)){WALK.x+=dx;return true;}if(walkable(WALK.x,WALK.y+dy)){WALK.y+=dy;return true;}return false;}
+function enterWalk(x,y,yaw){
+  if(!WG.ok)buildWalkGrid();
+  if(!WALK.on){WALK.saved={izo:$('tIzo').checked,niski:$('tNiski').checked,strop:$('tStrop').checked,pos:camera.position.clone(),tgt:controls.target.clone(),half:(ortho.top-ortho.bottom)/2,fov:persp.fov,labels:G.labels.visible,room:curRoom};
+    if($('tIzo').checked){$('tIzo').checked=false;setIzo(false);} if($('tNiski').checked){$('tNiski').checked=false;} $('tStrop').checked=true;G.ceil.visible=true;applyWallMode();
+    G.labels.visible=false;$('lbl').style.display='none';controls.enabled=false;camAnim=null;homeView=null;persp.fov=68;persp.updateProjectionMatrix();
+    WALK.enter={p0:persp.position.clone(),q0:persp.quaternion.clone(),s:performance.now(),d:950};
+    WALK.on=true;document.body.classList.add('walk');$('b-setnja').classList.add('on');closePanel();$('walkHint').classList.remove('hide');clearTimeout(WALK._ht);WALK._ht=setTimeout(()=>$('walkHint').classList.add('hide'),6500);
+    if(EMB)parent.postMessage({type:'walk',on:true},'*');}
+  const [px,py]=nearestWalkable(x,y);WALK.x=px;WALK.y=py;WALK.yaw=yaw??WALK.yaw;WALK.pitch=0;WALK.tgt=null;WALK.joy=[0,0];WALK.last=0;
+}
+function exitWalk(restore){
+  if(!WALK.on)return;WALK.on=false;WALK.tgt=null;WALK.lookId=null;document.body.classList.remove('walk');$('b-setnja').classList.remove('on');
+  const s=WALK.saved;WALK.saved=null;controls.enabled=true;persp.fov=s?s.fov:50;persp.updateProjectionMatrix();G.labels.visible=s?s.labels:true;
+  if(s){$('tNiski').checked=s.niski;$('tStrop').checked=s.strop;G.ceil.visible=s.strop;}
+  if(restore&&s){const p0=new THREE.Vector3(WALK.x*S,WALK.eye*S,-WALK.y*S),t0=controls.target.clone();
+    if(s.izo){$('tIzo').checked=true;setIzo(true);curRoom=s.room;lastAz=null;}else{applyWallMode();}
+    camera.position.copy(p0);controls.target.copy(t0);flyTo(s.pos.clone(),s.tgt.clone(),s.half,900);}
+  else{applyWallMode();controls.target.set(WALK.x*S,0.6,-WALK.y*S);}
+  if(EMB)parent.postMessage({type:'walk',on:false},'*');
+}
+function walkTap(ev){const r=canvas.getBoundingClientRect();ptr.x=((ev.clientX-r.left)/r.width)*2-1;ptr.y=-((ev.clientY-r.top)/r.height)*2+1;ray.setFromCamera(ptr,camera);
+  const vis=o=>{for(let p=o;p;p=p.parent){if(p.visible===false)return false;}return true;};
+  // najbliži pogodak od svega: zidovi i staklo zaklanjaju pod iza sebe
+  const hits=ray.intersectObjects([...G.furn.children,...G.floor.children,...G.ext.children,...G.walls.children,...G.glass.children],true).filter(h=>vis(h.object));
+  const h=hits.find(h=>!(h.object.userData.ground&&h.distance>12)); if(!h){select(null);return;}
+  if(h.object.userData.obj){const f=h.object.userData.obj;select(OBJS.find(o=>o.f.id===f.id));return;}
+  const isFloor=G.floor.children.includes(h.object)||G.ext.children.includes(h.object);
+  if(isFloor){const x=h.point.x/S,y=-h.point.z/S;const [px,py]=nearestWalkable(x,y);if(Math.hypot(px-x,py-y)<60){WALK.tgt=[px,py];select(null);}else toast('Tamo se ne može stati');return;}
+  select(null);
+}
+function walkStep(now){
+  const dt=Math.min(0.05,WALK.last?(now-WALK.last)/1000:0.016);WALK.last=now;
+  const k=WALK.keys;let f=WALK.joy[1],s=WALK.joy[0];
+  if(k.KeyW||k.ArrowUp)f+=1;if(k.KeyS||k.ArrowDown)f-=1;if(k.KeyD)s+=1;if(k.KeyA)s-=1;if(k.ArrowLeft)WALK.yaw+=1.8*dt;if(k.ArrowRight)WALK.yaw-=1.8*dt;
+  const mag=Math.hypot(f,s);if(mag>1){f/=mag;s/=mag;}
+  if(mag>0.02){WALK.tgt=null;const sp=WALK.speed*(k.ShiftLeft||k.ShiftRight?1.8:1)*dt;const cy=Math.cos(WALK.yaw),sy=Math.sin(WALK.yaw);
+    // naprijed = (cy,sy), desno = (sy,-cy) u tlocrtu
+    tryMove((cy*f+sy*s)*sp,(sy*f-cy*s)*sp);}
+  else if(WALK.tgt){const dx=WALK.tgt[0]-WALK.x,dy=WALK.tgt[1]-WALK.y,d=Math.hypot(dx,dy);const st=Math.min(d,260*dt);if(d<2||!tryMove(dx/d*st,dy/d*st))WALK.tgt=null;}
+  const eye=new THREE.Vector3(WALK.x*S,WALK.eye*S,-WALK.y*S);const cp=Math.cos(WALK.pitch);
+  const look=new THREE.Vector3(eye.x+Math.cos(WALK.yaw)*cp,eye.y+Math.sin(WALK.pitch),eye.z-Math.sin(WALK.yaw)*cp);
+  if(WALK.enter){const e=WALK.enter;const t=Math.min(1,(now-e.s)/e.d);const u=t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+    const tmp=new THREE.Object3D();tmp.position.copy(eye);tmp.lookAt(look);persp.position.lerpVectors(e.p0,eye,u);persp.quaternion.slerpQuaternions(e.q0,tmp.quaternion,u);if(t>=1)WALK.enter=null;}
+  else{persp.position.copy(eye);persp.lookAt(look);}
+  controls.target.copy(look);
+}
+// joystick
+(function(){const joy=$('joy'),knob=joy.querySelector('.knob');let id=null,cx=0,cy=0;const R=42;
+  const set=(dx,dy)=>{const d=Math.hypot(dx,dy),k=d>R?R/d:1;dx*=k;dy*=k;knob.style.transform=`translate(${dx}px,${dy}px)`;WALK.joy=[dx/R,-dy/R];};
+  joy.addEventListener('pointerdown',e=>{if(id!==null)return;id=e.pointerId;joy.setPointerCapture(id);const r=joy.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;set(e.clientX-cx,e.clientY-cy);e.preventDefault();});
+  joy.addEventListener('pointermove',e=>{if(e.pointerId!==id)return;set(e.clientX-cx,e.clientY-cy);});
+  const end=e=>{if(e.pointerId!==id)return;id=null;knob.style.transform='';WALK.joy=[0,0];};joy.addEventListener('pointerup',end);joy.addEventListener('pointercancel',end);
+})();
+addEventListener('keydown',e=>{if(!WALK.on||e.target.tagName==='INPUT')return;WALK.keys[e.code]=true;if(e.code==='Escape')exitWalk(true);if(/^(Arrow|Key[WASD]|Space)/.test(e.code))e.preventDefault();});
+addEventListener('keyup',e=>{WALK.keys[e.code]=false;});
+addEventListener('blur',()=>{WALK.keys={};});
+$('walkExit').onclick=()=>exitWalk(true);
+$('b-setnja').onclick=()=>WALK.on?exitWalk(true):viewPreset('setnja');
+document.querySelectorAll('#walkBar [data-tp]').forEach(b=>b.onclick=()=>{const sp=WALK_SPOTS[b.dataset.tp];if(sp)enterWalk(sp[0],sp[1],sp[2]);});
+
 /* ---------- petlja ---------- */
 function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==w*renderer.getPixelRatio()||canvas.height!==h*renderer.getPixelRatio()){renderer.setSize(w,h,false);persp.aspect=w/h;persp.updateProjectionMatrix();const half=(ortho.top-ortho.bottom)/2;ortho.left=-half*w/h;ortho.right=half*w/h;ortho.updateProjectionMatrix();if(camera===ortho&&lastFit&&!camAnim){const p=lastFit.pos.clone(),t=lastFit.tgt.clone();fitOrtho(lastFit.k,p,t);camera.position.copy(p);controls.target.copy(t);applyHalf(orthoTarget);lastAz=null;}}}
-function loop(){resize();if(camAnim){const k=Math.min(1,(performance.now()-camAnim.s)/camAnim.d);const e=k<0.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;camera.position.lerpVectors(camAnim.p0,camAnim.p1,e);controls.target.lerpVectors(camAnim.t0,camAnim.t1,e);if(camera===ortho)applyHalf(camAnim.h0+(camAnim.h1-camAnim.h0)*e);if(k>=1){camAnim=null;$('lbl').style.opacity=1;}}
+function loop(){resize();if(WALK.on){walkStep(performance.now());if(glowMats.length){const t=(performance.now()-selT0)/1000;const v=0.18+0.14*(0.5+0.5*Math.sin(t*3.2));glowMats.forEach(({c})=>c.emissiveIntensity=v);}renderer.render(scene,camera);requestAnimationFrame(loop);return;}
+  if(camAnim){const k=Math.min(1,(performance.now()-camAnim.s)/camAnim.d);const e=k<0.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;camera.position.lerpVectors(camAnim.p0,camAnim.p1,e);controls.target.lerpVectors(camAnim.t0,camAnim.t1,e);if(camera===ortho)applyHalf(camAnim.h0+(camAnim.h1-camAnim.h0)*e);if(k>=1){camAnim=null;$('lbl').style.opacity=1;}}
   controls.update();
   if(glowMats.length){const t=(performance.now()-selT0)/1000;const v=0.18+0.14*(0.5+0.5*Math.sin(t*3.2));glowMats.forEach(({c})=>c.emissiveIntensity=v);}
   if($('tIzo').checked){const az=Math.round(Math.atan2(camera.position.z-controls.target.z,camera.position.x-controls.target.x)*12);if(az!==lastAz){lastAz=az;applyWallMode();}drawLabels();}
