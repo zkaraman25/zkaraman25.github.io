@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AMBROZ — Brand Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Archivo:wght@300;400;500;600&family=Archivo+Narrow:wght@400;500&family=Barlow:wght@300;400;500;600&family=Barlow+Semi+Condensed:wght@400;500&family=B612:wght@400;700&family=B612+Mono:wght@400;700&family=Fira+Sans:wght@300;400;500;600;700&family=Fira+Sans+Condensed:wght@400;500&family=Overpass:wght@300;400;500;600;700&family=Overpass+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Mono:wght@400;500&family=Tektur:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#FFFFFF;--panel:#F3F3F1;--ink:#111;--mute:#8A8A8A;--line:#E3E3E0}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .wrap{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+  aside{border-right:1px solid var(--line);padding:36px 28px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:auto}
+  aside .ttl{font-weight:600;font-size:16px}
+  aside .upd{color:var(--mute);font-size:13px;margin-top:2px}
+  aside hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+  .nav a{display:grid;grid-template-columns:34px 1fr auto;align-items:baseline;padding:8px 0;font-size:17px;opacity:.55;transition:opacity .2s;cursor:pointer}
+  .nav a .n{font-size:13px;color:var(--mute)}
+  .nav a .c{font-size:11px;color:var(--mute)}
+  .nav a.on,.nav a:hover{opacity:1}
+  .nav .sub{max-height:0;overflow:hidden}
+  body.ready .nav .sub{transition:max-height .35s ease}
+  .nav .sub.open{max-height:1600px}
+  .nav .sub a{padding:5px 0 5px 34px;font-size:14px;opacity:.5;display:flex;gap:8px;align-items:center}
+  .nav .sub a.on{opacity:1}
+  main{padding:36px 40px 80px;max-width:1300px;min-width:0}
+  h1{font-size:28px;margin:0 0 6px;font-weight:600;letter-spacing:-.01em}
+  .lead{color:var(--mute);margin:0 0 24px;max-width:680px}
+  .ph{background:#fff;border:1px dashed var(--line);padding:36px;text-align:center;color:var(--mute);font-size:13px;margin-top:14px}
+  .panel{background:var(--panel);padding:24px;margin-bottom:18px}
+  ol.steps{padding-left:20px;max-width:680px}
+  ol.steps li{margin:0 0 10px}
+  /* cards grid (overview) */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+  .card{display:block;border:1px solid var(--line);transition:border-color .2s}
+  .card:hover{border-color:#111}
+  .card .th{aspect-ratio:1197/773;display:flex;align-items:center;justify-content:center;container-type:inline-size}
+  .card .th svg{width:42.9%;height:auto}
+  .card .th.mk{background:#F2F3F5}
+  .card .th.mk svg{width:auto;height:52%;max-width:70%}
+  .card .cap{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px;font-size:13px;border-top:1px solid var(--line)}
+  .card .cap b{font-weight:600}
+  .card .cap span{color:var(--mute)}
+  /* v1 brand rows */
+  .brand{width:100%}
+  .brand .row{position:relative;aspect-ratio:1197/773;display:flex;align-items:center;justify-content:center}
+  .brand .row svg{width:42.9%;height:auto}
+  .brand .tiles{display:grid;grid-template-columns:repeat(3,1fr)}
+  .brand .tiles > div{aspect-ratio:399/387;display:flex;align-items:center;justify-content:center}
+  .brand .tiles svg{width:31.8%;height:auto}
+  .brand .row svg,.brand .tiles svg{display:block}
+  .brand .pics img{display:block;width:100%;height:auto;cursor:zoom-in}
+  .brand .pair{display:grid;grid-template-columns:1fr 1fr}
+  .o{background:#E4521F}.k{background:#232528}.l{background:#F2F3F5}.g{background:#C6CACF}
+  .fo{fill:#E4521F}.fk{fill:#232528}.fl{fill:#F2F3F5}.fg{fill:#C6CACF}
+  /* mark detail: lockups */
+  .lk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .lk .f{border:1px solid var(--line);aspect-ratio:1400/560;container-type:inline-size;--F:8cqw;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;background:#fff}
+  .lk .f.dk{background:#232528}
+  .lk .f.or{background:#E4521F}
+  .lk .f .lab{position:absolute;left:14px;top:12px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+  .lk .f.dk .lab,.lk .f.or .lab{color:rgba(255,255,255,.55)}
+  .lk .f.tall{aspect-ratio:1400/900;grid-row:span 1}
+  .lock{display:flex;align-items:center;gap:0}
+  .lock.v{flex-direction:column;align-items:center}
+  .lock .mk{display:block}
+  .lock .wm{display:block}
+  .lock .tx{font-weight:600;line-height:1;white-space:nowrap;letter-spacing:.01em}
+  /* figma-like fixed-width boards scaled to fit */
+  .fig{width:100%;overflow:hidden;margin-bottom:28px}
+  .fig > .b{width:1200px;transform-origin:top left;background:#fff;box-shadow:0 0 0 1px var(--line)}
+  .b *{box-sizing:border-box}
+  /* palette board */
+  .pb .hd{height:161px;padding:44px 56px 0;position:relative}
+  .pb .hd .t{font:500 26px/1.1 Archivo;letter-spacing:-.01em;color:#0B0C0E;width:760px}
+  .pb .hd .d{font:400 14px/1.45 Archivo;color:#0B0C0E;width:760px;margin-top:8px}
+  .pb .hd .m{position:absolute;right:56px;top:88px;font:400 13px/1.4 Archivo;text-align:right;white-space:pre-line;color:#0B0C0E}
+  .pb .r{height:291px;position:relative}
+  .pb .r .nm{position:absolute;left:56px;top:44px;width:360px}
+  .pb .r .nm .n{font:500 40px/1.1 Archivo;letter-spacing:-.01em}
+  .pb .r .nm .n.sm{font-size:32px}
+  .pb .r .nm .d{font:400 14px/1.45 Archivo;margin-top:12px;width:330px}
+  .pb .r .dt{position:absolute;left:456px;top:44px;width:290px;font:400 15px/18px Archivo}
+  .pb .r .dt div{display:grid;grid-template-columns:100px 1fr;height:18px;margin-bottom:6px}
+  .pb .r .dt div.gap{height:4px}
+  .pb .r .dt span{font:400 13px/18px "Archivo Narrow";letter-spacing:.04em}
+  .pb .r .sw{position:absolute;left:786px;top:44px;width:380px}
+  .pb .r .sw .l{font:400 11px/15px "Archivo Narrow";letter-spacing:.06em}
+  .pb .r .sw .s{display:grid;grid-template-columns:repeat(7,54px);margin-top:10px;height:150px}
+  .pb .r .sw .s div{height:150px}
+  .pb .r .sw .ro{font:400 12px/16px "Archivo Narrow";letter-spacing:.06em;text-align:right;margin-top:12px}
+  .pb .om{display:flex;height:90px}
+  .pb .om div{position:relative;font:400 12px/16px "Archivo Narrow";letter-spacing:.06em}
+  .pb .om div span{position:absolute;left:14px;top:64px}
+  /* typography board */
+  .tb{color:#0B0C0E}
+  .tb .hd{height:136px;padding:44px 56px 0;position:relative}
+  .tb .hd .t{font-size:26px;line-height:1.2;letter-spacing:-.01em;width:760px}
+  .tb .hd .d{font-size:14px;line-height:1.2;width:760px;margin-top:6px}
+  .tb .hd .m{position:absolute;right:56px;top:63px;font-size:13px;line-height:1.4;text-align:right;white-space:pre-line}
+  .tb .sec{display:grid;grid-template-columns:260px 780px;gap:40px;padding:32px 56px}
+  .tb .sec .lbl .a{font-size:12px;letter-spacing:.04em;color:#F2541C;line-height:14px}
+  .tb .sec .lbl .s{font-size:11px;letter-spacing:.02em;color:#7C8788;margin-top:4px;line-height:13px}
+  .tb .ab{background:#F2F3F5}
+  .tb .pr{padding:36px 56px}
+  .tb .pr .lbl{margin-bottom:28px}
+  .tb .cols{display:grid;grid-template-columns:repeat(3,341px);gap:32px}
+  .tb .cols .cl{font-size:10px;letter-spacing:.03em;color:#7C8788;line-height:12px}
+  .tb .cols .ch{margin-top:10px;letter-spacing:-.005em;line-height:1.1}
+  .tb .cols .cb{margin-top:10px}
+  .tb .cards3{display:grid;grid-template-columns:repeat(3,341px);gap:32px;margin-top:28px}
+  .tb .cards3 > div{height:271px;padding:24px}
+  .tb .cards3 .cl{font-size:10px;letter-spacing:.03em;line-height:12px}
+  .tb .cards3 .ch{font-size:20px;letter-spacing:-.005em;line-height:1.1;margin-top:10px}
+  .tb .cards3 .cb{font-size:14px;line-height:1.5;margin-top:10px}
+  .tb .tab{margin-top:10px}
+  .tb .tab div{display:grid;grid-template-columns:110px 1fr;font-size:12px;line-height:1.4;letter-spacing:.03em;margin-bottom:6px}
+  .tb .tab div b{font-weight:500;letter-spacing:.02em}
+  .tb .ap{display:grid;grid-template-columns:1fr 1fr}
+  .tb .ap > div{height:224px;padding:48px 56px}
+  .tb .ap .k{font-size:12px;letter-spacing:.10em;line-height:14px}
+  .tb .ap .h{font-size:34px;line-height:1.05;letter-spacing:-.01em;color:#F2F3F5;margin-top:14px;white-space:pre-line}
+  .tb .ap .a{font-size:12px;letter-spacing:.03em;margin-top:14px;line-height:14px}
+  .tb .np{padding:28px 56px;font-size:14px;line-height:1.5}
+  .lb{position:fixed;inset:0;background:rgba(255,255,255,.96);display:none;align-items:center;justify-content:center;z-index:90;cursor:zoom-out;overflow:auto;padding:20px}
+  .lb.on{display:flex}
+  .lb img{max-width:min(1200px,96vw);height:auto;margin:auto}
+  @media (max-width:900px){ .wrap{grid-template-columns:1fr} aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)} main{padding:24px} .lk{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <div class="ttl">AMBROZ · Brand Hub</div>
+    <div class="upd">Prijedlog identiteta · studeni 2026</div>
+    <hr>
+    <div class="nav" id="nav"></div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div class="lb" id="lb"><img id="lbimg" src="" alt=""></div>
+
+<script src="data.js"></script>
+<script src="v1.js"></script>
+<script src="versions.js"></script>
+<script>
+const esc = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const rom = n => ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII'][n];
+const W = {Light:300,Regular:400,Medium:500,SemiBold:600,Bold:700};
+const fs = st => { const [f,w]=st.split('|'); return `font-family:'${f}';font-weight:${W[w]||400};`; };
+
+// ---------- DATA ----------
+const VERS = [
+  { id:'v1', title:'v1', sub:'Vrući rez · narančasta + ugljen', bg:'#E4521F', svg:`<svg viewBox="0 0 514 74" class="fl">${LOGO_H}</svg>`, html:V1_HTML },
+  ...[2,3,4,5,6,7,8,9,10].map(i=>({ id:'v'+i, title:'v'+i, sub:({2:'Narančasta · ugljen',3:'Crvenkasta narančasta · barutni čelik',4:'Vatrogasna crvena',5:'Sigurnosna žuta',6:'Signalna crveno-narančasta',7:'Narančasta ton-na-ton',8:'Sigurnosna zelena',9:'Kisela žuta · topla siva',10:'Neon žuta · hladna crna'})[i], bg:VL['v'+i].bg, svg:VL['v'+i].svg, html: VCFG['v'+i] ? buildVersion('v'+i, VCFG['v'+i]) : null }))
+];
+const MK = Object.keys(MARKS).map(Number).sort((a,b)=>a-b).map((n,i)=>({ n, i:i+1, num:String(i+1).padStart(2,'0'), name:(MARKS[n].t.match(/\((.*)\)/)||[0,MARKS[n].t.replace(/^Znak /,'')])[1], roman:MARKS[n].t.replace(/^Znak /,'').replace(/ \(.*$/,''), svg:MARKS[n].svg }));
+const SECTIONS = [
+  { key:'upute', n:'01', title:'Upute' },
+  { key:'verzije', n:'02', title:'Verzije', children: VERS.map(v=>({key:v.id, title:v.title})) },
+  { key:'logotipi', n:'03', title:'Pregled logotipa', children: MK.map(m=>({key:'z'+m.n, title:m.num+' · '+m.name})) },
+  { key:'boje', n:'04', title:'Boje', children: PAL.map((p,i)=>({key:'p'+p.id, title:String(i+1).padStart(2,'0')+' · '+p.name.replace(/^Smjer [A-Z] — /,'')})) },
+  { key:'tipografija', n:'05', title:'Tipografija', children: TYPO.map((t,i)=>({key:'t'+t.id, title:String(i+1).padStart(2,'0')+' · '+t.name.replace(/^Tipografija [A-Z] — /,'')})) }
+];
+
+// ---------- NAV ----------
+const nav=document.getElementById('nav');
+function buildNav(){ nav.innerHTML=''; SECTIONS.forEach((s,i)=>{ const a=document.createElement('a'); a.dataset.key=s.key; a.innerHTML=`<span class="n">${s.n}</span><span>${s.title}</span>${s.children?'<span class="c">▾</span>':''}`; a.href='#'+s.key; nav.appendChild(a);
+  if(s.children){ const sub=document.createElement('div'); sub.className='sub'; sub.dataset.parent=s.key; s.children.forEach(c=>{ const b=document.createElement('a'); b.href='#'+c.key; b.dataset.key=c.key; b.dataset.parent=s.key; b.innerHTML=`<span>${esc(c.title)}</span>`; sub.appendChild(b); }); nav.appendChild(sub); }
+  if(i<4){ nav.appendChild(document.createElement('hr')); } }); }
+
+// ---------- RENDER HELPERS ----------
+const vcard = v => `<a class="card" href="#${v.id}"><div class="th" style="background:${v.bg}">${v.svg}</div><div class="cap"><b>Verzija ${v.title}</b><span>${esc(v.sub)}</span></div></a>`;
+const firstPanel = v => `<div class="brand"><div class="row" style="background:${v.bg}">${v.svg}</div></div>`;
+
+// lockups
+function markSvg(m, cls, style){ return m.svg.replace('<svg', `<svg class="mk ${cls}" style="${style}"`); }
+function aspect(m){ const vb=m.svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/); return (+vb[1])/(+vb[2]); }
+function lockH(m, kind, fontCls){
+  const wide=aspect(m)>1.45, R=wide?1.15:1.65;
+  const text = kind==='custom' ? `<svg viewBox="0 0 514 74" class="wm ${fontCls}" style="height:calc(var(--F)*0.7);width:auto">${LOGO_H}</svg>` : `<span class="tx" style="font-size:var(--F);${fs(kind)}">${kind.includes('|lc')?'Ambroz':'AMBROZ'}</span>`;
+  return `<div class="lock">${markSvg(m,fontCls,`height:calc(var(--F)*0.7*${R});width:auto;margin-right:calc(var(--F)*0.315)`)}${text}</div>`;
+}
+function lockV(m, kind, fontCls){
+  const wide=aspect(m)>1.45;
+  const text = kind==='custom' ? `<svg viewBox="0 0 514 74" class="wm ${fontCls}" style="height:calc(var(--F)*0.6);width:auto">${LOGO_H}</svg>` : `<span class="tx" style="font-size:calc(var(--F)*0.86);${fs(kind)}">${kind.includes('|lc')?'Ambroz':'AMBROZ'}</span>`;
+  const mw = (wide?0.62:0.40)*(kind==='custom'?4.17:3.2);
+  return `<div class="lock v">${markSvg(m,fontCls,`width:calc(var(--F)*${mw.toFixed(2)});height:auto;margin-bottom:calc(var(--F)*0.35)`)}${text}</div>`;
+}
+
+function markView(m){
+  const K = (kind)=>kind;
+  const cells = [
+    ['Znak · cink na bijelom','', `<div class="lock">${markSvg(m,'fk','height:calc(var(--F)*3.4);width:auto')}</div>`],
+    ['Znak · narančasta','', `<div class="lock">${markSvg(m,'fo','height:calc(var(--F)*3.4);width:auto')}</div>`],
+    ['Custom logotip · vodoravno','', lockH(m,'custom','fk')],
+    ['Narančasti znak + custom logotip','', lockH(m,'custom','fo')],
+    ['Custom logotip · okomito','tall', lockV(m,'custom','fk')],
+    ['Tektur SemiBold · okomito','tall', lockV(m,'Tektur|SemiBold','fk')],
+    ['Barlow SemiBold · velika slova','', lockH(m,'Barlow|SemiBold','fk')],
+    ['Barlow SemiBold · mala slova','', lockH(m,'Barlow|SemiBold|lc','fk')],
+    ['Tektur SemiBold · velika slova','', lockH(m,'Tektur|SemiBold','fk')],
+    ['Tektur SemiBold · mala slova','', lockH(m,'Tektur|SemiBold|lc','fk')],
+    ['Archivo SemiBold · velika slova','', lockH(m,'Archivo|SemiBold','fk')],
+    ['Archivo SemiBold · mala slova','', lockH(m,'Archivo|SemiBold|lc','fk')],
+    ['Barlow SemiBold · mala slova, okomito','tall', lockV(m,'Barlow|SemiBold|lc','fk')],
+    ['Na tamnom · custom logotip, okomito','tall dk', lockV(m,'custom','fl')],
+    ['Na tamnom · custom logotip','dk', lockH(m,'custom','fl')],
+    ['Na narančastom · custom logotip','or', lockH(m,'custom','fl')],
+  ];
+  return `<div class="lk">${cells.map(c=>`<div class="f ${c[1]}"><span class="lab">${c[0]}</span>${c[2]}</div>`).join('')}</div>`;
+}
+// patch: fs() for kinds with |lc
+const _fs=fs;
+function fsk(k){ return _fs(k.replace('|lc','')); }
+
+// palette board
+function palBoard(p){ const idx=PAL.indexOf(p)+1; const title=p.title.replace(/Smjer [A-Z]/, 'Boje '+String(idx).padStart(2,'0'));
+  const rows=p.rows.map((r,i)=>{ const sm=r.name.length>16?'sm':''; const d=[['Boja',String(i+1).padStart(2,'0')],['HEX',r.hex],['RGB',r.rgb],['CMYK',r.cmyk],['Pantone®',r.pant]];
+    return `<div class="r" style="background:${r.bg};color:${r.fg}"><div class="nm"><div class="n ${sm}">${esc(r.name)}</div><div class="d">${esc(r.desc)}</div></div>
+    <div class="dt">${d.map((x,j)=>`<div><span>${x[0]}</span><b style="font-weight:400">${esc(x[1])}</b></div>${j===0||j===2||j===3?'<div class="gap"></div>':''}`).join('')}</div>
+    <div class="sw"><div class="l">SKALA · SVIJETLO → TAMNO</div><div class="s">${r.sw.map(c=>`<div style="background:${c}"></div>`).join('')}</div><div class="ro">${esc(r.role)}</div></div></div>`; }).join('');
+  const om=`<div class="om">${p.omjer.map((o,i)=>`<div style="width:${o.w}px;background:${o.bg};color:${o.fg}"><span>${String(i+1).padStart(2,'0')}</span></div>`).join('')}</div>`;
+  return `<div class="fig"><div class="b pb"><div class="hd"><div class="t">${esc(title)}</div><div class="d">${esc(p.desc)}</div><div class="m">${esc(p.meta)}</div></div>${rows}${om}</div></div>`;
+}
+// typography board
+function typoBoard(t){ const idx=TYPO.indexOf(t)+1; const title=t.title.replace(/Tipografija [A-Z]/, 'Tipografija '+String(idx).padStart(2,'0'));
+  const lab=(a,s)=>`<div class="lbl"><div class="a" style="${fs(t.labelStyle)}">${esc(a)}</div><div class="s" style="${fs(t.specStyle)}">${esc(s)}</div></div>`;
+  const sec=(a,s,body,cls='')=>`<div class="sec ${cls}">${lab(a,s)}<div>${body}</div></div>`;
+  const body1='Više od dvadeset godina iskustva u obradi čelika i aluminija. Lasersko rezanje, savijanje, zavarivanje i praškasto lakiranje, od pojedinačnih komada do serijske proizvodnje.';
+  const c1='Ambroz je obiteljska tvrtka za obradu i oblikovanje metala. Režemo laserom, savijamo, zavarujemo i lakiramo čelik i aluminij, od jednog komada do serije. Uz to proizvodimo vatrogasne ormarice i prodajemo aparate, s ugradnjom i servisom. Svaki dio prolazi kontrolu prije isporuke, a rok vam potvrđujemo prije nego što počnemo.';
+  const c2='Lasersko rezanje do 12 mm čelika i 8 mm aluminija, savijanje na CNC preši do 3 m, TIG i MIG zavarivanje, praškasto lakiranje u RAL tonovima. Male serije i prototipi su nam svakodnevica, ne iznimka.';
+  const c3='Vatrogasne ormarice izrađujemo prema HRN EN normama, u standardnim i nestandardnim dimenzijama, s ugradnjom hidranta i aparata. Nudimo i redoviti servis te vođenje evidencije.';
+  const tab=[['Materijal','S235JR / AlMg3'],['Debljina','0,5 – 12 mm'],['Rez','Laser 4 kW'],['Savijanje','CNC 3000 mm'],['Zavar','TIG / MIG'],['Završna obrada','RAL 7016 prah']];
+  const colSizes=[[20,14,150],[24,16,150],[28,18,145]], colHeads=['Obrada metala','Što radimo','Vatrogasne ormarice'], colBodies=[c1,c2,c3];
+  const cols=`<div class="cols">${[0,1,2].map(i=>`<div><div class="cl" style="${fs(t.specStyle)}">${esc(t.colLabels[i])}</div><div class="ch" style="${fs(t.colHead[i])}font-size:${colSizes[i][0]}px">${colHeads[i]}</div><div class="cb" style="${fs(t.colBody[i])}font-size:${colSizes[i][1]}px;line-height:${colSizes[i][2]}%">${colBodies[i]}</div></div>`).join('')}</div>`;
+  const cards=`<div class="cards3">
+    <div style="background:#202928;color:#F2F3F5"><div class="cl" style="${fs(t.specStyle)}color:#F2541C">${esc(t.cardLabels[0])}</div><div class="ch" style="${fs(t.cardHead)}">Na tamnoj podlozi</div><div class="cb" style="${fs(t.bodyStyle)}">${c2}</div></div>
+    <div style="background:#F2541C;color:#F2F3F5"><div class="cl" style="${fs(t.specStyle)}color:#0B0C0E">${esc(t.cardLabels[1])}</div><div class="ch" style="${fs(t.cardHead)}">Na narančastoj</div><div class="cb" style="${fs(t.bodyStyle)}">${c3}</div></div>
+    <div style="background:#F2F3F5;color:#0B0C0E"><div class="cl" style="${fs(t.specStyle)}color:#7C8788">${esc(t.cardLabels[2])}</div><div class="ch" style="${fs(t.specHead)}font-size:14px;letter-spacing:.06em">SPECIFIKACIJA</div><div class="tab">${tab.map(r=>`<div><span style="${fs(t.tabKey)}color:#7C8788">${r[0]}</span><b style="${fs(t.tabVal)}">${r[1]}</b></div>`).join('')}</div></div>
+  </div>`;
+  const ap=(bg,kc,ac)=>`<div style="background:${bg}"><div class="k" style="${fs(t.ozStyle)}color:${kc}">OBRADA METALA</div><div class="h" style="${fs(t.headStyle)}">OBLIK KOJI IMA SMISLA.\nMETAL KOJI IMA RAZLOG.</div><div class="a" style="${fs(t.dataStyle)}color:${ac}">Ambroz d.o.o. · Vrbani 16 · 10000 Zagreb · +385 91 751 3139</div></div>`;
+  return `<div class="fig"><div class="b tb">
+    <div class="hd"><div class="t" style="${fs(t.titleStyle)}">${esc(title)}</div><div class="d" style="${fs(t.descStyle)}">${esc(t.desc)}</div><div class="m" style="${fs(t.metaStyle)}">${esc(t.meta)}</div></div>
+    ${sec('Naslov / H1',t.h1spec,`<div style="${fs(t.headStyle)}font-size:64px;line-height:1;letter-spacing:-.01em">OBRADA I OBLIKOVANJE METALA</div>`)}
+    ${sec('Naslov / H2',t.h2spec,`<div style="${fs(t.headStyle)}font-size:36px;line-height:1.1;letter-spacing:-.01em">Vatrogasne ormarice po mjeri</div>`)}
+    ${sec('Oznaka / velika',t.ozspec,`<div style="${fs(t.ozStyle)}font-size:22px;line-height:1;letter-spacing:.10em">AMBROZ · ZAGREB · EST. 2004</div>`)}
+    ${sec('Tekst / osnovni',t.txspec,`<div style="${fs(t.bodyStyle)}font-size:16px;line-height:1.5">${body1}</div>`)}
+    ${sec('Podaci / tehnički',t.pdspec,`<div style="${fs(t.dataStyle)}font-size:13px;line-height:1.4;letter-spacing:.04em">HEX #F2541C · RGB 242 84 28 · CMYK 0 78 92 0 · PANTONE 1655 C · DEBLJINA LIMA 0,5–12 MM</div>`)}
+    ${sec('Znakovi',t.abspec,`<div style="${fs(t.abStyle)}font-size:24px;line-height:1.4;white-space:pre-line">ABCČĆDĐEFGHIJKLMNOPRSŠTUVZŽ\nabcčćdđefghijklmnoprsštuvzž\n0123456789 €%&amp;@()+-=/</div>`,'ab')}
+    <div class="pr">${lab('Primjeri teksta','Kako font radi u stvarnom tekstu, različite veličine i težine')}${cols}${cards}</div>
+    <div class="ap">${ap('#202928','#F2541C','#BBC2C2')}${ap('#F2541C','#0B0C0E','#FCDDD3')}</div>
+    <div class="np" style="${fs(t.bodyStyle)}">${esc(t.napomena)}</div>
+  </div></div>`;
+}
+function fitFigs(){ document.querySelectorAll('.fig').forEach(f=>{ const b=f.firstElementChild; const k=Math.min(1,f.clientWidth/1200); b.style.transform=`scale(${k})`; f.style.height=(b.offsetHeight*k)+'px'; }); }
+window.addEventListener('resize',fitFigs);
+
+// ---------- VIEWS ----------
+const main=document.getElementById('main');
+function view(key){
+  if(key==='upute') return `<h1>01 Upute</h1><p class="lead">Kako proći kroz ovaj pregled.</p><div class="panel"><ol class="steps">
+    <li>Prođi 02 Verzije: deset cjelovitih smjerova (znak, logotip, boje, primjena). Zapiši si 2–3 verzije koje ti najbolje sjedaju.</li>
+    <li>U 03 Pregled logotipa svaki znak je prikazan uz custom logotip i uz fontove u velikim i malim slovima. Zapiši si znak koji ti se sviđa i kombinaciju s fontom koja mu najbolje stoji.</li>
+    <li>U 04 Boje i 05 Tipografija zapiši si paletu i font. Boje i fontovi se mogu kombinirati neovisno o verziji.</li>
+    <li>Sve bilješke prolazimo zajedno uživo, pa nema potrebe ništa slati unaprijed.</li></ol></div>`;
+  if(key==='verzije') return `<h1>02 Verzije</h1><p class="lead">Deset smjerova. Klikni na karticu za cijelu verziju.</p><div class="cards">${VERS.map(vcard).join('')}</div>`;
+  const v=VERS.find(x=>x.id===key);
+  if(v) return `<h1>Verzija ${v.title}</h1><p class="lead">${esc(v.sub)}</p>${v.html||firstPanel(v)+`<div class="ph">Ostatak verzije ${v.title} slijedi</div>`}`;
+  if(key==='logotipi') return `<h1>03 Pregled logotipa</h1><p class="lead">Svi znakovi, numerirani. Klikni na znak za lockupe s logotipom i fontovima.</p><div class="cards">${MK.map(m=>`<a class="card" href="#z${m.n}"><div class="th mk">${markSvg(m,'fk','')}</div><div class="cap"><b>Znak ${m.num}</b><span>${esc(m.name)}</span></div></a>`).join('')}</div>`;
+  const z=MK.find(x=>'z'+x.n===key);
+  if(z) return `<h1>Znak ${z.num} · ${esc(z.name)}</h1><p class="lead">Znak samostalno, zatim s custom logotipom i s fontovima u velikim i malim slovima.</p>${markView(z)}`;
+  if(key==='boje') return `<h1>04 Boje</h1><p class="lead">${PAL.length} paleta. Klikni na karticu za cijelu paletu s HEX, RGB, CMYK, Pantone, skalom i omjerom.</p><div class="cards">${PAL.map((p,i)=>`<a class="card" href="#p${p.id}"><div class="th" style="display:flex;flex-direction:row;align-items:stretch">${p.omjer.map(o=>`<div style="flex:${o.w} 0 0;background:${o.bg};height:100%"></div>`).join('')}</div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span>${esc(p.name.replace(/^Smjer [A-Z] — /,''))}</span></div></a>`).join('')}</div>`;
+  const pp=PAL.find(x=>'p'+x.id===key);
+  if(pp) return `<h1>Boje ${String(PAL.indexOf(pp)+1).padStart(2,'0')} · ${esc(pp.name.replace(/^Smjer [A-Z] — /,''))}</h1><p class="lead">Raspored kao u Figmi: naziv, HEX, RGB, CMYK, Pantone, skala i omjer.</p>${palBoard(pp)}`;
+  if(key==='tipografija') return `<h1>05 Tipografija</h1><p class="lead">${TYPO.length} fontova. Klikni na karticu za hijerarhiju, znakove, primjere teksta i primjenu.</p><div class="cards">${TYPO.map((t,i)=>`<a class="card" href="#t${t.id}"><div class="th" style="background:#F2F3F5;flex-direction:column;gap:6px"><div style="${fs(t.headStyle)}font-size:9.5cqw;letter-spacing:-.01em;line-height:1">AMBROZ</div><div style="${fs(t.bodyStyle)}font-size:4cqw;color:#5B6066">Obrada i oblikovanje metala</div></div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span>${esc(t.main)}</span></div></a>`).join('')}</div>`;
+  const tt=TYPO.find(x=>'t'+x.id===key);
+  if(tt) return `<h1>Tipografija ${String(TYPO.indexOf(tt)+1).padStart(2,'0')} · ${esc(tt.main)}</h1><p class="lead">${esc(tt.desc)}</p>${typoBoard(tt)}`;
+  return view('upute');
+}
+function route(){ let key=(location.hash||'#upute').slice(1); main.innerHTML=view(key);
+  nav.querySelectorAll('a').forEach(a=>a.classList.toggle('on', a.dataset.key===key));
+  const parent = (nav.querySelector(`a[data-key="${key}"]`)||{}).dataset?.parent || key;
+  nav.querySelectorAll('.sub').forEach(s=>s.classList.toggle('open', s.dataset.parent===parent));
+  nav.querySelectorAll('a[data-key]').forEach(a=>{ if(a.dataset.key===parent && !a.dataset.parent) a.classList.add('on'); });
+  main.querySelectorAll('.pics img').forEach(el=>el.addEventListener('click',()=>{ lbimg.src=el.src; lb.classList.add('on'); }));
+  fitFigs(); if(document.fonts) document.fonts.ready.then(fitFigs); window.scrollTo({top:0});
+}
+const lb=document.getElementById('lb'), lbimg=document.getElementById('lbimg'); lb.addEventListener('click',()=>lb.classList.remove('on'));
+buildNav(); window.addEventListener('hashchange',route); route(); requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('ready')));
+</script>
+</body>
+</html>
