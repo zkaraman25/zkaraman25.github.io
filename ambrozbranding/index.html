@@ -262,22 +262,24 @@ window.addEventListener('resize',fitFigs);
 const main=document.getElementById('main');
 function view(key){
   if(key==='upute') return `<h1>01 Upute</h1><p class="lead">Kako proći kroz ovaj pregled.</p><div class="panel"><ol class="steps">
-    <li>Prođi 02 Verzije: deset cjelovitih smjerova (znak, logotip, boje, primjena). Zapiši si 2–3 verzije koje ti najbolje sjedaju.</li>
-    <li>U 03 Pregled logotipa svaki znak je prikazan uz custom logotip i uz fontove u velikim i malim slovima. Zapiši si znak koji ti se sviđa i kombinaciju s fontom koja mu najbolje stoji.</li>
-    <li>U 04 Boje i 05 Tipografija zapiši si paletu i font. Boje i fontovi se mogu kombinirati neovisno o verziji.</li>
+    <li><b>02 Verzije</b> su primjene logotipa s bojama: svaka verzija je jedan cjelovit smjer, logo plus paleta primijenjeni na vizitke, tablu, aparat, vozilo, odjeću i prostor. Zapiši si 2–3 verzije koje ti najbolje sjedaju.</li>
+    <li><b>03 Pregled logotipa</b>: svaki znak je prikazan uz custom logotip i uz fontove u velikim i malim slovima. Zapiši si znak koji ti se sviđa i kombinaciju s fontom koja mu najbolje stoji.</li>
+    <li><b>04 Boje</b> su palete, kombinacije boja za cijeli branding (web, tisak, vozila, prostor), ne samo za logo. Zapiši si paletu koja ti odgovara.</li>
+    <li><b>05 Tipografija</b> je font za sav tekst u brandingu, mimo loga: web, dokumenti, ponude, oznake, katalozi i sve što je pisano. Zapiši si font koji ti najbolje leži.</li>
+    <li>Boje i fontovi se mogu kombinirati neovisno o verziji.</li>
     <li>Sve bilješke prolazimo zajedno uživo, pa nema potrebe ništa slati unaprijed.</li></ol></div>`;
-  if(key==='verzije') return `<h1>02 Verzije</h1><p class="lead">Deset smjerova. Klikni na karticu za cijelu verziju.</p><div class="cards">${VERS.map(vcard).join('')}</div>`;
+  if(key==='verzije') return `<h1>02 Verzije</h1><p class="lead">Verzija je primjena logotipa s bojama: jedan cjelovit smjer kroz vizitke, tablu, aparat, vozilo, odjeću i prostor. Klikni na karticu za cijelu verziju.</p><div class="cards">${VERS.map(vcard).join('')}</div>`;
   const v=VERS.find(x=>x.id===key);
   if(v) return `<h1>Verzija ${v.title}</h1><p class="lead">${esc(v.sub)}</p>${v.html||firstPanel(v)+`<div class="ph">Ostatak verzije ${v.title} slijedi</div>`}`;
   if(key==='logotipi') return `<h1>03 Pregled logotipa</h1><p class="lead">Svi znakovi, numerirani. Klikni na znak za lockupe s logotipom i fontovima.</p><div class="cards">${MK.map(m=>`<a class="card" href="#z${m.n}"><div class="th mk">${markSvg(m,'fk','')}</div><div class="cap"><b>Znak ${m.num}</b><span>${esc(m.name)}</span></div></a>`).join('')}</div>`;
   const z=MK.find(x=>'z'+x.n===key);
   if(z) return `<h1>Znak ${z.num} · ${esc(z.name)}</h1><p class="lead">Znak samostalno, zatim s custom logotipom i s fontovima u velikim i malim slovima.</p>${markView(z)}`;
-  if(key==='boje') return `<h1>04 Boje</h1><p class="lead">${PAL.length} paleta. Klikni na karticu za cijelu paletu s HEX, RGB, CMYK, Pantone, skalom i omjerom.</p><div class="cards">${PAL.map((p,i)=>`<a class="card" href="#p${p.id}"><div class="th" style="display:flex;flex-direction:row;align-items:stretch">${p.omjer.map(o=>`<div style="flex:${o.w} 0 0;background:${o.bg};height:100%"></div>`).join('')}</div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span>${esc(p.name.replace(/^Smjer [A-Z] — /,''))}</span></div></a>`).join('')}</div>`;
+  if(key==='boje') return `<h1>04 Boje</h1><p class="lead">${PAL.length} paleta. Paleta je kombinacija boja za cijeli branding (web, tisak, vozila, prostor), ne samo za logo. Klikni na karticu za HEX, RGB, CMYK, Pantone, skalu i omjer.</p><div class="cards">${PAL.map((p,i)=>`<a class="card" href="#p${p.id}"><div class="th" style="display:flex;flex-direction:row;align-items:stretch">${p.omjer.map(o=>`<div style="flex:${o.w} 0 0;background:${o.bg};height:100%"></div>`).join('')}</div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span>${esc(p.name.replace(/^Smjer [A-Z] — /,''))}</span></div></a>`).join('')}</div>`;
   const pp=PAL.find(x=>'p'+x.id===key);
-  if(pp) return `<h1>Boje ${String(PAL.indexOf(pp)+1).padStart(2,'0')} · ${esc(pp.name.replace(/^Smjer [A-Z] — /,''))}</h1><p class="lead">Raspored kao u Figmi: naziv, HEX, RGB, CMYK, Pantone, skala i omjer.</p>${palBoard(pp)}`;
-  if(key==='tipografija') return `<h1>05 Tipografija</h1><p class="lead">${TYPO.length} fontova. Klikni na karticu za hijerarhiju, znakove, primjere teksta i primjenu.</p><div class="cards">${TYPO.map((t,i)=>`<a class="card" href="#t${t.id}"><div class="th" style="background:#F2F3F5;flex-direction:column;gap:6px"><div style="${fs(t.headStyle)}font-size:9.5cqw;letter-spacing:-.01em;line-height:1">AMBROZ</div><div style="${fs(t.bodyStyle)}font-size:4cqw;color:#5B6066">Obrada i oblikovanje metala</div></div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span>${esc(t.main)}</span></div></a>`).join('')}</div>`;
+  if(pp) return `<h1>Boje ${String(PAL.indexOf(pp)+1).padStart(2,'0')} · ${esc(pp.name.replace(/^Smjer [A-Z] — /,''))}</h1><p class="lead">Kombinacija boja za cijeli branding (web, tisak, vozila, prostor), ne samo za logo. Naziv, HEX, RGB, CMYK, Pantone, skala i omjer.</p>${palBoard(pp)}`;
+  if(key==='tipografija') return `<h1>05 Tipografija</h1><p class="lead">${TYPO.length} fontova. Ovo je font za sav tekst u brandingu, mimo loga: web, dokumenti, ponude, oznake, katalozi i sve što je pisano. Klikni na karticu za hijerarhiju, znakove, primjere teksta i primjenu.</p><div class="cards">${TYPO.map((t,i)=>`<a class="card" href="#t${t.id}"><div class="th" style="background:#F2F3F5;flex-direction:column;gap:6px"><div style="${fs(t.headStyle)}font-size:9.5cqw;letter-spacing:-.01em;line-height:1">AMBROZ</div><div style="${fs(t.bodyStyle)}font-size:4cqw;color:#5B6066">Obrada i oblikovanje metala</div></div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span>${esc(t.main)}</span></div></a>`).join('')}</div>`;
   const tt=TYPO.find(x=>'t'+x.id===key);
-  if(tt) return `<h1>Tipografija ${String(TYPO.indexOf(tt)+1).padStart(2,'0')} · ${esc(tt.main)}</h1><p class="lead">${esc(tt.desc)}</p>${typoBoard(tt)}`;
+  if(tt) return `<h1>Tipografija ${String(TYPO.indexOf(tt)+1).padStart(2,'0')} · ${esc(tt.main)}</h1><p class="lead">Font za sav tekst u brandingu, mimo loga (web, dokumenti, ponude, oznake). ${esc(tt.desc)}</p>${typoBoard(tt)}`;
   return view('upute');
 }
 function route(){ let key=(location.hash||'#upute').slice(1); main.innerHTML=view(key);
